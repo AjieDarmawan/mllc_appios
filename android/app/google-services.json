@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "191488171834",
+    "project_id": "mlcc-78336",
+    "storage_bucket": "mlcc-78336.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:191488171834:android:a1bad2649298137ba1fa03",
+        "android_client_info": {
+          "package_name": "com.lcpbuildsofttechnology.mlcc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGfk6HNXU7LIAqSAGVzzWNQyph_JnOiSs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

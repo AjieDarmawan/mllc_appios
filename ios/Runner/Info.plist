@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>MLCC</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>MLCC</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(FLUTTER_BUILD_NAME)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleTypeRole</key>
+	<string>Editor</string>
+	<key>CFBundleURLName</key>
+	<string>https://xclubmy.page.link</string>
+	<key>CFBundleURLSchemes</key>
+	<array>
+		<string>https</string>
+	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.lcpbuildsofttechology.mlcc_app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>Mlcc</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>$(PRODUCT_NAME) use your AppleMusic.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Allow NSBluetoothAlwaysUsageDescription.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Allow NSBluetoothPeripheralUsageDescription</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>This app will access calendar to add event for your joined training and event.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We Needs to access your camera to Allow you to upload a photo profile</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Allow Access to Camera to upload photos profile  to your  gallery</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<!-- <string>Allow Access to photos to your photo gallery</string> -->
+	<string>Application Needs to use Gallery to take pictures photo profile</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Allow Access requires contacts access to function properly.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Your location is required for $(PRODUCT_NAME) benefits for you</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Mlcc Needs Location access  $(PRODUCT_NAME) benefits for you</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Allow Access does not require access to the microphone.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Allow Access use your motion.</string>
+	
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>$(PRODUCT_NAME) speech recognition use.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>UIStatusBarHidden</key>
+	<false/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>branch_key</key>
+	<string>key_test_oa7PM9ie8YRQ2aOoYoPqqinbsummR4HP</string>
+	<key>branch_universal_link_domains</key>
+	<array>
+		<string>xclubmy.test-app.link</string>
+		<string>xclubmy-alternate.test-app.link</string>
+	</array>
+</dict>
+</plist>

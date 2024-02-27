@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "581983859637",
+    "project_id": "xclub-a5035",
+    "storage_bucket": "xclub-a5035.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:581983859637:android:9c3bb136be7caf9a941ffc",
+        "android_client_info": {
+          "package_name": "com.lcpbuildsofttechology.mlcc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "581983859637-phrvqhefsfqs6jmpip9tuc8gjeiht1as.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASuAVHJ10kSyjt8BFxHd7L-pY2QCGHBo8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "581983859637-phrvqhefsfqs6jmpip9tuc8gjeiht1as.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -26,6 +26,7 @@ class TextFieldWidget extends StatelessWidget {
       this.errorText,
       this.iconData,
       this.labelText,
+      this.mandatory,
       this.obscureText,
       this.suffixIcon,
       this.isFirst,
@@ -52,6 +53,7 @@ class TextFieldWidget extends StatelessWidget {
   final String? errorText;
   final TextAlign? textAlign;
   final String? labelText;
+  final String? mandatory;
   final TextStyle? style;
   final IconData? iconData;
   final bool? obscureText;
@@ -85,10 +87,21 @@ class TextFieldWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            labelText ?? "",
-            style: Get.textTheme.bodyText1,
-            textAlign: textAlign ?? TextAlign.start,
+          Row(
+            children: [
+              Text(
+                labelText ?? "",
+                style: Get.textTheme.bodyText1,
+                textAlign: textAlign ?? TextAlign.start,
+              ),
+              Text(
+                mandatory ?? "",
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+                textAlign: textAlign ?? TextAlign.start,
+              ),
+            ],
           ),
           TextFormField(
             onTap: () => onTap,

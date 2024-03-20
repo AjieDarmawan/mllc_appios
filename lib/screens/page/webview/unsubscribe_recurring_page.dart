@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 // import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:add_2_calendar/add_2_calendar.dart';
+// import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -137,17 +137,17 @@ class _UnsubscribeRecurringState extends State<UnsubscribeRecurring> {
         });
   }
 
-  Event buildEvent({Recurrence? recurrence}) {
-    return Event(
-      title: calendarTitle,
-      description: calendarDescription,
-      location: calendarVenue,
-      startDate: calendarStartAt,
-      endDate: calendarEndAt,
-      allDay: false,
-      recurrence: recurrence,
-    );
-  }
+  // Event buildEvent({Recurrence? recurrence}) {
+  //   return Event(
+  //     title: calendarTitle,
+  //     description: calendarDescription,
+  //     location: calendarVenue,
+  //     startDate: calendarStartAt,
+  //     endDate: calendarEndAt,
+  //     allDay: false,
+  //     recurrence: recurrence,
+  //   );
+  // }
 
   String _parseHtmlString(String htmlString) {
     final document = parse(htmlString);

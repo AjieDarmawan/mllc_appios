@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
+import 'package:mlcc_app_ios/widget/disable_screenshots.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mlcc_app_ios/constant.dart';
@@ -31,6 +33,14 @@ class _EntrepreneursListPageState extends State<EntrepreneursListPage> {
 
   late bool result_loading = false;
 
+  Future<void> secureScreen() async {
+    await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+  }
+
+  Future<void> clearSecureScreen() async {
+    await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
+  }
+
   var userId = 0;
   List<dynamic> items = [];
   List<dynamic> itemsEntrepreneurs = [];
@@ -49,17 +59,21 @@ class _EntrepreneursListPageState extends State<EntrepreneursListPage> {
 
   final RefreshController refreshController =
       RefreshController(initialRefresh: true);
+
   getAllData() async {
-    final response = await httpProvider
-        .getHttp2("entrepreneur/listing?page=$currentPage&user_id=${userId}");
+    final response = await httpProvider.getHttp2(
+        "entrepreneur/listing?page=$currentPage&user_id=${userId}&log_user_id=${userId}");
     if (response != null) {
       tPages = response[0]['totalPages'];
       if (widget.data == 'connect') {
         itemsEntrepreneurs = [];
       }
+
+      print("getAllData${tPages}");
+      print("getAllData-pages${tPages}");
       for (int i = 0; i < tPages; i++) {
-        final result = await httpProvider
-            .getHttp2("entrepreneur/listing?page=$cPages&user_id=${userId}");
+        final result = await httpProvider.getHttp2(
+            "entrepreneur/listing?page=$cPages&user_id=${userId}&log_user_id=${userId}");
         setState(() {
           result.removeWhere((item) => item['id'] == userId);
 
@@ -90,8 +104,8 @@ class _EntrepreneursListPageState extends State<EntrepreneursListPage> {
       }
     }
 
-    final response = await httpProvider
-        .getHttp2("entrepreneur/listing?page=$currentPage&user_id=${userId}");
+    final response = await httpProvider.getHttp2(
+        "entrepreneur/listing?page=$currentPage&user_id=${userId}&log_user_id=${userId}");
 
     if (response != null) {
       final result = response;
@@ -168,6 +182,8 @@ class _EntrepreneursListPageState extends State<EntrepreneursListPage> {
 
   @override
   void initState() {
+    secureScreen();
+    DisableScreenshots.disable();
     getUser();
     getAllData();
     getPassengerData();
@@ -180,7 +196,15 @@ class _EntrepreneursListPageState extends State<EntrepreneursListPage> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    clearSecureScreen();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
+    print("getAllData-itemsEntrepreneurs${itemsEntrepreneurs.length}");
     return Scaffold(
       // endDrawer: populateDrawer(),
       appBar: AppBar(

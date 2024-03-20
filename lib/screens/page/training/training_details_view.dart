@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:add_2_calendar/add_2_calendar.dart';
+// import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info/device_info.dart';
 import 'package:favorite_button/favorite_button.dart';
@@ -1950,9 +1950,9 @@ class _TrainingDetailsViewPageState extends State<TrainingDetailsViewPage> {
             arguments: {'data': widget.data, 'type': 'Notification'});
 
         if (follows == '') {
-          Add2Calendar.addEvent2Cal(
-            buildEvent(),
-          );
+          // Add2Calendar.addEvent2Cal(
+          //   buildEvent(),
+          // );
         }
       } else {
         Navigator.pushReplacementNamed(context, '/training_details_view_page',
@@ -1961,24 +1961,24 @@ class _TrainingDetailsViewPageState extends State<TrainingDetailsViewPage> {
               'trainingList': widget.trainingList
             });
         if (follows == '') {
-          Add2Calendar.addEvent2Cal(
-            buildEvent(),
-          );
+          // Add2Calendar.addEvent2Cal(
+          //   buildEvent(),
+          // );
         }
       }
     }
   }
 
-  Event buildEvent({Recurrence? recurrence}) {
-    return Event(
-      title: "MLCC - Training\n" + calendarTitle,
-      description: calendarDescription,
-      startDate: calendarStartAt,
-      endDate: calendarEndAt,
-      allDay: false,
-      recurrence: recurrence,
-    );
-  }
+  // Event buildEvent({Recurrence? recurrence}) {
+  //   return Event(
+  //     title: "MLCC - Training\n" + calendarTitle,
+  //     description: calendarDescription,
+  //     startDate: calendarStartAt,
+  //     endDate: calendarEndAt,
+  //     allDay: false,
+  //     recurrence: recurrence,
+  //   );
+  // }
 
   void _setInputValue(String field, String value) {
     setState(() => _formData[field] = value.trim());

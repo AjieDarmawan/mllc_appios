@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
+import 'package:mlcc_app_ios/main.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:mlcc_app_ios/constant.dart';
 import 'package:mlcc_app_ios/screens/main_view.dart';
 import 'package:mlcc_app_ios/screens/page/home/home_page.dart';
 import 'package:mlcc_app_ios/screens/page/home/newsletter_all.dart';
 import 'package:mlcc_app_ios/screens/page/home/newsletter_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NewsLetterListPage extends StatefulWidget {
   final dynamic data;
@@ -18,6 +20,9 @@ class _NewsLetterListPageState extends State<NewsLetterListPage> {
   dynamic alllNewsLetterList = [];
   dynamic announcementList = [];
   dynamic newsLetterList = [];
+  int userId = 0;
+  dynamic log = [];
+
   String _parseHtmlString(String htmlString) {
     final document = parse(htmlString);
     final String parsedString =
@@ -33,8 +38,29 @@ class _NewsLetterListPageState extends State<NewsLetterListPage> {
     const Tab(text: 'News'),
   ];
 
+  void getUser() async {
+    //  print("newslettergetUser");
+    final _formData = {};
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getInt("userId")!;
+      //print("newslettergetUser${userId}");
+      if (userId != 0) {
+        //print("newslettergetUser-masuk");
+        _formData['log_user_id'] = userId;
+        _formData['page'] = "News";
+      }
+    });
+
+    if (userId != 0) {
+      print("newsletter${_formData}");
+      log = await httpProvider.postHttp("log/create", _formData);
+    }
+  }
+
   @override
   void initState() {
+    getUser();
     alllNewsLetterList = widget.data;
     for (int i = 0; i < widget.data.length; i++) {
       if (widget.data[i]['type'] == 'Announcements') {

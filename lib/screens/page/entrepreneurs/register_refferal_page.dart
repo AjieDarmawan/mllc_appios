@@ -166,23 +166,40 @@ class _RegisterRefferalPageState extends State<RegisterRefferalPage> {
               // _formData['gender'] = userData['gender'];
               // _formData['introduction'] = userData['introduction'];
 
-              _formData['name'] = userData['name'];
-              _formData['email'] = userData['email'];
-              _formData['phone_number'] = userData['phone_number'];
-              _formData['company_name'] = userData['company_name'];
-              _formData['company_state_id'] = userData['company_state_id'];
+              _formData['name'] =
+                  userData['name'] == null ? '' : userData['name'];
+              _formData['email'] =
+                  userData['email'] == null ? '' : userData['email'];
+              _formData['phone_number'] = userData['phone_number'] == null
+                  ? ''
+                  : userData['phone_number'];
+              _formData['company_name'] = userData['company_name'] == null
+                  ? ''
+                  : userData['company_name'];
+              _formData['company_state_id'] =
+                  userData['company_state_id'] == null ? '' : userData['name'];
 
-              _formData['nationality_id'] = userData['nationality_id'];
+              _formData['nationality_id'] = userData['nationality_id'] == null
+                  ? ''
+                  : userData['nationality_id'];
               _formData['company_address'] =
-                  userData['company_details']['company_address'];
+                  userData['company_details']['company_address'] == null
+                      ? ''
+                      : userData['company_address'];
 
               _formData['company_postcode'] =
-                  userData['company_details']['company_postcode'];
+                  userData['company_details']['company_postcode'] == null
+                      ? ''
+                      : userData['company_postcode'];
 
               _formData['company_state_id'] =
-                  userData['company_details']['company_state_id'];
+                  userData['company_details']['company_state_id'] == null
+                      ? ''
+                      : userData['company_state_id'];
               _formData['company_city'] =
-                  userData['company_details']['company_city'];
+                  userData['company_details']['company_city'] == null
+                      ? ''
+                      : userData['company_city'];
 
               if (userData['thumbnail'] != null) {
                 thumbnail = userData['thumbnail'];
@@ -220,7 +237,9 @@ class _RegisterRefferalPageState extends State<RegisterRefferalPage> {
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
-                                  userData['company_name'],
+                                  userData['company_name'] == null
+                                      ? ''
+                                      : userData['company_name'],
                                   style: const TextStyle(color: Colors.white),
                                   textAlign: TextAlign.center,
                                 ),
@@ -297,7 +316,7 @@ class _RegisterRefferalPageState extends State<RegisterRefferalPage> {
                           setValue: _setInputValue,
                           field: 'contact',
                           initialValue: _formData['phone_number'],
-                          validator: phoneNumberValidator,
+                          // validator: phoneNumberValidator,
                         ),
                         TextFieldWidget(
                           labelText: "Company Name",
@@ -307,30 +326,30 @@ class _RegisterRefferalPageState extends State<RegisterRefferalPage> {
                           field: 'company_name',
                           initialValue: _formData['company_name'],
                         ),
-                        TextFieldWidget(
-                          labelText: "Company Address",
-                          hintText: "Company Address",
-                          keyboardType: TextInputType.multiline,
-                          iconData: Icons.home,
-                          // keyboardType: TextInputType.phone,
-                          isFirst: true,
-                          isLast: false,
-                          setValue: _setInputValue,
-                          field: 'company_address',
-                          initialValue: _formData['company_address'],
-                        ),
-                        TextFieldWidget(
-                          labelText: "Postcode",
-                          hintText: "Postcode",
-                          keyboardType: TextInputType.number,
-                          iconData: Icons.home,
-                          // keyboardType: TextInputType.phone,
-                          setValue: _setInputValue,
-                          initialValue: _formData['company_postcode'],
-                          field: 'company_postcode',
-                          isFirst: false,
-                          isLast: false,
-                        ),
+                        // TextFieldWidget(
+                        //   labelText: "Company Address",
+                        //   hintText: "Company Address",
+                        //   keyboardType: TextInputType.multiline,
+                        //   iconData: Icons.home,
+                        //   // keyboardType: TextInputType.phone,
+                        //   isFirst: true,
+                        //   isLast: false,
+                        //   setValue: _setInputValue,
+                        //   field: 'company_address',
+                        //   initialValue: _formData['company_address'],
+                        // ),
+                        // TextFieldWidget(
+                        //   labelText: "Postcode",
+                        //   hintText: "Postcode",
+                        //   keyboardType: TextInputType.number,
+                        //   iconData: Icons.home,
+                        //   // keyboardType: TextInputType.phone,
+                        //   setValue: _setInputValue,
+                        //   initialValue: _formData['company_postcode'],
+                        //   field: 'company_postcode',
+                        //   isFirst: false,
+                        //   isLast: false,
+                        // ),
                         TextFieldWidget(
                           labelText: "City",
                           hintText: "City",
@@ -547,9 +566,9 @@ class _RegisterRefferalPageState extends State<RegisterRefferalPage> {
     formData['contact'] = "+6${_formData['phone_number']}";
     formData['email'] = _formData['email'];
     formData['remark'] = _formData['remark'];
-    formData['company_name'] = _formData['company_name'];
-    formData['company_address'] = _formData['company_address'];
-    formData['company_postcode'] = _formData['company_postcode'];
+    // formData['company_name'] = _formData['company_name'];
+    // formData['company_address'] = _formData['company_address'];
+    // formData['company_postcode'] = _formData['company_postcode'];
     formData['company_city'] = _formData['company_city'];
     formData['company_state_id'] = _formData['company_state_id'];
     formData['company_country_id'] = 8;
@@ -557,11 +576,25 @@ class _RegisterRefferalPageState extends State<RegisterRefferalPage> {
     print("formData${formData}");
     if (form!.validate()) {
       form.save();
-      Timer(const Duration(milliseconds: 600), () {
-        showProgress(context);
-        context
-            .read<EntrepreneursBloc>()
-            .add(UpdateToRequestRefferal(formData));
+      var ressponse = "";
+      Timer(const Duration(milliseconds: 600), () async {
+        // showProgress(context);
+
+        // context
+        //     .read<EntrepreneursBloc>()
+        //     .add(UpdateToRequestRefferal(formData));
+        // print(ressponse);
+
+        var enterpreneursListDataReturn = await httpProvider.postHttp2(
+            "entrepreneur/referral/request", formData);
+
+        if (enterpreneursListDataReturn == 'duplicate') {
+          showProgress(context, 'duplicate');
+        } else {
+          showProgress(context, 'success');
+        }
+
+        print("enterpreneursListDataReturn${enterpreneursListDataReturn}");
       });
     }
   }
@@ -573,49 +606,63 @@ class _RegisterRefferalPageState extends State<RegisterRefferalPage> {
     });
   }
 
-  Future<void> showProgress(
-    BuildContext context,
-  ) async {
+  Future<void> showProgress(BuildContext context, String type) async {
     var result = await showDialog(
       context: context,
       builder: (context) => FutureProgressDialog(getFuture(),
           message:
               Text('Refferal Request to \n' + widget.data['name'] + ' ...')),
     );
-    showResultDialog(context, result);
+    showResultDialog(context, result, type);
     // return result;
   }
 
   void showResultDialog(
     BuildContext context,
     String result,
+    String type,
   ) {
-    showDialog<String>(
-        // barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: const Text('Send Request Successful'),
-              content: Text(
-                  'You have send request to ${widget.data['name']} successful.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                    Navigator.pushReplacementNamed(
-                        context, '/entrepreneur_details_view_page',
-                        arguments: {'data': widget.data});
-                    // Navigator.pop(context);
-                  },
-                  child: const Text('OK'),
-                  style: TextButton.styleFrom(primary: Colors.black),
-                ),
-              ],
-            ));
-    // Navigator.pop(context);
-    // getDetails(widget.data['id']);
+    if (type == 'success')
+      showDialog<String>(
+          // barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: const Text('Send Request Successful'),
+                content: Text(
+                    'You have send request to ${widget.data['name']} successful.'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pushReplacementNamed(
+                          context, '/entrepreneur_details_view_page',
+                          arguments: {'data': widget.data});
+                      // Navigator.pop(context);
+                    },
+                    child: const Text('OK'),
+                    style: TextButton.styleFrom(primary: Colors.black),
+                  ),
+                ],
+              ));
 
-    // Navigator.pushReplacementNamed(context, '/entrepreneur_details_view_page',
-    //     arguments: {'data': widget.data});
+    if (type == 'duplicate')
+      showDialog<String>(
+          // barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: const Text('Send Request Failed'),
+                content: Text(
+                    'You have send request to ${widget.data['name']} before.'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('OK'),
+                    style: TextButton.styleFrom(primary: Colors.black),
+                  ),
+                ],
+              ));
   }
 }

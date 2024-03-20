@@ -68,7 +68,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Container(
       width: width,
       decoration: const BoxDecoration(
-        color: kFourthColor,
+        color: Colors.white,
         //image: DecorationImage(
         //image: AssetImage(
         // 'assets/gif1.gif',

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:add_2_calendar/add_2_calendar.dart';
+// import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info/device_info.dart';
 import 'package:favorite_button/favorite_button.dart';
@@ -1002,23 +1002,23 @@ class _EventDetailsViewPageState extends State<EventDetailsViewPage> {
       Navigator.pushReplacementNamed(context, '/event_details_view_page',
           arguments: {'data': widget.data});
 
-      Add2Calendar.addEvent2Cal(
-        buildEvent(),
-      );
+      // Add2Calendar.addEvent2Cal(
+      //   buildEvent(),
+      // );
     }
   }
 
-  Event buildEvent({Recurrence? recurrence}) {
-    return Event(
-      title: "MLCC - Event\n" + calendarTitle,
-      description: calendarDescription,
-      location: calendarVenue,
-      startDate: calendarStartAt,
-      endDate: calendarEndAt,
-      allDay: false,
-      recurrence: recurrence,
-    );
-  }
+  // Event buildEvent({Recurrence? recurrence}) {
+  //   return Event(
+  //     title: "MLCC - Event\n" + calendarTitle,
+  //     description: calendarDescription,
+  //     location: calendarVenue,
+  //     startDate: calendarStartAt,
+  //     endDate: calendarEndAt,
+  //     allDay: false,
+  //     recurrence: recurrence,
+  //   );
+  // }
 
   void _setInputValue(String field, String value) {
     setState(() => _formData[field] = value.trim());

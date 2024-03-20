@@ -69,11 +69,17 @@ class EntrepreneursBloc extends Bloc<EntrepreneursEvent, EntrepreneursState> {
 
     var enterpreneursListDataReturn =
         await httpProvider.postHttp2("entrepreneur/referral/request", data);
+    print("enterpreneursListDataReturn${enterpreneursListDataReturn}");
     if (enterpreneursListDataReturn != null) {
-      Get.snackbar('Send Request Successfully', '',
-          backgroundColor: kPrimaryColor, colorText: Colors.white);
-      emit(GetEntrepreneursListSuccessful(
-          "Update Successful", enterpreneursListDataReturn));
+      if (enterpreneursListDataReturn != "duplicate") {
+        Get.snackbar('Send Request Successfully', '',
+            backgroundColor: kPrimaryColor, colorText: Colors.white);
+        emit(GetEntrepreneursListSuccessful(
+            "Update Successful", enterpreneursListDataReturn));
+      } else if (enterpreneursListDataReturn == "duplicate") {
+        print("enterpreneursListDataReturn-duplicate");
+        emit(const ErrorOccured());
+      }
     } else {
       emit(const ErrorOccured());
     }
@@ -81,8 +87,8 @@ class EntrepreneursBloc extends Bloc<EntrepreneursEvent, EntrepreneursState> {
 
   void _mapGetEntrepreneursListToState(event, emit) async {
     emit(EntrepreneursLoading());
-    var entrepreneursListDataReturn =
-        await httpProvider.getHttp("member/listing");
+    var entrepreneursListDataReturn = await httpProvider.getHttp(
+        "entrepreneur/listing&user_id=${event.arg}&log_user_id=${event.arg}");
     if (entrepreneursListDataReturn != null) {
       emit(GetEntrepreneursListSuccessful(
           "Get Entrepreneurs List Successful", entrepreneursListDataReturn));
@@ -93,7 +99,7 @@ class EntrepreneursBloc extends Bloc<EntrepreneursEvent, EntrepreneursState> {
 
   void _mapEntrepreneurDetailsToState(event, emit) async {
     emit(EntrepreneursLoading());
-    var formData = {'user_id': event.arg};
+    var formData = {'user_id': event.arg, 'log_user_id': event.arg};
     var entrepreneurDetailDataReturn =
         await httpProvider.postHttp2("entrepreneur/info", formData);
     if (entrepreneurDetailDataReturn != null) {

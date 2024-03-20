@@ -11,6 +11,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:get/get_utils/src/extensions/widget_extensions.dart';
 import 'package:marquee_widget/marquee_widget.dart';
+import 'package:mlcc_app_ios/widget/disable_screenshots.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/src/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +28,7 @@ import 'package:mlcc_app_ios/widget/text_field_widget.dart';
 import 'package:mlcc_app_ios/widget/til_widget.dart';
 import 'package:mlcc_app_ios/widget/title_bar_widget.dart';
 import 'package:mlcc_app_ios/widget/item_widget.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 
 class EntrepreneurDetailsViewPage extends StatefulWidget {
   final dynamic data;
@@ -58,6 +60,23 @@ class _EntrepreneurDetailsViewPageState
   String _swipeText = 'Connect   > >         < <   Refferal';
   final Map<String, dynamic> _formData = {};
   final GlobalKey<FormState> _formKey2 = GlobalKey<FormState>();
+
+  Future<void> _makePhoneCall(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Future<void> secureScreen() async {
+    await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+  }
+
+  Future<void> clearSecureScreen() async {
+    await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
+  }
+
   void getUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -93,6 +112,8 @@ class _EntrepreneurDetailsViewPageState
 
   @override
   void initState() {
+    secureScreen();
+    DisableScreenshots.disable();
     getUser();
     // Timer(const Duration(milliseconds: 2000), () {
     context
@@ -119,6 +140,13 @@ class _EntrepreneurDetailsViewPageState
       // });
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    clearSecureScreen();
+    super.dispose();
   }
 
   @override
@@ -702,7 +730,7 @@ class _EntrepreneurDetailsViewPageState
                                     height: 60, width: 60, fit: BoxFit.cover),
                                 Column(
                                   children: [
-                                      SizedBox(
+                                    SizedBox(
                                       height: 10,
                                     ),
                                     Text('Swipe Left',
@@ -716,7 +744,8 @@ class _EntrepreneurDetailsViewPageState
                                 ),
                                 Column(
                                   children: [
-                                      SizedBox(
+                                   
+                                    SizedBox(
                                       height: 10,
                                     ),
                                     Text('Swipe Right',
@@ -1539,10 +1568,10 @@ class _EntrepreneurDetailsViewPageState
                                       Padding(
                                         padding: const EdgeInsets.all(10.0),
                                         child: InkWell(
-                                          // onTap: () {
-                                          //   launch("mailto:" +
-                                          //       entrepreneurData['email']);
-                                          // },
+                                          onTap: () {
+                                            launch("mailto:" +
+                                                entrepreneurData['email']);
+                                          },
                                           child: Text(
                                             entrepreneurData['email'],
                                             overflow: TextOverflow.ellipsis,
@@ -1662,9 +1691,9 @@ class _EntrepreneurDetailsViewPageState
                                         padding: const EdgeInsets.all(10.0),
                                         child: InkWell(
                                           onTap: () {
-                                            // launch("tel:" +
-                                            //     entrepreneurData[
-                                            //         'phone_number']);
+                                            _makePhoneCall("tel:" +
+                                                entrepreneurData[
+                                                    'phone_number']);
                                           },
                                           child: Text(
                                             entrepreneurData['phone_number'],

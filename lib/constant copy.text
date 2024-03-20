@@ -7,15 +7,14 @@ const link = "https://lcpsolution.com/mlcc/img/banners/";
 // const link = "http://188.166.188.224/img/banners/";
 
 //Live
-// const api = "https://mlcc.lcpsolution.com/mlcc/api/";
-// const api2 = "https://mlcc.lcpsolution.com/mlcc_memberAPI/api/";
-// const api3 = "https://mlcc.lcpsolution.com/mlcc_adsAPI/api/";
+const api = "https://lcpsolution.com/mlcc/api/";
+const api2 = "https://lcpsolution.com/mlcc_memberAPI/api/";
+const api3 = "https://lcpsolution.com/mlcc_adsAPI/api/";
 
 //Staging
-
-const api = "https://staging-mlcc.lcpsolution.com/mlcc/api/";
-const api2 = "https://staging-mlcc.lcpsolution.com/mlcc_memberAPI/api/";
-const api3 = "https://staging-mlcc.lcpsolution.com/mlcc_adsAPI/api/";
+// const api = "https://lcpsolution.com/mlcc_staging/api/";
+// const api2 = "https://lcpsolution.com/mlcc_memberAPI_staging/api/";
+// const api3 = "https://lcpsolution.com/mlcc_adsAPI_staging/api/";
 
 //X Project Live
 const apiTest = "https://adsAPI.xclubmy.com/api/";

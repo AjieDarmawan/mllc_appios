@@ -198,7 +198,7 @@ class ItemWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            data['company_name'],
+            data['company_name'] == null ? "" : data['company_name'],
             overflow: TextOverflow.ellipsis,
             softWrap: false,
             maxLines: 2,
@@ -209,7 +209,7 @@ class ItemWidget extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           Text(
-            data['entity'],
+            data['entity'] == null ? "" : data['entity'],
             overflow: TextOverflow.ellipsis,
             softWrap: false,
             maxLines: 2,
@@ -217,7 +217,7 @@ class ItemWidget extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           Text(
-            data['designation'],
+            data['designation'] == null ? "" : data['designation'],
             overflow: TextOverflow.ellipsis,
             softWrap: false,
             maxLines: 2,
@@ -225,7 +225,7 @@ class ItemWidget extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           Text(
-            data['business_category'],
+            data['business_category'] == null ? "" : data['business_category'],
             overflow: TextOverflow.ellipsis,
             softWrap: false,
             maxLines: 2,
@@ -233,7 +233,7 @@ class ItemWidget extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           Text(
-            data['start_date'],
+            data['start_date'] == null ? "" : data['start_date'],
             overflow: TextOverflow.ellipsis,
             softWrap: false,
             maxLines: 2,
@@ -242,7 +242,7 @@ class ItemWidget extends StatelessWidget {
           const SizedBox(height: 5),
           data['current_role'] == 0
               ? Text(
-                  data['end_date'],
+                  data['end_date'] == null ? "" : data['end_date'],
                   overflow: TextOverflow.ellipsis,
                   softWrap: false,
                   maxLines: 2,

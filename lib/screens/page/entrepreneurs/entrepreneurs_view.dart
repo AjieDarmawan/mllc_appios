@@ -2,8 +2,14 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mlcc_app_ios/screens/page/account/account_subcription.dart';
+import 'package:mlcc_app_ios/screens/page/account/order_history_view.dart';
+import 'package:mlcc_app_ios/screens/page/account/referral_view.dart';
+import 'package:mlcc_app_ios/screens/page/home/connect_list.dart';
 import 'package:mlcc_app_ios/screens/page/home/home_page.dart';
+import 'package:mlcc_app_ios/screens/page/home/newsletter_view.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mlcc_app_ios/Bloc/entrepreneurs/entrepreneurs_bloc.dart';
@@ -12,6 +18,9 @@ import 'package:mlcc_app_ios/main.dart';
 import 'package:mlcc_app_ios/screens/page/auth/login_page.dart';
 import 'package:mlcc_app_ios/screens/page/entrepreneurs/entrepreneurs_list.dart';
 import 'package:mlcc_app_ios/widget/loading_widget.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 
 import '../../main_view.dart';
 import 'entrepreneur_details_view.dart';
@@ -32,6 +41,16 @@ class _EntrepreneursViewPageState extends State<EntrepreneursViewPage>
   List<dynamic> items = [];
   List<dynamic> itemList = [];
   List<dynamic> connectList = [];
+  dynamic userInfo = [];
+  List planList = [];
+
+  late StreamSubscription<Map> streamSubscription;
+  StreamController<String> controllerData = StreamController<String>();
+  StreamController<String> controllerInitSession = StreamController<String>();
+  Future<void> getPlan() async {
+    planList = await httpProvider.getHttp("member_package");
+  }
+
   void getUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -47,6 +66,7 @@ class _EntrepreneursViewPageState extends State<EntrepreneursViewPage>
               connectList.add(widget.data[i]);
             }
           }
+          //handleClickNotification(context);
         });
       }
     });
@@ -54,14 +74,161 @@ class _EntrepreneursViewPageState extends State<EntrepreneursViewPage>
 
   @override
   void initState() {
-    context.read<EntrepreneursBloc>().add(const GetEntrepreneursList());
+    context.read<EntrepreneursBloc>().add(GetEntrepreneursList(userId));
     getUser();
 
     _tabController = TabController(vsync: this, length: myTabs.length);
     _tabController!.addListener(_setActiveTabIndex);
     // items = entrepreneursList;
-
+    listenDynamicLinks();
     super.initState();
+  }
+
+  // handleClickNotification(BuildContext context) {
+  //    OneSignal.Notifications.addClickListener((openedResult) async {
+  //     print(openedResult);
+
+  //     Map<String, dynamic> result =
+  //         openedResult.notification.additionalData as Map<String, dynamic>;
+  //     var id = result.values.first;
+  //     var type = result.values.last;
+  //     if (type == 'request') {
+  //       Navigator.push(
+  //         context,
+  //         PageTransition(
+  //             type: PageTransitionType.fade,
+  //             child: RequestListPage(userId: userId, resquestID: id)),
+  //       );
+  //     } else if (type == 'referral') {
+  //       Navigator.push(
+  //           context,
+  //           PageTransition(
+  //               type: PageTransitionType.fade,
+  //               child: ReferralRequestListPage(
+  //                 userID: userId,
+  //                 referralID: id,
+  //               )));
+  //     } else if (type == 'order') {
+  //       Navigator.push(
+  //           context,
+  //           PageTransition(
+  //               type: PageTransitionType.fade,
+  //               child: OrderHistoryListPage(
+  //                 userID: userId,
+  //                 orderID: id,
+  //               )));
+  //     } else if (type == 'Training') {
+  //       Navigator.pushNamed(context, '/training_details_view_page',
+  //           arguments: {'data': id, 'type': 'Notification'});
+  //     } else if (type == 'Event') {
+  //       Navigator.pushNamed(context, '/event_details_view_page',
+  //           arguments: {'data': id, 'type': 'Notification'});
+  //     } else if (type == 'Voucher') {
+  //       Navigator.pushNamed(context, '/voucher_details_view_page',
+  //           arguments: {'data': id, 'type': 'Notification'});
+  //     } else if (type == 'Rewards') {
+  //       Navigator.pushNamed(context, '/reward_details_view_page',
+  //           arguments: {'data': id, 'type': 'Notification'});
+  //     } else if (type == 'Product') {
+  //       Navigator.pushNamed(context, '/product_details_view_page',
+  //           arguments: {'data': id, 'type': 'Notification'});
+  //     } else if (type == 'Profile') {
+  //       SharedPreferences prefs = await SharedPreferences.getInstance();
+  //       if (prefs.getBool("isLoggedIn")! == true) {
+  //         userInfo = await httpProvider.postHttp2(
+  //             "entrepreneur/info", {'user_id': prefs.getInt("userId")!});
+  //         Navigator.push(
+  //           context,
+  //           PageTransition(
+  //               type: PageTransitionType.fade,
+  //               child:
+  //                   SubsciptionPlanPage(data: userInfo[0], planList: planList)),
+  //         );
+  //       }
+  //     } else {
+  //       // Navigator.push(
+  //       //   context,
+  //       //   PageTransition(
+  //       //       type: PageTransitionType.fade,
+  //       //       child: NotificationPage(
+  //       //           data: notificationList,
+  //       //           unread: notificationItem,
+  //       //           notificationID: id)),
+  //       // );
+  //       //getNewsLetterInfo(id);
+  //     }
+  //   });
+  // }
+
+  var newLetter;
+  getNewsLetterInfo(id) async {
+    var _formData = {'news_id': id};
+    newLetter = await httpProvider.postHttp("newsletter/info", _formData);
+    if (newLetter != null) {
+      Navigator.push(
+        context,
+        PageTransition(
+          type: PageTransitionType.fade,
+          child: NewsLetterViewPage(data: newLetter),
+        ),
+      );
+    }
+  }
+
+  void listenDynamicLinks() {
+    streamSubscription = FlutterBranchSdk.initSession().listen((data) async {
+      print('listenDynamicLinks - DeepLink Data: $data');
+      controllerData.sink.add((data.toString()));
+      if (data.containsKey('+clicked_branch_link') &&
+          data['+clicked_branch_link'] == true) {
+        print(data);
+
+        if (data['type'] == 'Training') {
+          Navigator.pushNamed(context, '/training_details_view_page',
+              arguments: {'data': data['dataID'], 'type': 'Notification'});
+        } else if (data['type'] == 'Event') {
+          Navigator.pushNamed(context, '/event_details_view_page',
+              arguments: {'data': data['dataID'], 'type': 'Notification'});
+        } else if (data['type'] == 'Product') {
+          Navigator.pushNamed(context, '/product_details_view_page',
+              arguments: {'data': data['dataID'], 'type': 'Notification'});
+        }
+        // else if (data['type'] == 'Advertisement' ||
+        //     data['type'] == 'Newsletter') {
+        //   getNewsLetterInfo(data['dataID']);
+        // }
+        else if (data['type'] == 'Newsletter') {
+          getNewsLetterInfo(data['dataID']);
+        } else if (data['type'] == 'Advertisement') {
+          if (data['sub_type'] == 'Voucher') {
+            Navigator.pushNamed(context, '/voucher_details_view_page',
+                arguments: {'data': data['dataID'], 'type': 'Notification'});
+          } else {
+            Navigator.pushNamed(context, '/reward_details_view_page',
+                arguments: {'data': data['dataID'], 'type': 'Notification'});
+          }
+        } else if (data['type'] == 'Profile') {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          if (prefs.getBool("isLoggedIn")! == true) {
+            userInfo = await httpProvider.postHttp2(
+                "entrepreneur/info", {'user_id': prefs.getInt("userId")!});
+            Navigator.push(
+              context,
+              PageTransition(
+                  type: PageTransitionType.fade,
+                  child: SubsciptionPlanPage(
+                      data: userInfo[0], planList: planList)),
+            );
+          }
+        }
+      }
+    }, onError: (error) {
+      PlatformException platformException = error as PlatformException;
+      print(
+          'InitSession error: ${platformException.code} - ${platformException.message}');
+      controllerInitSession.add(
+          'InitSession error: ${platformException.code} - ${platformException.message}');
+    });
   }
 
   dynamic entrepreneurData = [];
@@ -69,6 +236,7 @@ class _EntrepreneursViewPageState extends State<EntrepreneursViewPage>
   @override
   void dispose() {
     context.read<EntrepreneursBloc>().add(ClearService());
+    streamSubscription.cancel();
     super.dispose();
   }
 
@@ -87,7 +255,7 @@ class _EntrepreneursViewPageState extends State<EntrepreneursViewPage>
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Members'),
-           automaticallyImplyLeading: false,
+          automaticallyImplyLeading: false,
           backgroundColor: kPrimaryColor,
           centerTitle: true,
           bottom: PreferredSize(

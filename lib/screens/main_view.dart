@@ -212,12 +212,12 @@ class _MainScreenState extends State<MainScreen> {
         content: const Text('Are you sure you want to leave the app?'),
         actions: <Widget>[
           TextButton(
-            onPressed: () => exit(0),
-            child: const Text('Ya'),
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Back'),
+            onPressed: () => exit(0),
+            child: const Text('Exit'),
           ),
         ],
       ),

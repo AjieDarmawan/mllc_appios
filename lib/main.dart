@@ -1,6 +1,8 @@
 // import 'package:agconnect_core/agconnect_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
+import 'package:mlcc_app_ios/Bloc/timer/timer_bloc.dart';
+import 'package:mlcc_app_ios/models/ticker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mlcc_app_ios/Bloc/adv/adv_bloc.dart';
 import 'package:mlcc_app_ios/Bloc/auth/auth_bloc.dart';
@@ -65,6 +67,7 @@ class MyApp extends StatelessWidget {
     DashboardBloc _dashboardBloc = DashboardBloc(httpProvider);
     AdvBloc _advBloc = AdvBloc(httpProvider);
     XprojectBloc _xprojectBloc = XprojectBloc(httpProvider);
+    TimerBloc _timerBloc = TimerBloc(ticker: const Ticker());
     getUser();
     // huawei();
     oneSignal(context);
@@ -79,7 +82,8 @@ class MyApp extends StatelessWidget {
         BlocProvider<EventsBloc>(create: (context) => _eventsBloc),
         BlocProvider<DashboardBloc>(create: (context) => _dashboardBloc),
         BlocProvider<AdvBloc>(create: (context) => _advBloc),
-        BlocProvider<XprojectBloc>(create: (context) => _xprojectBloc)
+        BlocProvider<XprojectBloc>(create: (context) => _xprojectBloc),
+        BlocProvider<TimerBloc>(create: (context) => _timerBloc)
       ],
       child: MaterialApp(
           builder: (context, child) {
@@ -186,12 +190,12 @@ class MyApp extends StatelessWidget {
                         data: args!['data'],
                         first: args['first'],
                         disableEdit: args['disableEdit']));
-              case '/reward_details_view_page':
-                final Map<String, dynamic>? args =
-                    settings.arguments as Map<String, dynamic>?;
-                return MaterialPageRoute(
-                    builder: (contet) => RewardDetailsViewPage(
-                        data: args!['data'], type: args['type']));
+              // case '/reward_details_view_page':
+              //   final Map<String, dynamic>? args =
+              //       settings.arguments as Map<String, dynamic>?;
+              //   return MaterialPageRoute(
+              //       builder: (contet) => RewardDetailsViewPage(
+              //           data: args!['data'], type: args['type']));
               case '/sponsored_details_view_page':
                 final Map<String, dynamic>? args =
                     settings.arguments as Map<String, dynamic>?;
@@ -204,12 +208,12 @@ class MyApp extends StatelessWidget {
                 return MaterialPageRoute(
                     builder: (contet) => VoucherDetailsViewPage(
                         data: args!['data'], type: args['type']));
-              case '/product_details_view_page':
-                final Map<String, dynamic>? args =
-                    settings.arguments as Map<String, dynamic>?;
-                return MaterialPageRoute(
-                    builder: (contet) => ProductDetailsViewPage(
-                        data: args!['data'], type: args['type']));
+              // case '/product_details_view_page':
+              //   final Map<String, dynamic>? args =
+              //       settings.arguments as Map<String, dynamic>?;
+              //   return MaterialPageRoute(
+              //       builder: (contet) => ProductDetailsViewPage(
+              //           data: args!['data'], type: args['type']));
               case '/photo_webview_page':
                 final dynamic args = settings.arguments;
                 return MaterialPageRoute(

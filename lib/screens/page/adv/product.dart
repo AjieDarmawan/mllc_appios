@@ -19,7 +19,7 @@ class _XBuyPageState extends State<XBuyPage>
   void initState() {
     super.initState();
 
-    context.read<AdvBloc>().add(const GetAdvList());
+    context.read<AdvBloc>().add(GetAdvList());
   }
 
   List<dynamic> vouchersList = [];

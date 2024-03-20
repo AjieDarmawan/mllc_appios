@@ -99,7 +99,7 @@ class _EntrepreneurSearchPageState extends State<EntrepreneurSearchPage> {
   void filterSearchResults(String query) {
     // List<UserInfo> dummySearchList = List();
     // dummySearchList.addAll(widget.dataUserInfo);
-
+    print("itemsEntrepreneurssss${itemsEntrepreneurs}");
     if (query.isNotEmpty && query != "") {
       List<dynamic> dummyListData = [];
       for (var item in itemsEntrepreneurs) {
@@ -219,9 +219,12 @@ class _EntrepreneurSearchPageState extends State<EntrepreneurSearchPage> {
                                 businessCategory.length, (int index) {
                               return InkWell(
                                 onTap: () {
+                                  print("UAUADEPAN");
                                   final data = businessCategoryList.firstWhere(
                                       (e) =>
                                           e['name'] == businessCategory[index]);
+                                  print("UAUADEPAN${data}");
+
                                   int category_id = data['id'];
                                   print(category_id);
                                   Navigator.push(

@@ -60,8 +60,8 @@ class _AccountViewPageState extends State<AccountViewPage> {
   var connectList = [];
   dynamic refferalList = [];
 
-  getContactUsInfo() async {
-    contactUs = await httpProvider.getHttp("aboutUs");
+  getContactUsInfo(userId2) async {
+    contactUs = await httpProvider.getHttp("aboutUs?log_user_id=${userId2}");
   }
 
   List planList = [];
@@ -104,6 +104,7 @@ class _AccountViewPageState extends State<AccountViewPage> {
       username = prefs.getString("username")!;
       showExpired = prefs.getBool("isExpired")!;
       userId = prefs.getInt("userId")!;
+      getContactUsInfo(userId);
       if (showExpired == true) {
         showDialog<String>(
             context: context,
@@ -138,6 +139,7 @@ class _AccountViewPageState extends State<AccountViewPage> {
       }
     });
     dynamic formData = {'user_id': prefs.getInt("userId")!};
+    // dynamic formData = {'user_id': 226};
     getNotificationList(prefs.getInt("userId"));
     // Timer(const Duration(milliseconds: 600), () {
     context.read<AuthBloc>().add(GetUserDetails(formData));
@@ -185,7 +187,7 @@ class _AccountViewPageState extends State<AccountViewPage> {
     info();
     getUser();
     getPlan();
-    getContactUsInfo();
+
     super.initState();
   }
 
@@ -242,9 +244,6 @@ class _AccountViewPageState extends State<AccountViewPage> {
 
           return _buildContent(context, userData);
         } else {
-          print("gender123view${userData['name']}");
-          print("gender123viewgender${userData['gender']}");
-          print("gender123viewgender_id${userData['gender_id']}");
           return Scaffold(
             appBar: AppBar(
               title: const Text(
@@ -308,10 +307,10 @@ class _AccountViewPageState extends State<AccountViewPage> {
               color: kSecondaryColor,
             ),
           ),
+          automaticallyImplyLeading: false,
           centerTitle: true,
           backgroundColor: kPrimaryColor,
           elevation: 0,
-          automaticallyImplyLeading: false,
         ),
         body: ListView(
           primary: true,
@@ -1054,7 +1053,8 @@ class _AccountViewPageState extends State<AccountViewPage> {
                       await httpProvider.postHttp("last_access", {
                         'user_id': prefs.getInt("userId"),
                         'push_token': "",
-                        'push_token_status': '0'
+                        'push_token_status': '0',
+                        'log_user_id': prefs.getInt("userId")
                       });
                       prefs.setInt("userId", 0);
                       prefs.setBool("isLoggedIn", false);

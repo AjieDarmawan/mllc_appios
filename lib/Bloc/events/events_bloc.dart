@@ -52,14 +52,17 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     print("eventtes12${event.arg['user_id']}");
     //print("eventtesya${event.formData['user_id']}");
     // var eventsListDataReturn = await httpProvider.getHttp("event/listing");
-    var eventsListDataReturn = await httpProvider
-        .getHttp("event/upcoming?user_id=${event.arg['user_id']}");
+    var eventsListDataReturn = await httpProvider.getHttp(
+        "event/upcoming?user_id=${event.arg['user_id']}&log_user_id${event.arg['user_id']}");
 
     var eventsListDataReturnPast = await httpProvider.getHttp("event/past");
 
-    var formData = {'user_id': event.arg['user_id']};
-    var eventsListDataJoinReturn =
-        await httpProvider.postHttp("event/joined", formData);
+    var formData = {
+      'user_id': event.arg['user_id'],
+      'log_user_id': event.arg['user_id']
+    };
+    var eventsListDataJoinReturn = await httpProvider.postHttp(
+        "event/joined?log_user_id${event.arg['user_id']}", formData);
 
     if (eventsListDataReturn != null) {
       emit(GetEventsListSuccessful(

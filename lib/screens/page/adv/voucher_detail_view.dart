@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:get/get.dart';
@@ -16,6 +17,7 @@ import 'package:get/get_utils/src/extensions/widget_extensions.dart';
 import 'package:html/parser.dart';
 import 'package:mlcc_app_ios/screens/main_view.dart';
 import 'package:mlcc_app_ios/screens/page/home/home_page.dart';
+import 'package:mlcc_app_ios/widget/disable_screenshots.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/src/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,6 +51,14 @@ class VoucherDetailsViewPage extends StatefulWidget {
 }
 
 class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
+  Future<void> secureScreen() async {
+    await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+  }
+
+  Future<void> clearSecureScreen() async {
+    await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
+  }
+
   bool isLoggedIn = false;
   int userId = 0;
   bool redeemed = false;
@@ -530,6 +540,9 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
 
   @override
   void initState() {
+    // secureScreen();
+    // DisableScreenshots.disable();
+
     getUser();
     // Timer(const Duration(milliseconds: 2000), () {
     if (widget.type != null) {
@@ -541,6 +554,13 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
     }
     initPlatformState();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    clearSecureScreen();
+    super.dispose();
   }
 
   Future<void> showProgressJoin(
@@ -797,37 +817,43 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
                                                 size: 25, color: kPrimaryColor),
                                           ),
                                           if (widget.type != null)
-                                            SizedBox(
-                                              // width: MediaQuery.of(context)
-                                              //         .size
-                                              //         .width *
-                                              //     0.5,
-                                              child: Text(
-                                                api +
-                                                    "voucher_details?id=${widget.data['id']}",
-                                                style: const TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.black),
-                                                overflow: TextOverflow.ellipsis,
-                                                softWrap: false,
-                                                maxLines: 1,
+                                            Flexible(
+                                              child: Container(
+                                                // width: MediaQuery.of(context)
+                                                //         .size
+                                                //         .width *
+                                                //     0.5,
+                                                child: Text(
+                                                  api +
+                                                      "voucher_details?id=${widget.data['id']}",
+                                                  style: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.black),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  softWrap: false,
+                                                  maxLines: 5,
+                                                ),
                                               ),
                                             )
                                           else
-                                            SizedBox(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.5,
-                                              child: Text(
-                                                api +
-                                                    "voucher_details?id=${widget.data['id']}",
-                                                style: const TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.black),
-                                                overflow: TextOverflow.ellipsis,
-                                                softWrap: false,
-                                                maxLines: 1,
+                                            Flexible(
+                                              child: Container(
+                                                // width: MediaQuery.of(context)
+                                                //         .size
+                                                //         .width *
+                                                //     0.5,
+                                                child: Text(
+                                                  api +
+                                                      "voucher_details?id=${widget.data['id']}",
+                                                  style: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.black),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  softWrap: true,
+                                                  maxLines: 5,
+                                                ),
                                               ),
                                             ),
                                         ],
@@ -1126,7 +1152,7 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
                                                   title: const Text(
                                                       'Redeem Voucher'),
                                                   content: const Text(
-                                                      'Please select redeem method.'),
+                                                      'Please select how you would like to redeem your voucher.'),
                                                   actions: <Widget>[
                                                     Padding(
                                                       padding:
@@ -1141,13 +1167,13 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
                                                             onPressed: () {
                                                               Navigator.pop(
                                                                   context,
-                                                                  'Member Redeem');
+                                                                  'As a Member');
                                                               Navigator.pushNamed(
                                                                   context,
                                                                   '/login_page');
                                                             },
                                                             child: const Text(
-                                                              'Member ?',
+                                                              'As a Member ?',
                                                               textAlign:
                                                                   TextAlign
                                                                       .center,
@@ -1191,7 +1217,7 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
                                                               );
                                                             },
                                                             child: const Text(
-                                                              'Guest ?',
+                                                              'As a Guest',
                                                               textAlign:
                                                                   TextAlign
                                                                       .center,
@@ -1248,7 +1274,7 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
           slivers: <Widget>[
             SliverAppBar(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              expandedHeight: 350,
+              expandedHeight: 400,
               elevation: 0,
               // floating: true,
               iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
@@ -1263,33 +1289,50 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
                   children: <Widget>[
                     (voucherData['poster'] != null &&
                             voucherData['poster'] != "")
-                        ? CachedNetworkImage(
-                            height: 400,
-                            width: double.infinity,
-                            fit: BoxFit.contain,
-                            imageUrl: voucherData['poster'],
-                            placeholder: (context, url) => Image.asset(
-                              'assets/loading.gif',
-                              fit: BoxFit.contain,
-                              width: double.infinity,
+                        ? GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, '/photo_webview_page', arguments: {
+                                'url': voucherData['poster'],
+                                'title': voucherData['caption']
+                              });
+                            },
+                            child: CachedNetworkImage(
                               height: 400,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              imageUrl: voucherData['poster'],
+                              placeholder: (context, url) => Image.asset(
+                                'assets/loading.gif',
+                                fit: BoxFit.cover,
+                                height: 400,
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error_outline),
                             ),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error_outline),
                           )
-                        : CachedNetworkImage(
-                            height: 400,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            imageUrl: voucherData['poster'],
-                            placeholder: (context, url) => Image.asset(
-                              'assets/loading.gif',
-                              fit: BoxFit.contain,
-                              width: double.infinity,
+                        : GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, '/photo_webview_page', arguments: {
+                                'url': voucherData['poster'],
+                                'title': voucherData['caption']
+                              });
+                            },
+                            child: CachedNetworkImage(
                               height: 400,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              imageUrl: voucherData['poster'],
+                              // placeholder: (context, url) => Image.asset(
+                              //   'assets/loading.gif',
+                              //   fit: BoxFit.cover,
+                              //   // width: double.infinity,
+                              //   height: 400,
+                              // ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error_outline),
                             ),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error_outline),
                           ),
                   ],
                 ),

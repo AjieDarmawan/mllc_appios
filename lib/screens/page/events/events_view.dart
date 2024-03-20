@@ -36,9 +36,8 @@ class _EventsViewPageState extends State<EventsViewPage>
   int run = 0;
   void getUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // setState(() {
-    //   userId = prefs.getInt("userId")!;
-    // });
+    // print('prefs-tes');
+    // print("prefs${prefs.getInt("userId")}");
 
     setState(() {
       if (prefs.getInt("userId") == null) {
@@ -63,7 +62,6 @@ class _EventsViewPageState extends State<EventsViewPage>
     dynamic formData = {'user_id': userId};
 
     getUser();
-
     //context.read<EventsBloc>().add(const GetEventsList());
 
     // items = entrepreneursList;
@@ -104,7 +102,7 @@ class _EventsViewPageState extends State<EventsViewPage>
       });
     } else {
       setState(() {
-        context.read<EntrepreneursBloc>().add(const GetEntrepreneursList());
+        //context.read<EntrepreneursBloc>().add(GetEntrepreneursList());
         items.clear();
         items.addAll(eventsList);
         if (items.isNotEmpty) {
@@ -134,7 +132,6 @@ class _EventsViewPageState extends State<EventsViewPage>
                   color: kSecondaryColor,
                 ),
               ),
-              automaticallyImplyLeading: false,
               centerTitle: true,
               backgroundColor: kPrimaryColor,
               elevation: 0,

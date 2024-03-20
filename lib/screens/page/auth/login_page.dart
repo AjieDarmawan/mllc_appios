@@ -255,6 +255,7 @@ class _LoginPageState extends State<LoginPage> {
                     : Icons.visibility_off_outlined),
               ),
             ),
+
             // Row(
             //   mainAxisAlignment: MainAxisAlignment.end,
             //   children: [
@@ -627,6 +628,21 @@ class _LoginPageState extends State<LoginPage> {
                 ).paddingSymmetric(vertical: 10, horizontal: 20);
               }
             })),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                        context, '/register_personal_basic_info_page');
+                  },
+                  child: const Text("Not a Member Yet? Join Us Today!",
+                      style: TextStyle(color: kPrimaryColor)),
+                ),
+              ],
+            ).paddingSymmetric(vertical: 20),
+
             // Row(
             //   mainAxisAlignment: MainAxisAlignment.center,
             //   children: [

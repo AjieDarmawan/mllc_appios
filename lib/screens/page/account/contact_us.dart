@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -142,15 +143,30 @@ class _ContactUsViewPageState extends State<ContactUsViewPage> {
                                 TextStyle(fontSize: 16, color: kPrimaryColor)),
                         content: GestureDetector(
                           onTap: () {
-                            launch("tel:" + "017-361 2345");
+                            launch("https://wa.me/60173612345");
                           },
-                          child: Text(
-                            //widget.contactUs['03 - 2267 1200'],
-                            "017-361 2345",
-                            textAlign: TextAlign.left,
-                            style: const TextStyle(
-                                color: Colors.blue,
-                                decoration: TextDecoration.underline),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    FontAwesomeIcons.whatsapp,
+                                    // additional properties like size, color, etc.
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(left: 10),
+                                    child: Text(
+                                      //widget.contactUs['03 - 2267 1200'],
+                                      "017-361 2345",
+                                      textAlign: TextAlign.left,
+                                      style: const TextStyle(
+                                          color: Colors.blue,
+                                          decoration: TextDecoration.underline),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
                           ),
                         )),
                     TilWidget(

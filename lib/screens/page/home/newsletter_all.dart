@@ -24,9 +24,10 @@ class _AllNewsLetterListPageState extends State<AllNewsLetterListPage> {
   String deviceID = '';
   int userId = 0;
   bool follow = false;
-
+  dynamic log = [];
   void getUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
     setState(() {
       userId = prefs.getInt("userId")!;
     });
@@ -90,7 +91,7 @@ class _AllNewsLetterListPageState extends State<AllNewsLetterListPage> {
             Center(
                 child: Image.network(
               newsletter['thumbnail'],
-              fit: BoxFit.values[0],
+              fit: BoxFit.cover,
               height: MediaQuery.of(context).size.height * 0.30,
               width: MediaQuery.of(context).size.width * 0.90,
             )),

@@ -10,9 +10,10 @@ abstract class DashboardEvent extends Equatable {
 class ClearServices extends DashboardEvent {}
 
 class GetBannerNewsletter extends DashboardEvent {
-  const GetBannerNewsletter();
+  final int arg;
+  const GetBannerNewsletter(this.arg);
   @override
-  List<Object> get props => [];
+  List<Object> get props => [arg];
 }
 
 class GetRequestList extends DashboardEvent {

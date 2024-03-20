@@ -13,9 +13,7 @@ import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:get/get_utils/src/extensions/widget_extensions.dart';
 import 'package:intl/intl.dart';
-import 'package:mlcc_app_ios/Bloc/timer/timer_bloc.dart';
 import 'package:mlcc_app_ios/screens/page/account/account_personal_basic_info_view.dart';
-import 'package:mlcc_app_ios/screens/page/home/popup_detail.dart';
 import 'package:mlcc_app_ios/widget/account_list_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -59,12 +57,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  bool isAutoPlayEnabled = true;
-
-  int currentIndex = 0;
-  final SwiperController _swiperController = SwiperController();
-  final SwiperController _swiperControllerbanner = SwiperController();
-
   late AnimationController _resizableController;
   bool isLoggedIn = false;
   int userId = 0;
@@ -77,7 +69,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   String deviceToken = '';
   late Widget popup;
   List<Widget> images = [];
-  late Timer _timer1;
+  late Timer _timer;
   int _start = 10;
   var connectList = [];
   dynamic notificationList = [];
@@ -90,42 +82,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   List planList = [];
   Map<String, dynamic> userData = {};
 
-  int slider = 0;
-  int slider_tap = 0;
-
   late StreamSubscription<Map> streamSubscription;
   StreamController<String> controllerData = StreamController<String>();
   StreamController<String> controllerInitSession = StreamController<String>();
-
-  final _maxSeconds = 5;
-  int _currentSecond = 0;
-  Timer? _timer;
-
-  var slide = false;
-
-  String get _timerText {
-    final secondsPerMinute = 60;
-    final secondsLeft = _maxSeconds - _currentSecond;
-
-    final formattedMinutesLeft =
-        (secondsLeft ~/ secondsPerMinute).toString().padLeft(2, '0');
-    final formattedSecondsLeft =
-        (secondsLeft % secondsPerMinute).toString().padLeft(1, '0');
-
-    print('$formattedMinutesLeft : $formattedSecondsLeft');
-    // return '$formattedMinutesLeft : $formattedSecondsLeft';
-    return '$formattedSecondsLeft';
-  }
-
-  void _startTimer() {
-    final duration = Duration(seconds: 1);
-    _timer = Timer.periodic(duration, (Timer timer) {
-      setState(() {
-        _currentSecond = timer.tick;
-        if (timer.tick >= _maxSeconds) timer.cancel();
-      });
-    });
-  }
 
   // void startTimer() {
   //   _events = StreamController<int>();
@@ -173,16 +132,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void getUser() async {
-    print("userIDGetUser");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() async {
       userId = prefs.getInt("userId")!;
       if (userId != 0) {
-        print("userID${userId}");
+        print("userID");
         print(userId);
         getRequestConnect(userId);
-        context.read<DashboardBloc>().add(GetBannerNewsletter(userId));
-      } else {}
+      }
       isLoggedIn = prefs.getBool("isLoggedIn")!;
       deviceToken = prefs.getString("OneSignalPlayerID") as String;
       // context.read<DashboardBloc>().add(const GetBannerNewsletter());
@@ -318,234 +275,260 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         "entrepreneur/check_profile/incomplete", _formData);
 
     // print("profile-profile${profile['status']}");
-    // if (profile.isNotEmpty) {
-    //   if (profile['status'] == 'False') {
-    //     // if (notices == 0) {
-    //     setState(() {
-    //       showDialog<String>(
-    //           context: context,
-    //           builder: (BuildContext context) => AlertDialog(
-    //                 title: const Text('Notices'),
-    //                 content: SizedBox(
-    //                   width: double.maxFinite,
-    //                   child: ListView(
-    //                     shrinkWrap: true, // <-- Set this to true
-    //                     children: [
-    //                       Text('Update Your Profile'),
-    //                       SizedBox(height: 12),
-    //                       Text(
-    //                           'Hi there! We ve noticed some important details are missing from your profile:'),
-    //                       if (profile['introduction'] == 'Incomplete')
-    //                         TextButton(
-    //                           onPressed: () {
-    //                             Navigator.pushNamed(context,
-    //                                 '/account_personal_basic_info_view_page',
-    //                                 arguments: {
-    //                                   'data': userdatadetail[0],
-    //                                   'disableEdit': false
-    //                                 });
-    //                           },
-    //                           child: const Text('Introduction Incomplete'),
-    //                           style: TextButton.styleFrom(primary: Colors.red),
-    //                         ),
-    //                       if (profile['profile_image'] == 'Incomplete')
-    //                         TextButton(
-    //                           onPressed: () {
-    //                             Navigator.pushNamed(context,
-    //                                 '/account_personal_basic_info_view_page',
-    //                                 arguments: {
-    //                                   'data': userdatadetail[0],
-    //                                   'disableEdit': false
-    //                                 });
-    //                           },
-    //                           child: const Text('Profile image Incomplete'),
-    //                           style: TextButton.styleFrom(primary: Colors.red),
-    //                         ),
-    //                       if (profile['social_media'] == 'Incomplete')
-    //                         TextButton(
-    //                           onPressed: () {
-    //                             Navigator.push(
-    //                                 context,
-    //                                 MaterialPageRoute(
-    //                                     builder: (context) => AccountListWidgetPage(
-    //                                         disableEdit: false,
-    //                                         navigateToEditPageRoute:
-    //                                             "/account_social_media_view_page",
-    //                                         label: "Social Media")));
-    //                           },
-    //                           child: const Text('Social media  Incomplete'),
-    //                           style: TextButton.styleFrom(primary: Colors.red),
-    //                         ),
-    //                       if (profile['education'] == 'Incomplete')
-    //                         TextButton(
-    //                           onPressed: () {
-    //                             Navigator.push(
-    //                                 context,
-    //                                 MaterialPageRoute(
-    //                                     builder: (context) =>
-    //                                         AccountListWidgetPage(
-    //                                             disableEdit: false,
-    //                                             navigateToEditPageRoute:
-    //                                                 "/account_education_view_page",
-    //                                             label: "Education")));
-    //                           },
-    //                           child: const Text('Education  Incomplete'),
-    //                           style: TextButton.styleFrom(primary: Colors.red),
-    //                         ),
-    //                       if (profile['society'] == 'Incomplete')
-    //                         TextButton(
-    //                           onPressed: () {
-    //                             Navigator.push(
-    //                                 context,
-    //                                 MaterialPageRoute(
-    //                                     builder: (context) =>
-    //                                         AccountListWidgetPage(
-    //                                             disableEdit: false,
-    //                                             navigateToEditPageRoute:
-    //                                                 "/account_societies_view_page",
-    //                                             label: "Social Media")));
-    //                           },
-    //                           child: const Text('Society  Incomplete'),
-    //                           style: TextButton.styleFrom(primary: Colors.red),
-    //                         ),
-    //                       if (profile['certificate'] == 'Incomplete')
-    //                         TextButton(
-    //                           onPressed: () {
-    //                             Navigator.push(
-    //                                 context,
-    //                                 MaterialPageRoute(
-    //                                     builder: (context) => AccountListWidgetPage(
-    //                                         disableEdit: false,
-    //                                         navigateToEditPageRoute:
-    //                                             "/account_professional_cert_view_page",
-    //                                         label:
-    //                                             "Professional Cert & Rewards")));
-    //                           },
-    //                           child: const Text('Certificate Incomplete'),
-    //                           style: TextButton.styleFrom(primary: Colors.red),
-    //                         ),
-    //                       if (profile['company'] == 'Incomplete')
-    //                         TextButton(
-    //                           onPressed: () {
-    //                             Navigator.pushNamed(
-    //                                 context, '/account_company_info_view_page',
-    //                                 arguments: {
-    //                                   'data': userdatadetail[0]
-    //                                       ['company_details'],
-    //                                   'disable': false
-    //                                 });
-    //                           },
-    //                           child: const Text('company Incomplete'),
-    //                           style: TextButton.styleFrom(primary: Colors.red),
-    //                         ),
-    //                       if (profile['company_establish_year'] == 'Incomplete')
-    //                         TextButton(
-    //                           onPressed: () {
-    //                             Navigator.pushNamed(
-    //                                 context, '/account_company_info_view_page',
-    //                                 arguments: {
-    //                                   'data': userdatadetail[0]
-    //                                       ['company_details'],
-    //                                   'disable': false
-    //                                 });
-    //                           },
-    //                           child: const Text(
-    //                               'Company establish year Incomplete'),
-    //                           style: TextButton.styleFrom(primary: Colors.red),
-    //                         ),
-    //                       if (profile['company_state'] == 'Incomplete')
-    //                         TextButton(
-    //                           onPressed: () {
-    //                             Navigator.pushNamed(
-    //                                 context, '/account_company_info_view_page',
-    //                                 arguments: {
-    //                                   'data': userdatadetail[0]
-    //                                       ['company_details'],
-    //                                   'disable': false
-    //                                 });
-    //                           },
-    //                           child: const Text('Company state Incomplete'),
-    //                           style: TextButton.styleFrom(primary: Colors.red),
-    //                         ),
-    //                       if (profile['company_address'] == 'Incomplete')
-    //                         TextButton(
-    //                           onPressed: () {
-    //                             Navigator.pushNamed(
-    //                                 context, '/account_company_info_view_page',
-    //                                 arguments: {
-    //                                   'data': userdatadetail[0]
-    //                                       ['company_details'],
-    //                                   'disable': false
-    //                                 });
-    //                           },
-    //                           child: const Text('Company address Incomplete'),
-    //                           style: TextButton.styleFrom(primary: Colors.red),
-    //                         ),
-    //                       if (profile['company_postcode'] == 'Incomplete')
-    //                         TextButton(
-    //                           onPressed: () {
-    //                             Navigator.pushNamed(
-    //                                 context, '/account_company_info_view_page',
-    //                                 arguments: {
-    //                                   'data': userdatadetail[0]
-    //                                       ['company_details'],
-    //                                   'disable': false
-    //                                 });
-    //                           },
-    //                           child: const Text('Company postcode Incomplete'),
-    //                           style: TextButton.styleFrom(primary: Colors.red),
-    //                         ),
-    //                       if (profile['company_city'] == 'Incomplete')
-    //                         TextButton(
-    //                           onPressed: () {
-    //                             Navigator.pushNamed(
-    //                                 context, '/account_company_info_view_page',
-    //                                 arguments: {
-    //                                   'data': userdatadetail[0]
-    //                                       ['company_details'],
-    //                                   'disable': false
-    //                                 });
-    //                           },
-    //                           child: const Text('Company city Incomplete'),
-    //                           style: TextButton.styleFrom(primary: Colors.red),
-    //                         ),
-    //                       if (profile['company_country'] == 'Incomplete')
-    //                         TextButton(
-    //                           onPressed: () {
-    //                             Navigator.pushNamed(
-    //                                 context, '/account_company_info_view_page',
-    //                                 arguments: {
-    //                                   'data': userdatadetail[0]
-    //                                       ['company_details'],
-    //                                   'disable': false
-    //                                 });
-    //                           },
-    //                           child: const Text('Company country Incomplete'),
-    //                           style: TextButton.styleFrom(primary: Colors.red),
-    //                         ),
-    //                       if (profile['change_password'] == 'Incomplete')
-    //                         TextButton(
-    //                           onPressed: () {
-    //                             Navigator.pushNamed(context,
-    //                                 '/account_personal_basic_info_view_page',
-    //                                 arguments: {
-    //                                   'data': userdatadetail[0],
-    //                                   'disableEdit': false
-    //                                 });
-    //                           },
-    //                           child: const Text('Change Password Incomplete'),
-    //                           style: TextButton.styleFrom(primary: Colors.red),
-    //                         ),
-    //                     ],
-    //                   ),
-    //                 ),
-    //               ));
-    //     });
+    if (profile.isNotEmpty) {
+      if (profile['status'] == 'False') {
+        // if (notices == 0) {
+        setState(() {
+          showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                    title: const Text('Notices'),
+                    content: SizedBox(
+                      width: double.maxFinite,
+                      child: ListView(
+                        shrinkWrap: true, // <-- Set this to true
+                        children: [
+                          Text('Update Your Profile'),
+                          SizedBox(height: 12),
+                          Text(
+                              'Hi there! We ve noticed some important details are missing from your profile:'),
+                          if (profile['introduction'] == 'Incomplete')
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context,
+                                    '/account_personal_basic_info_view_page',
+                                    arguments: {
+                                      'data': userdatadetail[0],
+                                      'disableEdit': false
+                                    });
+                              },
+                              child: const Text('Introduction Incomplete'),
+                              style: TextButton.styleFrom(primary: Colors.red),
+                            ),
+                          if (profile['profile_image'] == 'Incomplete')
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context,
+                                    '/account_personal_basic_info_view_page',
+                                    arguments: {
+                                      'data': userdatadetail[0],
+                                      'disableEdit': false
+                                    });
+                              },
+                              child: const Text('Profile image Incomplete'),
+                              style: TextButton.styleFrom(primary: Colors.red),
+                            ),
+                          if (profile['social_media'] == 'Incomplete')
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AccountListWidgetPage(
+                                            disableEdit: false,
+                                            navigateToEditPageRoute:
+                                                "/account_social_media_view_page",
+                                            label: "Social Media")));
+                              },
+                              child: const Text('Social media  Incomplete'),
+                              style: TextButton.styleFrom(primary: Colors.red),
+                            ),
+                          if (profile['education'] == 'Incomplete')
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            AccountListWidgetPage(
+                                                disableEdit: false,
+                                                navigateToEditPageRoute:
+                                                    "/account_education_view_page",
+                                                label: "Education")));
+                              },
+                              child: const Text('Education  Incomplete'),
+                              style: TextButton.styleFrom(primary: Colors.red),
+                            ),
+                          if (profile['society'] == 'Incomplete')
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            AccountListWidgetPage(
+                                                disableEdit: false,
+                                                navigateToEditPageRoute:
+                                                    "/account_societies_view_page",
+                                                label: "Social Media")));
+                              },
+                              child: const Text('Society  Incomplete'),
+                              style: TextButton.styleFrom(primary: Colors.red),
+                            ),
+                          if (profile['certificate'] == 'Incomplete')
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AccountListWidgetPage(
+                                            disableEdit: false,
+                                            navigateToEditPageRoute:
+                                                "/account_professional_cert_view_page",
+                                            label:
+                                                "Professional Cert & Rewards")));
+                              },
+                              child: const Text('Certificate Incomplete'),
+                              style: TextButton.styleFrom(primary: Colors.red),
+                            ),
+                          if (profile['company'] == 'Incomplete')
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, '/account_company_info_view_page',
+                                    arguments: {
+                                      'data': userdatadetail[0]
+                                          ['company_details'],
+                                      'disable': false
+                                    });
+                              },
+                              child: const Text('company Incomplete'),
+                              style: TextButton.styleFrom(primary: Colors.red),
+                            ),
+                          if (profile['company_establish_year'] == 'Incomplete')
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, '/account_company_info_view_page',
+                                    arguments: {
+                                      'data': userdatadetail[0]
+                                          ['company_details'],
+                                      'disable': false
+                                    });
+                              },
+                              child: const Text(
+                                  'Company establish year Incomplete'),
+                              style: TextButton.styleFrom(primary: Colors.red),
+                            ),
+                          if (profile['company_state'] == 'Incomplete')
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, '/account_company_info_view_page',
+                                    arguments: {
+                                      'data': userdatadetail[0]
+                                          ['company_details'],
+                                      'disable': false
+                                    });
+                              },
+                              child: const Text('Company state Incomplete'),
+                              style: TextButton.styleFrom(primary: Colors.red),
+                            ),
+                          if (profile['company_address'] == 'Incomplete')
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, '/account_company_info_view_page',
+                                    arguments: {
+                                      'data': userdatadetail[0]
+                                          ['company_details'],
+                                      'disable': false
+                                    });
+                              },
+                              child: const Text('Company address Incomplete'),
+                              style: TextButton.styleFrom(primary: Colors.red),
+                            ),
+                          if (profile['company_postcode'] == 'Incomplete')
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, '/account_company_info_view_page',
+                                    arguments: {
+                                      'data': userdatadetail[0]
+                                          ['company_details'],
+                                      'disable': false
+                                    });
+                              },
+                              child: const Text('Company postcode Incomplete'),
+                              style: TextButton.styleFrom(primary: Colors.red),
+                            ),
+                          if (profile['company_city'] == 'Incomplete')
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, '/account_company_info_view_page',
+                                    arguments: {
+                                      'data': userdatadetail[0]
+                                          ['company_details'],
+                                      'disable': false
+                                    });
+                              },
+                              child: const Text('Company city Incomplete'),
+                              style: TextButton.styleFrom(primary: Colors.red),
+                            ),
+                          if (profile['company_country'] == 'Incomplete')
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, '/account_company_info_view_page',
+                                    arguments: {
+                                      'data': userdatadetail[0]
+                                          ['company_details'],
+                                      'disable': false
+                                    });
+                              },
+                              child: const Text('Company country Incomplete'),
+                              style: TextButton.styleFrom(primary: Colors.red),
+                            ),
+                          if (profile['change_password'] == 'Incomplete')
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context,
+                                    '/account_personal_basic_info_view_page',
+                                    arguments: {
+                                      'data': userdatadetail[0],
+                                      'disableEdit': false
+                                    });
+                              },
+                              child: const Text('Change Password Incomplete'),
+                              style: TextButton.styleFrom(primary: Colors.red),
+                            ),
+                        ],
+                      ),
+                    ),
+                    // actions: <Widget>[
+                    //   TextButton(
+                    //     onPressed: () {
+                    //       Navigator.pop(context);
+                    //     },
+                    //     child: const Text('Cancel'),
+                    //     style: TextButton.styleFrom(primary: Colors.black),
+                    //   ),
+                    //   TextButton(
+                    //     onPressed: () {
+                    //       Navigator.push(
+                    //         context,
 
-    //     notices++;
-    //     // }
-    //   }
-    // }
+                    //         PageTransition(
+                    //           type: PageTransitionType.fade,
+                    //           child: const MainScreen(
+                    //             page: AccountViewPage(),
+                    //             index: 4,
+                    //           ),
+                    //         ),
+                    //       );
+                    //     },
+                    //     child: const Text('OK'),
+                    //     style: TextButton.styleFrom(primary: Colors.blue),
+                    //   ),
+                    // ],
+                  ));
+        });
+
+        notices++;
+        // }
+      }
+    }
     userInfo = await httpProvider.postHttp2("entrepreneur/info", _formData);
     if (userInfo.isNotEmpty) {
       setState(() async {
@@ -705,18 +688,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    // _getLink();
-    getUser();
     getBanner();
-    context.read<DashboardBloc>().add(GetBannerNewsletter(userId));
+
+    getUser();
     getContactUsInfo();
     // getEntrepreneursList();
     getPopUpAnnouncement();
-    // _showAnnouncement();
     getPlan();
-
-    // _showAnnouncement_slider();
-
+    context.read<DashboardBloc>().add(const GetBannerNewsletter());
     _resizableController = AnimationController(
       duration: const Duration(
         milliseconds: 500,
@@ -747,165 +726,52 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   getPopUpAnnouncement() async {
     var getPopUpAnnouncementReturn = await httpProvider.getHttp("popup");
 
-    print("getPopUpAnnouncementReturn${getPopUpAnnouncementReturn.length}");
+    // print("getPopUpAnnouncementReturn${getPopUpAnnouncementReturn}");
     if (getPopUpAnnouncementReturn != null) {
-      int n = 0;
       for (int i = 0; i < getPopUpAnnouncementReturn.length; i++) {
-        popup = getPopUpAnnouncementReturn[i]['title'];
+        popup = CustomDialogBox(
+            title: getPopUpAnnouncementReturn[i]['title'],
+            caption: getPopUpAnnouncementReturn[i]['caption'],
+            descriptions: getPopUpAnnouncementReturn[i]['description'],
+            type: getPopUpAnnouncementReturn[i]['type'],
+            img: getPopUpAnnouncementReturn[i]['thumbnail']);
 
         setState(() {
           images.add(popup);
         });
       }
     }
+    if (images.isNotEmpty) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) => _showAnnouncement());
+    }
   }
 
   _showAnnouncement() async {
-    var getPopUpAnnouncementReturn = await httpProvider.getHttp("popup");
-
-    context.read<TimerBloc>().add(const TimerStarted(5));
-
-    if (getPopUpAnnouncementReturn.isNotEmpty) {
-      // print("getPopUpAnnouncementReturn${getPopUpAnnouncementReturn.length}");
-      // var a = '1';
-      int images_length = 1;
-      Future.delayed(const Duration(seconds: 5), () {
-        setState(() {
-          //a = '2';
-          images_length = 2;
-        });
-        print("yayates${images_length}");
-      });
-      print("yaya${images_length}");
-
-      await showAnimatedDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext context) {
-          return GestureDetector(
-            onLongPress: () {
-              _swiperController.stopAutoplay();
-              print("testes Loong");
-              // var snackBar = SnackBar(content: Text('testes Loong'));
-              // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            },
-            onLongPressEnd: (_) => setState(() {
-              // var snackBar = SnackBar(content: Text('testes Loong finish'));
-              // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              _swiperController.startAutoplay();
-            }),
-            onTapDown: (details) {
-              _swiperController.stopAutoplay();
-              print("testes Someone is touchin' me !!");
-              //  var snackBar = SnackBar(content: Text('testes Loong'));
-              //ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            },
-            onTapUp: (details) {
-              print("testes I relaxed, oh.");
-            },
-            child: Swiper(
-              controller: _swiperController,
-
-              onTap: (int i) {
-                print("testes_tap${i}");
-                _swiperController.stopAutoplay();
-
-                Navigator.pushReplacement(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.fade,
-                    child: Popup_detail(
-                      img: getPopUpAnnouncementReturn[i]['thumbnail'],
-                      title: getPopUpAnnouncementReturn[i]['title'],
-                      caption: getPopUpAnnouncementReturn[i]['caption'],
-                      descriptions: getPopUpAnnouncementReturn[i]
-                          ['description'],
-                      type: getPopUpAnnouncementReturn[i]['type'],
-                      url_link: getPopUpAnnouncementReturn[i]['url_link'],
-                      tel_number: getPopUpAnnouncementReturn[i]['tel_number'],
-                      email_address: getPopUpAnnouncementReturn[i]
-                          ['email_address'],
-                    ),
-                  ),
-                );
-              },
-              onIndexChanged: (int index) {
-                setState(() {
-                  slider += slider + 1;
-                  //_swiperController.stopAutoplay();
-                  if (images_length == 1) {
-                    _swiperController.move(0);
-                  }
-                  // _swiperController.move(0);
-                });
-                print("testes${slider}");
-              },
-
-              loop: getPopUpAnnouncementReturn.length == 1 ? false : true,
-
-              //  loop: false,
-              itemBuilder: (BuildContext context, int i) {
-                return CustomDialogBox(
-                    title: getPopUpAnnouncementReturn[i]['title'],
-                    caption: getPopUpAnnouncementReturn[i]['caption'],
-                    descriptions: getPopUpAnnouncementReturn[i]['description'],
-                    type: getPopUpAnnouncementReturn[i]['type'],
-                    sub_background_color: getPopUpAnnouncementReturn[i]
-                        ['sub_background_color'],
-                    background_color: getPopUpAnnouncementReturn[i]
-                        ['background_color'],
-                    sub_title: getPopUpAnnouncementReturn[i]['sub_title'],
-                    color_title: getPopUpAnnouncementReturn[i]['color_title'],
-                    color_subtitle: getPopUpAnnouncementReturn[i]
-                        ['color_subtitle'],
-                    color_caption: getPopUpAnnouncementReturn[i]
-                        ['color_caption'],
-                    gradient_background_color: getPopUpAnnouncementReturn[i]
-                        ['gradient_background_color'],
-                    no: i,
-                    total_no: images_length,
-                    total_no_: slider,
-                    slider: false,
-                    slide_close: false,
-                    url_link: getPopUpAnnouncementReturn[i]['url_link'],
-                    tel_number: getPopUpAnnouncementReturn[i]['tel_number'],
-                    email_address: getPopUpAnnouncementReturn[i]
-                        ['email_address'],
-                    img: getPopUpAnnouncementReturn[i]['thumbnail']);
-
-                //return Text(_timerText);
-
-                // return Text('${context.select((TimerBloc bloc) => bloc.state)}',
-                //     textAlign: TextAlign.center,
-                //     style: const TextStyle(
-                //         color: Colors.white,
-                //         fontSize: 22,
-                //         fontWeight: FontWeight.w600));
-              },
-
-              autoplayDelay: 8000,
-              autoplay: isAutoPlayEnabled,
-              autoplayDisableOnInteraction: true,
-              itemCount: getPopUpAnnouncementReturn.length,
-
-              pagination: const SwiperPagination(
-                alignment: Alignment(0.0, 0.85),
-                // alignment: Alignment.bottomCenter,
-                builder: DotSwiperPaginationBuilder(
-                    color: Colors.grey, activeColor: kThirdColor),
-              ),
-            ),
-          );
-        },
-        // animationType: DialogTransitionType.scaleRotate,
-        curve: Curves.fastOutSlowIn,
-        duration: const Duration(seconds: 3),
-      );
-
-      var disable = false;
-      // _startTimer();
-
-    }
+    print("haiimages${images.length}");
+    await showAnimatedDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Swiper(
+          itemBuilder: (BuildContext context, int index) {
+            return images[index];
+          },
+          autoplayDelay: 3000,
+          autoplayDisableOnInteraction: true,
+          autoplay: true,
+          itemCount: images.length,
+          pagination: const SwiperPagination(
+            alignment: Alignment(0.0, 0.85),
+            // alignment: Alignment.bottomCenter,
+            builder: DotSwiperPaginationBuilder(
+                color: Colors.grey, activeColor: kThirdColor),
+          ),
+        );
+      },
+      animationType: DialogTransitionType.scaleRotate,
+      curve: Curves.fastOutSlowIn,
+      duration: const Duration(seconds: 1),
+    );
   }
 
   @override
@@ -1037,7 +903,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   handleClickNotification(BuildContext context) {
-    OneSignal.Notifications.addClickListener((openedResult) async {
+    OneSignal.shared.setNotificationOpenedHandler((openedResult) async {
       print(openedResult);
 
       Map<String, dynamic> result =
@@ -1188,42 +1054,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     dynamic newsletters = bannerNewsletters['newsletter'];
 
     if (newsletters.length > 3) {
-      count = 10;
+      count = newsletters.length;
     } else {
       count = newsletters.length;
     }
-
+    print("count${count}");
     return SingleChildScrollView(
         child: Column(
       children: [
         Container(
           height: 300,
-          child: GestureDetector(
-            onLongPress: () {
-              _swiperControllerbanner.stopAutoplay();
-              print("Banner testes Loong");
-              // var snackBar = SnackBar(content: Text('Banner Loong'));
-              // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            },
-            onLongPressEnd: (_) => setState(() {
-              // var snackBar = SnackBar(content: Text('Banner Loong finish'));
-              // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              _swiperControllerbanner.startAutoplay();
-            }),
-            onTapDown: (details) {
-              _swiperControllerbanner.stopAutoplay();
-              print("Banner Someone is touchin' me !!");
-              //  var snackBar = SnackBar(content: Text('testes Loong'));
-              //ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            },
-            onTapUp: (details) {
-              print("Banner I relaxed, oh.");
-            },
-            child: HomeSwipe(
-              images: banners,
-              swiperControllerbanner_: _swiperControllerbanner,
-              height: MediaQuery.of(context).size.height * 0.30,
-            ),
+          child: HomeSwipe(
+            images: banners,
+            height: MediaQuery.of(context).size.height * 0.30,
           ),
         ),
         Padding(
@@ -1247,7 +1090,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                   );
                 },
-                child: Text("View More >>",
+                child: const Text("View More >>",
                     style: TextStyle(
                         fontSize: 10.0, height: 1.4, color: kThirdColor)),
               )
@@ -1255,9 +1098,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ),
         Container(
-          //live
-          //height: MediaQuery.of(context).size.height * 3.27,
-          height: MediaQuery.of(context).size.height * 3.49,
+          height: MediaQuery.of(context).size.height * 6.45,
           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
           child: ListView.builder(
               physics: NeverScrollableScrollPhysics(),
@@ -1432,14 +1273,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     print('newsimages${images}');
     print('newsnewsletter${newsletter.length}');
     // if (images.isNotEmpty) {
-    if (show == 1) {
-      if (announcement == 0) {
-        WidgetsBinding.instance!
-            .addPostFrameCallback((_) => _showAnnouncement());
-        announcement++;
-      }
-      // }
-    }
+    //   if (show == 1) {
+    //     if (announcement == 0) {
+    //       WidgetsBinding.instance!
+    //           .addPostFrameCallback((_) => _showAnnouncement());
+    //       announcement++;
+    //     }
+    //   }
+    // }
     return InkWell(
       child: Container(
         margin: const EdgeInsets.all(5),
@@ -1463,7 +1304,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               width: MediaQuery.of(context).size.width * 0.90,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fill,
                   image: NetworkImage(newsletter['thumbnail']),
                 ),
               ),

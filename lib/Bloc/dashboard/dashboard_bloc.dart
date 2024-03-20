@@ -127,9 +127,10 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   void _mapGetBannerNewsletterToState(event, emit) async {
     List<String> banners = [];
     Map<String, dynamic> dataReturn = {};
-
+    print("banner?log_user_id=${event.arg}");
     emit(DashboardLoading());
-    List bannerDataReturn = await httpProvider.getHttp('banner');
+    List bannerDataReturn =
+        await httpProvider.getHttp('banner?log_user_id=${event.arg}');
     if (bannerDataReturn.isNotEmpty) {
       for (var element in bannerDataReturn) {
         banners.add(link + element);

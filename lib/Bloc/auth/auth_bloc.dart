@@ -141,8 +141,59 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   void _mapRegisterToState(event, emit) async {
+//     email: cek@gmail.com,
+// password: Asdf@123,
+// first_name: null,
+// last_name: null,
+// identity_card: 123456-01-0124,
+//  phone_number: 0123456789,
+//  business_category_main_id: 2,
+//  business_category_sub_id: 12,
+//  title_id: 10,
+//  name: tes,
+//   preferred_name: asa,
+//   chinese_name: 21,
+//    gender: Male,
+//    nationality_id: 8,
+//     introduction: tesa,
+//     state_id: 10,
+//     company_name: casa,
+//     designation: sas,
+//      business_nature: asasasasa,
+//      establish_year: 2022,
+//      expanding_areas: Networking, expectation: 121,
+//       company_address: 212, company_postcode: 121,
+//       company_city: 121,
+//       company_state_id: 10
     FormData data;
     emit(AuthLoading());
+
+//  ⁠designation
+
+//  ⁠expanding_area
+//  ⁠expanding_area_others
+//  ⁠expectation
+//  ⁠liaison
+//  ⁠title_id
+//  ⁠preferred_name
+//  ⁠chinese_name
+//  ⁠passport_number
+//  ⁠others_nationality
+//  ⁠nationality_id
+//  ⁠others_state
+//  ⁠state_id
+//  ⁠group_id
+
+    print("event-${event.formData}");
+    // print("event${event.formData['liaison']}");
+    // print("event-expectation${event.formData['expectation']}");
+    print("event-expanding_areas${event.formData['expanding_areas']}");
+    print("event-nationality_id${event.formData['nationality_id']}");
+    print(
+        "event-business_category_main_id${event.formData['business_category_main_id']}");
+    print(
+        "event-business_category_sub_id${event.formData['business_category_sub_id']}");
+
     data = FormData.fromMap({
       'email': event.formData['email'],
       'password': event.formData['password'],
@@ -159,18 +210,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       'business_category_main_id': event.formData['business_category_main_id'],
       'business_category_sub_id': event.formData['business_category_sub_id'],
       'business_nature': event.formData['business_nature'],
-      //'company_sales_id': event.formData['company_sales_id'],
-      'expanding_area[]': event.formData['expanding_area'],
+      '⁠passport_number': event.formData['⁠passport_number'],
+      'expanding_area': event.formData['expanding_areas'],
+      '⁠expanding_area_others': event.formData['expanding_area'],
       'expectation': event.formData['expectation'],
-      //'acknowledgement': event.formData['acknowledgement'],
-      //'package': event.formData['package'],
+      '⁠state_id': event.formData['⁠state_id'],
       'others_nationality': event.formData['others_nationality'],
       'others_state': event.formData['others_state'],
-      // 'referrer_number': event.formData['referrer_number'],
-      // 'ssm_certificate': MultipartFile.fromFileSync(
-      //     event.formData['ssm_cert'].path,
-      //     filename: basename(event.formData['ssm_cert'].path)),
-      // 'package_id': event.formData['package_id'],
+      '⁠title_id': event.formData['⁠title_id'],
+      '⁠others_state': event.formData['⁠others_state'],
+      'liaison': event.formData['⁠group_id_name'],
+      'group_id': event.formData['⁠group_id'],
+      'establish_year': event.formData['establish_year'],
     });
 
     var registerDataReturn = await httpProvider.postHttp("register", data);

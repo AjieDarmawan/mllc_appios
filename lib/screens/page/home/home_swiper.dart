@@ -8,9 +8,13 @@ class HomeSwipe extends StatelessWidget {
   final double height;
   final List<String>? images;
 
-  const HomeSwipe({
+  final SwiperController? swiperControllerbanner_;
+
+  bool isAutoPlayEnabledbanner = true;
+  HomeSwipe({
     Key? key,
     this.images,
+    this.swiperControllerbanner_,
     required this.height,
   }) : super(key: key);
 
@@ -18,6 +22,10 @@ class HomeSwipe extends StatelessWidget {
   Widget build(BuildContext context) {
     if (images != null) {
       return Swiper(
+        controller: swiperControllerbanner_,
+        onTap: (int index) {
+          print("Banner_State_index ${index}");
+        },
         itemBuilder: (BuildContext context, int index) {
           return CachedNetworkImage(
             imageUrl: images![index],
@@ -35,7 +43,7 @@ class HomeSwipe extends StatelessWidget {
                   color: kPrimaryColor,
                   image: DecorationImage(
                     image: imageProvider,
-                    fit: BoxFit.values[0],
+                    fit: BoxFit.cover,
                   ),
                 ),
               );
@@ -51,7 +59,7 @@ class HomeSwipe extends StatelessWidget {
         },
         autoplayDelay: 8000,
         autoplayDisableOnInteraction: true,
-        autoplay: true,
+        autoplay: isAutoPlayEnabledbanner,
         itemCount: images!.length,
         pagination: const SwiperPagination(
           // alignment: Alignment(0.0, 0.3),

@@ -12,9 +12,10 @@ class ClearService extends EntrepreneursEvent {}
 class UnloadEntrepreneur extends EntrepreneursEvent {}
 
 class GetEntrepreneursList extends EntrepreneursEvent {
-  const GetEntrepreneursList();
+  final dynamic arg;
+  const GetEntrepreneursList(this.arg);
   @override
-  List<Object> get props => [];
+  List<Object> get props => [arg];
 }
 
 class GetEntrepreneurDetails extends EntrepreneursEvent {

@@ -122,33 +122,41 @@ class _EntrepreneurSearchResultPageState
   }
 
   getAllCategoryData() async {
-    final _formData = {};
-    _formData['main_business_category_id'] = widget.id;
-    final response =
-        await httpProvider.postHttp2("entrepreneur/filter", _formData);
-    if (response != null) {
-      response.removeWhere((item) => item['id'] == userId);
-      setState(() {
-        itemsEntrepreneurs.addAll(response);
+    if (widget.type == 'Category') {
+      final _formData = {};
+      _formData['main_business_category_id'] = widget.id;
+      final response =
+          await httpProvider.postHttp2("entrepreneur/filter", _formData);
+      if (response != null) {
+        response.removeWhere((item) => item['id'] == userId);
+        setState(() {
+          itemsEntrepreneurs.addAll(response);
 
-        items.addAll(response);
-      });
+          items.addAll(response);
+        });
+      }
     }
+
+    print("UAUA-getall${items}");
   }
 
   getAllStateData() async {
-    final _formData = {};
-    _formData['company_state_id'] = widget.id;
-    final response =
-        await httpProvider.postHttp2("entrepreneur/filter", _formData);
-    if (response != null) {
-      response.removeWhere((item) => item['id'] == userId);
-      setState(() {
-        itemsEntrepreneurs.addAll(response);
+    if (widget.type == 'State') {
+      final _formData = {};
+      _formData['company_state_id'] = widget.id;
+      final response =
+          await httpProvider.postHttp2("entrepreneur/filter", _formData);
+      if (response != null) {
+        response.removeWhere((item) => item['id'] == userId);
+        setState(() {
+          itemsEntrepreneurs.addAll(response);
 
-        items.addAll(response);
-      });
+          items.addAll(response);
+        });
+      }
     }
+    print("UAUA-getallcompany${items}");
+    print("UAUA-getallcompany_formData${_formData}");
   }
 
   final Map<String, dynamic> _formData = {};
@@ -219,51 +227,58 @@ class _EntrepreneurSearchResultPageState
     // List<UserInfo> dummySearchList = List();
     // dummySearchList.addAll(widget.dataUserInfo);
 
+    print("itemsEntrepreneurs-detail${itemsEntrepreneurs}");
+    print("itemsEntrepreneurs-detail-query${query}");
+
     if (query.isNotEmpty && query != "") {
       List<dynamic> dummyListData = [];
       for (var item in itemsEntrepreneurs) {
         if (item['name'].toLowerCase().contains(query.toLowerCase()) ||
-            item['preferred_name']
-                .toLowerCase()
-                .contains(query.toLowerCase()) ||
-            item['company_name'].toLowerCase().contains(query.toLowerCase()) ||
-            item['business_category']
-                .toLowerCase()
-                .contains(query.toLowerCase()) ||
-            item['sub_business_category']
-                .toLowerCase()
-                .contains(query.toLowerCase()) ||
-            item['member_type_string']
-                .toLowerCase()
-                .contains(query.toLowerCase()) ||
-            item['company_state'].toLowerCase().contains(query.toLowerCase()) ||
-            item['establish_year']
-                .toLowerCase()
-                .contains(query.toLowerCase()) ||
-            item['business_nature']
-                .toUpperCase()
-                .contains(query.toUpperCase()) ||
-            item['name'].toUpperCase().contains(query.toUpperCase()) ||
-            item['preferred_name']
-                .toUpperCase()
-                .contains(query.toUpperCase()) ||
-            item['company_name'].toUpperCase().contains(query.toUpperCase()) ||
-            item['business_category']
-                .toUpperCase()
-                .contains(query.toUpperCase()) ||
-            item['sub_business_category']
-                .toUpperCase()
-                .contains(query.toUpperCase()) ||
-            item['member_type_string']
-                .toUpperCase()
-                .contains(query.toUpperCase()) ||
-            item['company_state'].toUpperCase().contains(query.toUpperCase()) ||
-            item['establish_year']
-                .toUpperCase()
-                .contains(query.toUpperCase()) ||
-            item['business_nature']
-                .toUpperCase()
-                .contains(query.toUpperCase())) {
+                item['preferred_name']
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                item['company_name'].toLowerCase().contains(query.toLowerCase())
+            //
+            // ||
+            //   item['business_category']
+            //       .toLowerCase()
+            //       .contains(query.toLowerCase()) ||
+            //   item['sub_business_category']
+            //       .toLowerCase()
+            //       .contains(query.toLowerCase()) ||
+            //   item['member_type_string']
+            //       .toLowerCase()
+            //       .contains(query.toLowerCase()) ||
+            //   item['company_state'].toLowerCase().contains(query.toLowerCase()) ||
+            //   item['establish_year']
+            //       .toLowerCase()
+            //       .contains(query.toLowerCase()) ||
+            //   item['business_nature']
+            //       .toUpperCase()
+            //       .contains(query.toUpperCase()) ||
+            //   item['name'].toUpperCase().contains(query.toUpperCase()) ||
+            //   item['preferred_name']
+            //       .toUpperCase()
+            //       .contains(query.toUpperCase()) ||
+            //   item['company_name'].toUpperCase().contains(query.toUpperCase()) ||
+            //   item['business_category']
+            //       .toUpperCase()
+            //       .contains(query.toUpperCase()) ||
+            //   item['sub_business_category']
+            //       .toUpperCase()
+            //       .contains(query.toUpperCase()) ||
+            //   item['member_type_string']
+            //       .toUpperCase()
+            //       .contains(query.toUpperCase()) ||
+            //   item['company_state'].toUpperCase().contains(query.toUpperCase()) ||
+            //   item['establish_year']
+            //       .toUpperCase()
+            //       .contains(query.toUpperCase()) ||
+            //   item['business_nature']
+            //       .toUpperCase()
+            //       .contains(query.toUpperCase())
+
+            ) {
           dummyListData.add(item);
         }
       }
@@ -271,6 +286,8 @@ class _EntrepreneurSearchResultPageState
       setState(() {
         items.clear();
         items.addAll(dummyListData);
+
+        print("cekdata-detail${dummyListData}");
       });
     } else {
       setState(() {
@@ -278,6 +295,19 @@ class _EntrepreneurSearchResultPageState
         items.addAll(itemsEntrepreneurs);
       });
     }
+    //   setState(() {
+    //     items.clear();
+    //     items.addAll(dummyListData);
+    //   });
+    // } else {
+    //   Navigator.pushReplacement(
+    //     context,
+    //     PageTransition(
+    //       type: PageTransitionType.fade,
+    //       child: EntrepreneurSearchPage(data: itemsEntrepreneurs),
+    //     ),
+    //   );
+    // }
   }
 
   populateDrawer() {
@@ -440,6 +470,7 @@ class _EntrepreneurSearchResultPageState
                             return InkWell(
                               onTap: () {
                                 setState(() {
+                                  print("UAUA");
                                   if (isSelected_Main_Category[index] ==
                                       "false") {
                                     isSelected_Main_Category_id.clear();
@@ -1974,6 +2005,7 @@ class _EntrepreneurSearchResultPageState
 
   @override
   Widget build(BuildContext context) {
+    print("UAUADEPANitem${items}");
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(

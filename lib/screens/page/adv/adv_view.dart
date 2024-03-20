@@ -11,7 +11,8 @@ import 'package:mlcc_app_ios/screens/page/adv/rewards_list.dart';
 import 'package:mlcc_app_ios/screens/page/adv/sponsored_list.dart';
 import 'package:mlcc_app_ios/screens/page/adv/vouchers_list.dart';
 import 'package:mlcc_app_ios/widget/loading_widget.dart';
-
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
+import 'package:mlcc_app_ios/widget/disable_screenshots.dart';
 import '../../../main.dart';
 import '../../main_view.dart';
 
@@ -22,25 +23,55 @@ class AdvPage extends StatefulWidget {
 
 class _AdvPageState extends State<AdvPage> with SingleTickerProviderStateMixin {
   var userId = 0;
+  dynamic log = [];
   TabController? _tabController;
+
+  Future<void> secureScreen() async {
+    await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+  }
+
+  Future<void> clearSecureScreen() async {
+    await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
+  }
+
   var _activeTabIndex;
   void initState() {
+    // secureScreen();
+    // DisableScreenshots.disable();
     super.initState();
     getSponsoredList();
     _tabController = TabController(
         vsync: this,
         length: sponsoredList.isNotEmpty ? myTabs.length : myTabs2.length);
     _tabController!.addListener(_setActiveTabIndex);
-    context.read<AdvBloc>().add(const GetAdvList());
+    context.read<AdvBloc>().add(GetAdvList());
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    clearSecureScreen();
+    super.dispose();
   }
 
   void getSponsoredList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    final _formData = {};
     setState(() {
       userId = prefs.getInt("userId")!;
+
+      if (userId != 0) {
+        //print("newslettergetUser-masuk");
+        _formData['log_user_id'] = userId;
+        _formData['page'] = "Advs";
+      }
     });
     sponsoredList = await httpProvider
         .postHttp3('advertisement/sponsored_ads', {"member_id": userId});
+
+    if (userId != 0) {
+      log = await httpProvider.postHttp("log/create", _formData);
+    }
   }
 
   List<dynamic> vouchersList = [];
@@ -76,7 +107,6 @@ class _AdvPageState extends State<AdvPage> with SingleTickerProviderStateMixin {
                   color: kSecondaryColor,
                 ),
               ),
-               automaticallyImplyLeading: false,
               centerTitle: true,
               backgroundColor: kPrimaryColor,
               elevation: 0,
@@ -97,9 +127,8 @@ class _AdvPageState extends State<AdvPage> with SingleTickerProviderStateMixin {
       length: sponsoredList.isNotEmpty ? myTabs.length : myTabs2.length,
       child: Scaffold(
         appBar: AppBar(
-        
           title: const Text('Adv Zone'),
-           automaticallyImplyLeading: false,
+          automaticallyImplyLeading: false,
           backgroundColor: kPrimaryColor,
           centerTitle: true,
           bottom: TabBar(

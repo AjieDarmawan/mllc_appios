@@ -39,98 +39,108 @@ class _AccountProfessionalCertViewPageState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "Professional Cert & Rewards",
-            style: TextStyle(
-              color: kSecondaryColor,
+    return GestureDetector(
+         onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            title: const Text(
+              "Professional Cert & Rewards",
+              style: TextStyle(
+                color: kSecondaryColor,
+              ),
             ),
+            centerTitle: true,
+            backgroundColor: kPrimaryColor,
+            elevation: 0,
           ),
-          centerTitle: true,
-          backgroundColor: kPrimaryColor,
-          elevation: 0,
-        ),
-        bottomNavigationBar: SizedBox(
-          height: _disableEdit == true ? 0 : 90,
-          child: Column(
-            children: [
-              if (_disableEdit == false)
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                    color: kSecondaryColor,
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                          color: kThirdColor.withOpacity(0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, -5)),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: MaterialButton(
-                          onPressed: () {
-                            final form = _formKey.currentState;
-                            if (form!.validate()) {
-                              form.save();
-                              context
-                                  .read<AuthBloc>()
-                                  .add(CreateUpdateProfessionalCert(_formData));
-                              Navigator.pop(context);
-                            }
-                          },
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          color: kPrimaryColor,
-                          child: const Text("Save",
-                              style: TextStyle(color: kSecondaryColor)),
-                          elevation: 0,
-                          highlightElevation: 0,
-                          hoverElevation: 0,
-                          focusElevation: 0,
+          bottomNavigationBar: SizedBox(
+            height: _disableEdit == true ? 0 : 90,
+            child: Column(
+              children: [
+                if (_disableEdit == false)
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color: kSecondaryColor,
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: kThirdColor.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, -5)),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: MaterialButton(
+                            onPressed: () {
+                              final form = _formKey.currentState;
+                              if (form!.validate()) {
+                                form.save();
+                                context
+                                    .read<AuthBloc>()
+                                    .add(CreateUpdateProfessionalCert(_formData));
+                                Navigator.pop(context);
+                              }
+                            },
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            color: kPrimaryColor,
+                            child: const Text("Save",
+                                style: TextStyle(color: kSecondaryColor)),
+                            elevation: 0,
+                            highlightElevation: 0,
+                            hoverElevation: 0,
+                            focusElevation: 0,
+                          ),
                         ),
-                      ),
-                    ],
-                  ).paddingSymmetric(vertical: 10, horizontal: 20),
-                ),
-            ],
+                      ],
+                    ).paddingSymmetric(vertical: 10, horizontal: 20),
+                  ),
+              ],
+            ),
           ),
-        ),
-        body: Form(
-          key: _formKey,
-          child: ListView(primary: true, children: [
-            TextFieldWidget(
-              labelText: "Certificate Name",
-              iconData: FontAwesomeIcons.certificate,
-              //iconData: Icons.ac_unit,
-              setValue: _setInputValue,
-              field: 'certname',
-              validator:
-                  RequiredValidator(errorText: 'Certificate Name is required'),
-              initialValue: _formData['certname'],
-              readOnly: _disableEdit,
-            ),
-            TextFieldWidget(
-              keyboardType: TextInputType.number,
-              labelText: "Year Entitled",
-              //iconData: Icons.ac_unit,
-              iconData: FontAwesomeIcons.solidCalendarAlt,
-              setValue: _setInputValue,
-              field: 'entitled_year',
-              validator:
-                  RequiredValidator(errorText: 'Year Entitled is required'),
-              initialValue: _formData['entitled_year'],
-              readOnly: _disableEdit,
-            ),
-          ]),
-        ));
+          body: Form(
+            key: _formKey,
+            child: ListView(primary: true, children: [
+              TextFieldWidget(
+                labelText: "Certificate Name",
+                iconData: FontAwesomeIcons.certificate,
+                //iconData: Icons.ac_unit,
+                setValue: _setInputValue,
+                field: 'certname',
+                validator:
+                    RequiredValidator(errorText: 'Certificate Name is required'),
+                initialValue: _formData['certname'],
+                readOnly: _disableEdit,
+              ),
+              TextFieldWidget(
+                keyboardType: TextInputType.number,
+                labelText: "Year Entitled",
+                //iconData: Icons.ac_unit,
+                iconData: FontAwesomeIcons.solidCalendarAlt,
+                setValue: _setInputValue,
+                field: 'entitled_year',
+                validator:
+                    RequiredValidator(errorText: 'Year Entitled is required'),
+                initialValue: _formData['entitled_year'],
+                readOnly: _disableEdit,
+              ),
+            ]),
+          )),
+    );
   }
 
   void _setInputValue(String field, String value) {

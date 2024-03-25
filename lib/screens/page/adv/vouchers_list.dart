@@ -67,6 +67,7 @@ class _VouchersListPageState extends State<VouchersListPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: Container(),
         backgroundColor: kPrimaryColor,

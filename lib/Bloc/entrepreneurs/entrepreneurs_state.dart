@@ -2,7 +2,7 @@ part of 'entrepreneurs_bloc.dart';
 
 abstract class EntrepreneursState extends Equatable {
   const EntrepreneursState();
-  
+
   @override
   List<Object> get props => [];
 }
@@ -43,10 +43,12 @@ class NoEntrepreneursFound extends EntrepreneursState {
 class GetEntrepreneurDetailSuccessful extends EntrepreneursState {
   final String status;
   final dynamic entrepreneurData;
+  final dynamic check_status;
 
-  const GetEntrepreneurDetailSuccessful(this.status, this.entrepreneurData);
+  const GetEntrepreneurDetailSuccessful(
+      this.status, this.entrepreneurData, this.check_status);
   @override
-  List<Object> get props => [status, entrepreneurData];
+  List<Object> get props => [status, entrepreneurData, check_status];
   @override
   String toString() => status;
 }

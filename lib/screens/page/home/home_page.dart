@@ -841,9 +841,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 print("testes${slider}");
               },
 
-              loop: getPopUpAnnouncementReturn.length == 1 ? false : true,
+              //loop: getPopUpAnnouncementReturn.length == 1 ? false : true,
 
-              //  loop: false,
+              loop: false,
               itemBuilder: (BuildContext context, int i) {
                 return CustomDialogBox(
                     title: getPopUpAnnouncementReturn[i]['title'],
@@ -883,10 +883,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 //         fontWeight: FontWeight.w600));
               },
 
-              autoplayDelay: 8000,
-              autoplay: isAutoPlayEnabled,
+              // autoplayDelay: 8000,
+              // autoplay: isAutoPlayEnabled,
               autoplayDisableOnInteraction: true,
-              itemCount: getPopUpAnnouncementReturn.length,
+              // itemCount: getPopUpAnnouncementReturn.length,
+              itemCount: 1,
 
               pagination: const SwiperPagination(
                 alignment: Alignment(0.0, 0.85),
@@ -921,6 +922,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     // });
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70.0), // Set the desired height here
         child: AppBar(

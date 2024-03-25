@@ -19,11 +19,11 @@ class GetEntrepreneursList extends EntrepreneursEvent {
 }
 
 class GetEntrepreneurDetails extends EntrepreneursEvent {
-  final dynamic arg;
+  final dynamic formData;
 
-  const GetEntrepreneurDetails(this.arg);
+  const GetEntrepreneurDetails(this.formData);
   @override
-  List<Object> get props => [arg];
+  List<Object> get props => [formData];
 }
 
 class UpdateToRequestConnected extends EntrepreneursEvent {

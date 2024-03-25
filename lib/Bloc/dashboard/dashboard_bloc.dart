@@ -127,6 +127,8 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   void _mapGetBannerNewsletterToState(event, emit) async {
     List<String> banners = [];
     Map<String, dynamic> dataReturn = {};
+    Map<String, dynamic> dataReturnadv = {};
+
     print("banner?log_user_id=${event.arg}");
     emit(DashboardLoading());
     List bannerDataReturn =
@@ -142,6 +144,11 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         await httpProvider.getHttp("newsletter/listing");
     if (newsletterListDataReturn != null) {
       dataReturn.addAll({'newsletter': newsletterListDataReturn});
+    }
+
+    var listadv = await httpProvider.getHttp("popup");
+    if (listadv != null) {
+      dataReturnadv.addAll({'adv': listadv});
     }
 
     if (dataReturn.isNotEmpty) {

@@ -15,16 +15,18 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:mlcc_app_ios/screens/page/entrepreneurs/entrepreneur_details_view.dart';
 import 'package:mlcc_app_ios/screens/page/entrepreneurs/entrepreneur_search_page.dart';
 
-class EntrepreneursListPage extends StatefulWidget {
+class EntrepreneursListConnectedPage extends StatefulWidget {
   final String? data;
 
-  const EntrepreneursListPage({Key? key, this.data}) : super(key: key);
+  const EntrepreneursListConnectedPage({Key? key, this.data}) : super(key: key);
 
   @override
-  _EntrepreneursListPageState createState() => _EntrepreneursListPageState();
+  _EntrepreneursListConnectedPageState createState() =>
+      _EntrepreneursListConnectedPageState();
 }
 
-class _EntrepreneursListPageState extends State<EntrepreneursListPage> {
+class _EntrepreneursListConnectedPageState
+    extends State<EntrepreneursListConnectedPage> {
   int currentPage = 1;
 
   late int totalPages;
@@ -60,88 +62,39 @@ class _EntrepreneursListPageState extends State<EntrepreneursListPage> {
   final RefreshController refreshController =
       RefreshController(initialRefresh: true);
 
-  getAllData() async {
-    final response = await httpProvider.getHttp2(
-        "entrepreneur/listing?page=$currentPage&user_id=${userId}&log_user_id=${userId}");
-    if (response != null) {
-      tPages = response[0]['totalPages'];
-      if (widget.data == 'connect') {
-        itemsEntrepreneurs = [];
-      }
-
-      print("getAllData${tPages}");
-      print("getAllData-pages${tPages}");
-      for (int i = 0; i < tPages; i++) {
-        final result = await httpProvider.getHttp2(
-            "entrepreneur/listing?page=$cPages&user_id=${userId}&log_user_id=${userId}");
-        setState(() {
-          result.removeWhere((item) => item['id'] == userId);
-
-          if (widget.data == 'connect') {
-            for (var item in result) {
-              if (item['connect_user_id'].contains(userId) == true) {
-                itemsEntrepreneurs.add(item);
-              }
-            }
-          } else {
-            itemsEntrepreneurs.addAll(result);
-          }
-
-          // items.addAll(response);
-          cPages++;
-        });
-      }
-    }
-  }
-
-  Future<bool> getPassengerData({bool isRefresh = false}) async {
+  Future<bool> getConnected({bool isRefresh = false}) async {
     if (isRefresh) {
       currentPage = 1;
     } else {
       if (currentPage >= totalPages) {
-        //refreshController.loadNoData();
+        refreshController.loadNoData();
         return false;
       }
     }
 
-    final response = await httpProvider.getHttp2(
-        "entrepreneur/listing?page=$currentPage&user_id=${userId}&log_user_id=${userId}");
+    final _connectedformData = {};
+    _connectedformData['userId'] = userId;
+    final response = await httpProvider.postHttp2(
+        "entrepreneur/connect/listing?page=$currentPage}", {'user_id': userId});
+
+    print("connected${response}");
 
     if (response != null) {
       final result = response;
       result.removeWhere((item) => item['id'] == userId);
       if (isRefresh) {
-        if (widget.data == 'connect') {
-          items = [];
-          for (var item in result) {
-            if (item['connect_user_id'].contains(userId) == true) {
-              items.add(item);
-            }
-          }
-        } else {
-          items = result;
-        }
+        items = result;
       } else {
-        if (widget.data == 'connect') {
-          for (var item in result) {
-            if (item['connect_user_id'].contains(userId) == true) {
-              items.add(item);
-            }
-          }
-        } else {
-          items.addAll(result);
-        }
+        items.addAll(result);
       }
-
-      items.removeWhere((item) => item['id'] == userId);
 
       currentPage++;
 
-      totalPages = result[0]['totalPages'] + 1 as int;
+      // totalPages = result[0]['totalPages'] + 1 as int;
 
       //totalPages = result[0]['totalPages'];
 
-      // print("WOI${items}");
+      print("WOI${items}");
       setState(() {});
       return true;
     } else {
@@ -185,14 +138,9 @@ class _EntrepreneursListPageState extends State<EntrepreneursListPage> {
     secureScreen();
     DisableScreenshots.disable();
     getUser();
-    //getAllData();
-    getPassengerData();
-    // context.read<EntrepreneursBloc>().add(const GetEntrepreneursList());
-    // _tabController = TabController(vsync: this, length: myTabs.length);
-    // _tabController!.addListener(_setActiveTabIndex);
-    // if (items.isEmpty) {
-    //   items.addAll(widget.data);
-    // }
+
+    getConnected();
+
     super.initState();
   }
 
@@ -214,8 +162,8 @@ class _EntrepreneursListPageState extends State<EntrepreneursListPage> {
         }
       },
       child: Scaffold(
-        // endDrawer: populateDrawer(),
         resizeToAvoidBottomInset: false,
+        // endDrawer: populateDrawer(),
         appBar: AppBar(
           leading: Container(),
           backgroundColor: kPrimaryColor,
@@ -229,7 +177,7 @@ class _EntrepreneursListPageState extends State<EntrepreneursListPage> {
                   PageTransition(
                     type: PageTransitionType.fade,
                     child: EntrepreneurSearchPage(
-                        data: itemsEntrepreneurs, typesearch: ''),
+                        data: itemsEntrepreneurs, typesearch: 'connected'),
                   ),
                 );
               },
@@ -270,37 +218,37 @@ class _EntrepreneursListPageState extends State<EntrepreneursListPage> {
         body: SmartRefresher(
             controller: refreshController,
             footer: const ClassicFooter(loadStyle: LoadStyle.ShowWhenLoading),
-            enablePullUp: true,
+            // enablePullUp: true,
             // enablePullDown: true,
             //enablePullUp: true,
             onRefresh: () async {
-              final result = await getPassengerData(isRefresh: true);
+              final result = await getConnected(isRefresh: true);
               if (result) {
                 refreshController.refreshCompleted();
                 setState(() {
                   result_loading = true;
                 });
-                print("cek_complate");
+                print("cek_complate connected");
               } else {
                 setState(() {
                   result_loading = false;
                 });
-                print("cek_loading");
+                print("cek_loading connected");
                 refreshController.refreshFailed();
               }
             },
             onLoading: () async {
-              final result = await getPassengerData();
+              final result = await getConnected();
               if (result) {
-                print("cek-result-1${result}");
-                print("cek_complate-1");
+                print("cek-result-1 connected${result}");
+                print("cek_complate-1 connected");
                 setState(() {
                   result_loading = true;
                 });
                 refreshController.loadComplete();
               } else {
-                print("cek-result-2${result}");
-                print("cek_loading-2");
+                print("cek-result-2 connected${result}");
+                print("cek_loading-2 connected");
                 setState(() {
                   result_loading = true;
                 });
@@ -369,21 +317,9 @@ class _EntrepreneursListPageState extends State<EntrepreneursListPage> {
   // }
 
   Widget _buildEntrepreneursList(dynamic data) {
-    if (data['connect_user_id'].isNotEmpty &&
-        data['connect_user_id'].contains(userId) == true) {
-      connect = true;
-      pending = false;
-      notconnect = false;
-    } else if (data['connect_pending_user_id'].isNotEmpty &&
-        data['connect_pending_user_id'].contains(userId) == true) {
-      connect = false;
-      pending = true;
-      notconnect = false;
-    } else {
-      connect = false;
-      pending = false;
-      notconnect = true;
-    }
+    connect = true;
+    pending = false;
+    notconnect = false;
 
     return GestureDetector(
       onTap: () {
@@ -582,33 +518,33 @@ class _EntrepreneursListPageState extends State<EntrepreneursListPage> {
                       ),
                     ],
                   ),
-                  if (data['member_type_string'] == 'Both')
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5.0),
-                          child: Image.asset("assets/mlcc_logo.png",
-                              width: 30, height: 30),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 0.0),
-                          child: Image.asset("assets/mlcc_logo.png",
-                              width: 30, height: 30),
-                        )
-                      ],
-                    ),
-                  if (data['member_type_string'] == 'Ambassador')
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 0.0),
-                      child: Image.asset("assets/mlcc_logo.png",
-                          width: 30, height: 30),
-                    ),
-                  if (data['member_type_string'] == 'Consultant')
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 0.0),
-                      child: Image.asset("assets/mlcc_logo.png",
-                          width: 30, height: 30),
-                    )
+                  // if (data['member_type_string'] == 'Both')
+                  //   Row(
+                  //     children: [
+                  //       Padding(
+                  //         padding: const EdgeInsets.only(right: 5.0),
+                  //         child: Image.asset("assets/mlcc_logo.png",
+                  //             width: 30, height: 30),
+                  //       ),
+                  //       Padding(
+                  //         padding: const EdgeInsets.only(left: 0.0),
+                  //         child: Image.asset("assets/mlcc_logo.png",
+                  //             width: 30, height: 30),
+                  //       )
+                  //     ],
+                  //   ),
+                  // if (data['member_type_string'] == 'Ambassador')
+                  //   Padding(
+                  //     padding: const EdgeInsets.only(bottom: 0.0),
+                  //     child: Image.asset("assets/mlcc_logo.png",
+                  //         width: 30, height: 30),
+                  //   ),
+                  // if (data['member_type_string'] == 'Consultant')
+                  //   Padding(
+                  //     padding: const EdgeInsets.only(bottom: 0.0),
+                  //     child: Image.asset("assets/mlcc_logo.png",
+                  //         width: 30, height: 30),
+                  //   )
                 ],
               ),
             ),

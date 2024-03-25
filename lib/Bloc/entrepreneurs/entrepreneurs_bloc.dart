@@ -99,12 +99,31 @@ class EntrepreneursBloc extends Bloc<EntrepreneursEvent, EntrepreneursState> {
 
   void _mapEntrepreneurDetailsToState(event, emit) async {
     emit(EntrepreneursLoading());
-    var formData = {'user_id': event.arg, 'log_user_id': event.arg};
+    var formData = {
+      'user_id': event.formData['user_id'],
+      'log_user_id': event.formData['user_id']
+    };
     var entrepreneurDetailDataReturn =
         await httpProvider.postHttp2("entrepreneur/info", formData);
+
+//  'user_id': event.formData['user_id'],
+//       'connector_id': event.formData['connector_id'],
+
+    var formData_check_status = {
+      'user_id': event.formData['user_id'],
+      'log_user_id': event.formData['log_user_id']
+    };
+
+    print("formData_check_status${formData_check_status}");
+
+    var check_status = await httpProvider.postHttp(
+        "member/check_referral", formData_check_status);
+
     if (entrepreneurDetailDataReturn != null) {
       emit(GetEntrepreneurDetailSuccessful(
-          "Get Entrepreneur Details Successful", entrepreneurDetailDataReturn));
+          "Get Entrepreneur Details Successful",
+          entrepreneurDetailDataReturn,
+          check_status));
     } else {
       emit(const ErrorOccured());
     }

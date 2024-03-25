@@ -303,9 +303,15 @@ class _AccountCompanyViewPageState extends State<AccountCompanyViewPage> {
         if (args['data']['company_city'] != null) {
           _formData['company_city'] = args['data']['company_city'];
         }
-        // if (args['data']['expanding_areas'].contains("Others") == true) {
-        //   showExpandingAreasOther = true;
-        // }
+
+        if (args['data']['expanding_areas'] != null) {
+          if (args['data']['expanding_areas'].contains("Others") == true) {
+            showExpandingAreasOther = true;
+          }
+        } else {
+          showExpandingAreasOther = false;
+        }
+
         _formData['ssm_cert'] = '';
         if (args['data']['ssm_certificate'] != null) {
           _filename = args['data']['ssm_certificate'].split('/').last;
@@ -320,629 +326,646 @@ class _AccountCompanyViewPageState extends State<AccountCompanyViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "Company Information",
-            style: TextStyle(
-              color: kSecondaryColor,
+    return GestureDetector(
+       onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            title: const Text(
+              "Company Information",
+              style: TextStyle(
+                color: kSecondaryColor,
+              ),
+            ),
+            centerTitle: true,
+            backgroundColor: kPrimaryColor,
+            elevation: 0,
+          ),
+          bottomNavigationBar: SizedBox(
+            height: isdisabled == true ? 0 : 90,
+            child: Column(
+              children: [
+                if (isdisabled == false)
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color: kSecondaryColor,
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: kThirdColor.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, -5)),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: MaterialButton(
+                            onPressed: () {
+                              final form = _formKey.currentState;
+                              if (form!.validate()) {
+                                _formData['user_id'] = userId;
+                                print("cekduu");
+                                form.save();
+                                print("cekduu12");
+                                // if (_filename != '') {
+                                //   print("cekduu123");
+                                context
+                                    .read<AuthBloc>()
+                                    .add(UpdateCompanyDetail(_formData));
+                                Timer(const Duration(milliseconds: 1000), () {
+                                  Navigator.of(context)
+                                      .popUntil((route) => route.isFirst);
+                                  Navigator.pushReplacement(
+                                      context,
+                                      PageTransition(
+                                        type: PageTransitionType.fade,
+                                        child: const MainScreen(
+                                          page: AccountViewPage(),
+                                          index: 4,
+                                        ),
+                                      ));
+                                  _showSuccessMessage(context,
+                                      'Update Personal Basic Info Successful');
+                                });
+                                // } else {
+                                //   showDialog<String>(
+                                //       context: context,
+                                //       builder: (BuildContext context) =>
+                                //           AlertDialog(
+                                //             title: const Text('SSM Certificate'),
+                                //             content: const Text(
+                                //                 'Please Upload SSM Certificate Attachment (Type : JPG, PNG, JPEG)'),
+                                //             actions: <Widget>[
+                                //               TextButton(
+                                //                 onPressed: () =>
+                                //                     Navigator.pop(context, 'OK'),
+                                //                 child: const Text('OK'),
+                                //                 style: TextButton.styleFrom(
+                                //                     primary: Colors.black),
+                                //               ),
+                                //             ],
+                                //           ));
+                                // }
+                              }
+                            },
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            color: kPrimaryColor,
+                            child: const Text("Save",
+                                style: TextStyle(color: kSecondaryColor)),
+                            elevation: 0,
+                            highlightElevation: 0,
+                            hoverElevation: 0,
+                            focusElevation: 0,
+                          ),
+                        ),
+                      ],
+                    ).paddingSymmetric(vertical: 10, horizontal: 20),
+                  ),
+              ],
             ),
           ),
-          centerTitle: true,
-          backgroundColor: kPrimaryColor,
-          elevation: 0,
-        ),
-        bottomNavigationBar: SizedBox(
-          height: isdisabled == true ? 0 : 90,
-          child: Column(
-            children: [
-              if (isdisabled == false)
+          body: DelayedDisplay(
+            delay: const Duration(
+              milliseconds: 600,
+            ),
+            child: Form(
+              key: _formKey,
+              child: ListView(primary: true, children: [
+                TextFieldWidget(
+                  labelText: "Company Name",
+                  mandatory: "*",
+                  iconData: FontAwesomeIcons.building,
+                  //iconData: Icons.ac_unit,
+                  setValue: _setInputValue,
+                  field: 'company_name',
+                  validator:
+                      RequiredValidator(errorText: 'Company Name is required'),
+                  initialValue: _formData['company_name'],
+                ),
+                TextFieldWidget(
+                  labelText: "Designation",
+                  iconData: Icons.business_center_rounded,
+                  setValue: _setInputValue,
+                  field: 'designation',
+                  mandatory: "*",
+                  validator:
+                      RequiredValidator(errorText: 'Designation is required'),
+                  initialValue: _formData['designation'],
+                ),
                 Container(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.only(
+                      top: 20, bottom: 14, left: 20, right: 20),
+                  margin: const EdgeInsets.only(
+                      left: 20, right: 20, top: 20, bottom: 20),
                   decoration: BoxDecoration(
-                    color: kSecondaryColor,
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                          color: kThirdColor.withOpacity(0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, -5)),
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Get.theme.focusColor.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5)),
+                      ],
+                      border: Border.all(
+                          color: Get.theme.focusColor.withOpacity(0.05))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      DropdownSearch<String>(
+                        mode: Mode.BOTTOM_SHEET,
+                        showSelectedItems: true,
+                        items: businessCategory,
+                        label: "Business Category",
+                        onChanged: (item) {
+                          final data = businessCategoryList
+                              .firstWhere((e) => e['name'] == item);
+                          _formData['business_category_main_id'] = data['id'];
+                          getSubCategory(data['id']);
+                          setState(() {
+                            selectedBusinessNature = data['name'];
+                            selectedSubBusinessNature = "";
+                          });
+                        },
+                        onSaved: (item) {
+                          final data = businessCategoryList
+                              .firstWhere((e) => e['name'] == item);
+                          _formData['business_category_main_id'] = data['id'];
+                        },
+                        selectedItem: selectedBusinessNature,
+                        validator: (item) {
+                          if (item == null) {
+                            return "Please select a Business Category";
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
                     ],
                   ),
-                  child: Row(
+                ),
+                showExpandingSubCategory == true
+                    ? Container(
+                        padding: const EdgeInsets.only(
+                            top: 20, bottom: 14, left: 20, right: 20),
+                        margin: const EdgeInsets.only(
+                            left: 20, right: 20, top: 0, bottom: 0),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Get.theme.focusColor.withOpacity(0.1),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 5)),
+                            ],
+                            border: Border.all(
+                                color: Get.theme.focusColor.withOpacity(0.05))),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              "Sub Category of Business",
+                              style: Get.textTheme.bodyText1,
+                              textAlign: TextAlign.start,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: DropdownSearch<String>(
+                                mode: Mode.BOTTOM_SHEET,
+                                showSelectedItems: true,
+                                items: SubCategory,
+                                label: "Sub Category of Business",
+                                onChanged: (item) {
+                                  final data = SubCategoryList.firstWhere(
+                                      (e) => e['name'] == item);
+                                  _formData['business_category_sub_id'] =
+                                      data['id'];
+                                },
+                                onSaved: (item) {
+                                  final data = SubCategoryList.firstWhere(
+                                      (e) => e['name'] == item);
+                                  _formData['business_category_sub_id'] =
+                                      data['id'];
+                                },
+                                selectedItem: selectedSubBusinessNature,
+                                validator: (item) {
+                                  if (item == null) {
+                                    return "Please select sub business category";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Container(),
+                TextFieldWidget(
+                  labelText: "Nature of Business",
+                  hintText: "Software Development (App, Web & System)",
+                  iconData: Icons.business_center_rounded,
+                  setValue: _setInputValue,
+                  field: 'business_nature',
+                  mandatory: "*",
+                  initialValue: _formData['business_nature'],
+                  validator:
+                      RequiredValidator(errorText: 'Business Nature is required'),
+                ),
+                TextFieldWidget(
+                  labelText: "Establish Year",
+                  mandatory: "*",
+                  hintText: "Ex: 2022",
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(4),
+                  ],
+                  keyboardType: TextInputType.number,
+                  iconData: Icons.today,
+                  setValue: _setInputValue,
+                  field: 'establish_year',
+                  initialValue: _formData['establish_year'],
+                  validator:
+                      RequiredValidator(errorText: 'Establish Year is required'),
+                ),
+                // Container(
+                //   padding: const EdgeInsets.only(
+                //       top: 20, bottom: 14, left: 20, right: 20),
+                //   margin: const EdgeInsets.only(
+                //       left: 20, right: 20, top: 20, bottom: 0),
+                //   decoration: BoxDecoration(
+                //       color: Colors.white,
+                //       borderRadius:
+                //           const BorderRadius.vertical(top: Radius.circular(10)),
+                //       boxShadow: [
+                //         BoxShadow(
+                //             color: Get.theme.focusColor.withOpacity(0.1),
+                //             blurRadius: 10,
+                //             offset: const Offset(0, 5)),
+                //       ],
+                //       border: Border.all(
+                //           color: Get.theme.focusColor.withOpacity(0.05))),
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.stretch,
+                //     children: [
+                //       Text(
+                //         "Company annual sales turnover",
+                //         style: Get.textTheme.bodyText1,
+                //         textAlign: TextAlign.start,
+                //       ),
+                //       Padding(
+                //         padding: const EdgeInsets.all(8.0),
+                //         child: DropdownSearch<String>(
+                //           showSearchBox: true,
+                //           mode: Mode.BOTTOM_SHEET,
+                //           showSelectedItems: true,
+                //           items: sales,
+                //           selectedItem: selectedSales,
+                //           label: "Company annual sales turnover",
+                //           onChanged: (item) {
+                //             final data = salesList
+                //                 .firstWhere((e) => e['description'] == item);
+                //             _formData['company_sales_id'] = data['id'];
+                //             setState(() {
+                //               selectedSales = data['description'];
+                //             });
+                //           },
+                //           onSaved: (item) {
+                //             final data = salesList
+                //                 .firstWhere((e) => e['description'] == item);
+                //             _formData['company_sales_id'] = data['id'];
+                //           },
+                //           validator: (item) {
+                //             if (item == null) {
+                //               return "Please select company annual sales turnover";
+                //             } else {
+                //               return null;
+                //             }
+                //           },
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                Container(
+                  padding: const EdgeInsets.only(
+                      top: 20, bottom: 14, left: 20, right: 20),
+                  margin: const EdgeInsets.only(
+                      left: 20, right: 20, top: 0, bottom: 0),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.all(Radius.circular(0)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Get.theme.focusColor.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5)),
+                      ],
+                      border: Border.all(
+                          color: Get.theme.focusColor.withOpacity(0.05))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Expanded(
-                        child: MaterialButton(
-                          onPressed: () {
-                            final form = _formKey.currentState;
-                            if (form!.validate()) {
-                              _formData['user_id'] = userId;
-                              print("cekduu");
-                              form.save();
-                              print("cekduu12");
-                              // if (_filename != '') {
-                              //   print("cekduu123");
-                              context
-                                  .read<AuthBloc>()
-                                  .add(UpdateCompanyDetail(_formData));
-                              Timer(const Duration(milliseconds: 1000), () {
-                                Navigator.of(context)
-                                    .popUntil((route) => route.isFirst);
-                                Navigator.pushReplacement(
-                                    context,
-                                    PageTransition(
-                                      type: PageTransitionType.fade,
-                                      child: const MainScreen(
-                                        page: AccountViewPage(),
-                                        index: 4,
-                                      ),
-                                    ));
-                                _showSuccessMessage(context,
-                                    'Update Personal Basic Info Successful');
-                              });
-                              // } else {
-                              //   showDialog<String>(
-                              //       context: context,
-                              //       builder: (BuildContext context) =>
-                              //           AlertDialog(
-                              //             title: const Text('SSM Certificate'),
-                              //             content: const Text(
-                              //                 'Please Upload SSM Certificate Attachment (Type : JPG, PNG, JPEG)'),
-                              //             actions: <Widget>[
-                              //               TextButton(
-                              //                 onPressed: () =>
-                              //                     Navigator.pop(context, 'OK'),
-                              //                 child: const Text('OK'),
-                              //                 style: TextButton.styleFrom(
-                              //                     primary: Colors.black),
-                              //               ),
-                              //             ],
-                              //           ));
-                              // }
+                      Text(
+                        "Expanding Areas",
+                        style: Get.textTheme.bodyText1,
+                        textAlign: TextAlign.start,
+                      ),
+                      CustomSearchableDropDown(
+                          items: listToSearch,
+                          label: 'Expanding Areas',
+                          multiSelectTag: 'Expanding Areas',
+                          multiSelectValuesAsWidget: true,
+                          multiSelect: true,
+                          prefixIcon: const Icon(
+                            Icons.expand,
+                            color: kPrimaryColor,
+                          ),
+                          initialValue: initArea,
+                          onChanged: (value) {
+                            initArea = [];
+                            _formData['expanding_areas'] = '';
+                            if (value != null) {
+                              dynamic data = jsonDecode(value);
+                              String dataListSelected = '';
+                              for (int i = 0; i < data.length; i++) {
+                                dataListSelected =
+                                    dataListSelected + ',' + data[i]['area'];
+                                if (data[i]['area'].contains("Others") == true) {
+                                  setState(() {
+                                    showExpandingAreasOther = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    showExpandingAreasOther = false;
+                                  });
+                                }
+                              }
+                              _formData['expanding_areas'] =
+                                  dataListSelected.substring(1);
+                              print(_formData['expanding_areas']);
+                            } else {
+                              selectedExpandingAreas.clear();
                             }
                           },
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          color: kPrimaryColor,
-                          child: const Text("Save",
-                              style: TextStyle(color: kSecondaryColor)),
-                          elevation: 0,
-                          highlightElevation: 0,
-                          hoverElevation: 0,
-                          focusElevation: 0,
-                        ),
-                      ),
+                          dropDownMenuItems: listToSearch.map((item) {
+                            return item['area'];
+                          }).toList(),
+                          primaryColor: kPrimaryColor),
                     ],
-                  ).paddingSymmetric(vertical: 10, horizontal: 20),
+                  ),
                 ),
-            ],
-          ),
-        ),
-        body: DelayedDisplay(
-          delay: const Duration(
-            milliseconds: 600,
-          ),
-          child: Form(
-            key: _formKey,
-            child: ListView(primary: true, children: [
-              TextFieldWidget(
-                labelText: "Company Name",
-                iconData: FontAwesomeIcons.building,
-                //iconData: Icons.ac_unit,
-                setValue: _setInputValue,
-                field: 'company_name',
-                validator:
-                    RequiredValidator(errorText: 'Company Name is required'),
-                initialValue: _formData['company_name'],
-              ),
-              TextFieldWidget(
-                labelText: "Designation",
-                iconData: Icons.business_center_rounded,
-                setValue: _setInputValue,
-                field: 'designation',
-                validator:
-                    RequiredValidator(errorText: 'Designation is required'),
-                initialValue: _formData['designation'],
-              ),
-              Container(
-                padding: const EdgeInsets.only(
-                    top: 20, bottom: 14, left: 20, right: 20),
-                margin: const EdgeInsets.only(
-                    left: 20, right: 20, top: 20, bottom: 20),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Get.theme.focusColor.withOpacity(0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5)),
-                    ],
-                    border: Border.all(
-                        color: Get.theme.focusColor.withOpacity(0.05))),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    DropdownSearch<String>(
-                      mode: Mode.BOTTOM_SHEET,
-                      showSelectedItems: true,
-                      items: businessCategory,
-                      label: "Business Category",
-                      onChanged: (item) {
-                        final data = businessCategoryList
-                            .firstWhere((e) => e['name'] == item);
-                        _formData['business_category_main_id'] = data['id'];
-                        getSubCategory(data['id']);
-                        setState(() {
-                          selectedBusinessNature = data['name'];
-                          selectedSubBusinessNature = "";
-                        });
-                      },
-                      onSaved: (item) {
-                        final data = businessCategoryList
-                            .firstWhere((e) => e['name'] == item);
-                        _formData['business_category_main_id'] = data['id'];
-                      },
-                      selectedItem: selectedBusinessNature,
-                      validator: (item) {
-                        if (item == null) {
-                          return "Please select a Business Category";
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                  ],
+
+                showExpandingAreasOther == true
+                    ? TextFieldWidget(
+                        labelText: "Others",
+                        hintText: "Others",
+                        keyboardType: TextInputType.multiline,
+                        iconData: Icons.expand,
+                        isFirst: false,
+                        isLast: false,
+                        setValue: _setInputValue,
+                        field: 'expanding_areas_others',
+                        initialValue: _formData['expanding_areas_others'],
+                        // validator:
+                        //     RequiredValidator(errorText: 'Others is required'),
+                      )
+                    : Container(),
+
+                TextFieldWidget(
+                  labelText: "Expectations",
+                  hintText: "Expectations",
+                  mandatory: "*",
+                  iconData: Icons.chat_rounded,
+                  keyboardType: TextInputType.multiline,
+                  isFirst: false,
+                  isLast: true,
+                  setValue: _setInputValue,
+                  field: 'expectation',
+                  initialValue: _formData['expectation'],
+                  validator:
+                      RequiredValidator(errorText: 'Expectations is required'),
                 ),
-              ),
-              showExpandingSubCategory == true
-                  ? Container(
-                      padding: const EdgeInsets.only(
-                          top: 20, bottom: 14, left: 20, right: 20),
-                      margin: const EdgeInsets.only(
-                          left: 20, right: 20, top: 0, bottom: 0),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Get.theme.focusColor.withOpacity(0.1),
-                                blurRadius: 10,
-                                offset: const Offset(0, 5)),
-                          ],
-                          border: Border.all(
-                              color: Get.theme.focusColor.withOpacity(0.05))),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            "Sub Category of Business",
-                            style: Get.textTheme.bodyText1,
-                            textAlign: TextAlign.start,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: DropdownSearch<String>(
-                              mode: Mode.BOTTOM_SHEET,
-                              showSelectedItems: true,
-                              items: SubCategory,
-                              label: "Sub Category of Business",
-                              onChanged: (item) {
-                                final data = SubCategoryList.firstWhere(
-                                    (e) => e['name'] == item);
-                                _formData['business_category_sub_id'] =
-                                    data['id'];
-                              },
-                              onSaved: (item) {
-                                final data = SubCategoryList.firstWhere(
-                                    (e) => e['name'] == item);
-                                _formData['business_category_sub_id'] =
-                                    data['id'];
-                              },
-                              selectedItem: selectedSubBusinessNature,
-                              validator: (item) {
-                                if (item == null) {
-                                  return "Please select sub business category";
-                                } else {
-                                  return null;
-                                }
-                              },
-                            ),
-                          ),
-                        ],
+                TextFieldWidget(
+                  labelText: "Company Address",
+                  hintText: "Company Address",
+                  keyboardType: TextInputType.multiline,
+                  iconData: Icons.home,
+                  // keyboardType: TextInputType.phone,
+                  setValue: _setInputValue,
+                  initialValue: _formData['company_address'],
+                  field: 'company_address',
+                  isFirst: true,
+                  isLast: false,
+                ),
+                TextFieldWidget(
+                  labelText: "Postcode",
+                  hintText: "Postcode",
+                  keyboardType: TextInputType.number,
+                  iconData: Icons.home,
+                  // keyboardType: TextInputType.phone,
+                  setValue: _setInputValue,
+                  initialValue: _formData['company_postcode'],
+                  field: 'company_postcode',
+                  isFirst: false,
+                  isLast: false,
+                ),
+                TextFieldWidget(
+                  labelText: "City",
+                  hintText: "City",
+                  iconData: Icons.home,
+                  // keyboardType: TextInputType.phone,
+                  setValue: _setInputValue,
+                  initialValue: _formData['company_city'],
+                  field: 'company_city',
+                  isFirst: false,
+                  isLast: false,
+                ),
+                Container(
+                  padding: const EdgeInsets.only(
+                      top: 20, bottom: 14, left: 20, right: 20),
+                  margin: const EdgeInsets.only(
+                      left: 20, right: 20, top: 0, bottom: 0),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.all(Radius.circular(0)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Get.theme.focusColor.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5)),
+                      ],
+                      border: Border.all(
+                          color: Get.theme.focusColor.withOpacity(0.05))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        "State",
+                        style: Get.textTheme.bodyText1,
+                        textAlign: TextAlign.start,
                       ),
-                    )
-                  : Container(),
-              TextFieldWidget(
-                labelText: "Nature of Business",
-                hintText: "Software Development (App, Web & System)",
-                iconData: Icons.business_center_rounded,
-                setValue: _setInputValue,
-                field: 'business_nature',
-                initialValue: _formData['business_nature'],
-                validator:
-                    RequiredValidator(errorText: 'Business Nature is required'),
-              ),
-              TextFieldWidget(
-                labelText: "Establish Year",
-                hintText: "2022",
-                inputFormatters: [
-                  LengthLimitingTextInputFormatter(4),
-                ],
-                keyboardType: TextInputType.number,
-                iconData: Icons.today,
-                setValue: _setInputValue,
-                field: 'establish_year',
-                initialValue: _formData['establish_year'],
-                validator:
-                    RequiredValidator(errorText: 'Establish Year is required'),
-              ),
-              // Container(
-              //   padding: const EdgeInsets.only(
-              //       top: 20, bottom: 14, left: 20, right: 20),
-              //   margin: const EdgeInsets.only(
-              //       left: 20, right: 20, top: 20, bottom: 0),
-              //   decoration: BoxDecoration(
-              //       color: Colors.white,
-              //       borderRadius:
-              //           const BorderRadius.vertical(top: Radius.circular(10)),
-              //       boxShadow: [
-              //         BoxShadow(
-              //             color: Get.theme.focusColor.withOpacity(0.1),
-              //             blurRadius: 10,
-              //             offset: const Offset(0, 5)),
-              //       ],
-              //       border: Border.all(
-              //           color: Get.theme.focusColor.withOpacity(0.05))),
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.stretch,
-              //     children: [
-              //       Text(
-              //         "Company annual sales turnover",
-              //         style: Get.textTheme.bodyText1,
-              //         textAlign: TextAlign.start,
-              //       ),
-              //       Padding(
-              //         padding: const EdgeInsets.all(8.0),
-              //         child: DropdownSearch<String>(
-              //           showSearchBox: true,
-              //           mode: Mode.BOTTOM_SHEET,
-              //           showSelectedItems: true,
-              //           items: sales,
-              //           selectedItem: selectedSales,
-              //           label: "Company annual sales turnover",
-              //           onChanged: (item) {
-              //             final data = salesList
-              //                 .firstWhere((e) => e['description'] == item);
-              //             _formData['company_sales_id'] = data['id'];
-              //             setState(() {
-              //               selectedSales = data['description'];
-              //             });
-              //           },
-              //           onSaved: (item) {
-              //             final data = salesList
-              //                 .firstWhere((e) => e['description'] == item);
-              //             _formData['company_sales_id'] = data['id'];
-              //           },
-              //           validator: (item) {
-              //             if (item == null) {
-              //               return "Please select company annual sales turnover";
-              //             } else {
-              //               return null;
-              //             }
-              //           },
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
-              Container(
-                padding: const EdgeInsets.only(
-                    top: 20, bottom: 14, left: 20, right: 20),
-                margin: const EdgeInsets.only(
-                    left: 20, right: 20, top: 0, bottom: 0),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.all(Radius.circular(0)),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Get.theme.focusColor.withOpacity(0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5)),
-                    ],
-                    border: Border.all(
-                        color: Get.theme.focusColor.withOpacity(0.05))),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      "Expanding Areas",
-                      style: Get.textTheme.bodyText1,
-                      textAlign: TextAlign.start,
-                    ),
-                    CustomSearchableDropDown(
-                        items: listToSearch,
-                        label: 'Expanding Areas',
-                        multiSelectTag: 'Expanding Areas',
-                        multiSelectValuesAsWidget: true,
-                        multiSelect: true,
-                        prefixIcon: const Icon(
-                          Icons.expand,
-                          color: kPrimaryColor,
-                        ),
-                        initialValue: initArea,
-                        onChanged: (value) {
-                          initArea = [];
-                          _formData['expanding_areas'] = '';
-                          if (value != null) {
-                            dynamic data = jsonDecode(value);
-                            String dataListSelected = '';
-                            for (int i = 0; i < data.length; i++) {
-                              dataListSelected =
-                                  dataListSelected + ',' + data[i]['area'];
-                              if (data[i]['area'].contains("Others") == true) {
-                                setState(() {
-                                  showExpandingAreasOther = true;
-                                });
-                              } else {
-                                setState(() {
-                                  showExpandingAreasOther = false;
-                                });
-                              }
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: DropdownSearch<String>(
+                          mode: Mode.BOTTOM_SHEET,
+                          showSelectedItems: true,
+                          items: state,
+                          //label: "State",
+                          onChanged: (item) {
+                            _formData['company_state_id'] = '';
+                            final data =
+                                stateList.firstWhere((e) => e['name'] == item);
+                            _formData['company_state_id'] = data['id'];
+                            setState(() {
+                              selectedState = data['name'];
+                            });
+                          },
+                          onSaved: (item) {
+                            final data =
+                                stateList.firstWhere((e) => e['name'] == item);
+                            _formData['company_state_id'] = data['id'];
+                          },
+                          selectedItem: selectedState,
+                          validator: (item) {
+                            if (item == null) {
+                              return "Please select state";
+                            } else {
+                              return null;
                             }
-                            _formData['expanding_areas'] =
-                                dataListSelected.substring(1);
-                            print(_formData['expanding_areas']);
-                          } else {
-                            selectedExpandingAreas.clear();
-                          }
-                        },
-                        dropDownMenuItems: listToSearch.map((item) {
-                          return item['area'];
-                        }).toList(),
-                        primaryColor: kPrimaryColor),
-                  ],
-                ),
-              ),
-              showExpandingAreasOther == true
-                  ? TextFieldWidget(
-                      labelText: "Others",
-                      hintText: "Others",
-                      keyboardType: TextInputType.multiline,
-                      iconData: Icons.expand,
-                      isFirst: false,
-                      isLast: false,
-                      setValue: _setInputValue,
-                      field: 'expanding_areas_others',
-                      initialValue: _formData['expanding_areas_others'],
-                      validator:
-                          RequiredValidator(errorText: 'Others is required'),
-                    )
-                  : Container(),
-              TextFieldWidget(
-                labelText: "Expectations",
-                hintText: "Expectations",
-                iconData: Icons.chat_rounded,
-                keyboardType: TextInputType.multiline,
-                isFirst: false,
-                isLast: true,
-                setValue: _setInputValue,
-                field: 'expectation',
-                initialValue: _formData['expectation'],
-                validator:
-                    RequiredValidator(errorText: 'Expectations is required'),
-              ),
-              TextFieldWidget(
-                labelText: "Company Address",
-                hintText: "Company Address",
-                keyboardType: TextInputType.multiline,
-                iconData: Icons.home,
-                // keyboardType: TextInputType.phone,
-                setValue: _setInputValue,
-                initialValue: _formData['company_address'],
-                field: 'company_address',
-                isFirst: true,
-                isLast: false,
-              ),
-              TextFieldWidget(
-                labelText: "Postcode",
-                hintText: "Postcode",
-                keyboardType: TextInputType.number,
-                iconData: Icons.home,
-                // keyboardType: TextInputType.phone,
-                setValue: _setInputValue,
-                initialValue: _formData['company_postcode'],
-                field: 'company_postcode',
-                isFirst: false,
-                isLast: false,
-              ),
-              TextFieldWidget(
-                labelText: "City",
-                hintText: "City",
-                iconData: Icons.home,
-                // keyboardType: TextInputType.phone,
-                setValue: _setInputValue,
-                initialValue: _formData['company_city'],
-                field: 'company_city',
-                isFirst: false,
-                isLast: false,
-              ),
-              Container(
-                padding: const EdgeInsets.only(
-                    top: 20, bottom: 14, left: 20, right: 20),
-                margin: const EdgeInsets.only(
-                    left: 20, right: 20, top: 0, bottom: 0),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.all(Radius.circular(0)),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Get.theme.focusColor.withOpacity(0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5)),
-                    ],
-                    border: Border.all(
-                        color: Get.theme.focusColor.withOpacity(0.05))),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      "State",
-                      style: Get.textTheme.bodyText1,
-                      textAlign: TextAlign.start,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: DropdownSearch<String>(
-                        mode: Mode.BOTTOM_SHEET,
-                        showSelectedItems: true,
-                        items: state,
-                        label: "State",
-                        onChanged: (item) {
-                          _formData['company_state_id'] = '';
-                          final data =
-                              stateList.firstWhere((e) => e['name'] == item);
-                          _formData['company_state_id'] = data['id'];
-                          setState(() {
-                            selectedState = data['name'];
-                          });
-                        },
-                        onSaved: (item) {
-                          final data =
-                              stateList.firstWhere((e) => e['name'] == item);
-                          _formData['company_state_id'] = data['id'];
-                        },
-                        selectedItem: selectedState,
-                        validator: (item) {
-                          if (item == null) {
-                            return "Please select state";
-                          } else {
-                            return null;
-                          }
-                        },
+                          },
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(
-                    top: 20, bottom: 14, left: 20, right: 20),
-                margin: const EdgeInsets.only(
-                    left: 20, right: 20, top: 0, bottom: 0),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.vertical(
-                        bottom: Radius.circular(10)),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Get.theme.focusColor.withOpacity(0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5)),
                     ],
-                    border: Border.all(
-                        color: Get.theme.focusColor.withOpacity(0.05))),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      "Country",
-                      style: Get.textTheme.bodyText1,
-                      textAlign: TextAlign.start,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: DropdownSearch<String>(
-                        mode: Mode.BOTTOM_SHEET,
-                        showSelectedItems: true,
-                        items: nationality,
-                        label: "Country",
-                        onChanged: (item) {
-                          _formData['company_country_id'] = '';
-                          final data = nationalityList
-                              .firstWhere((e) => e['name'] == item);
-                          _formData['company_country_id'] = data['id'];
-                          setState(() {
-                            selectedCountry = data['name'];
-                          });
-                        },
-                        onSaved: (item) {
-                          final data = nationalityList
-                              .firstWhere((e) => e['name'] == item);
-                          _formData['company_country_id'] = data['id'];
-                        },
-                        selectedItem: selectedCountry,
-                        validator: (item) {
-                          if (item == null) {
-                            return "Please select country";
-                          } else {
-                            return null;
-                          }
-                        },
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-              // InkWell(
-              //   onTap: () {
-              //     _onAddFileClick();
-              //   },
-              //   child: Container(
-              //     padding: const EdgeInsets.only(
-              //         top: 20, bottom: 14, left: 20, right: 20),
-              //     margin: const EdgeInsets.only(
-              //         left: 20, right: 20, top: 20, bottom: 20),
-              //     decoration: BoxDecoration(
-              //         color: Colors.white,
-              //         borderRadius: const BorderRadius.all(Radius.circular(10)),
-              //         boxShadow: [
-              //           BoxShadow(
-              //               color: Get.theme.focusColor.withOpacity(0.1),
-              //               blurRadius: 10,
-              //               offset: const Offset(0, 5)),
-              //         ],
-              //         border: Border.all(
-              //             color: Get.theme.focusColor.withOpacity(0.05))),
-              //     child: Column(
-              //       crossAxisAlignment: CrossAxisAlignment.stretch,
-              //       children: [
-              //         Text(
-              //           "SSM Certificate",
-              //           style: Get.textTheme.bodyText1,
-              //           textAlign: TextAlign.start,
-              //         ),
-              //         Row(
-              //           children: [
-              //             const Padding(
-              //               padding: EdgeInsets.all(8.0),
-              //               child: Icon(Icons.file_copy,
-              //                   size: 25, color: kPrimaryColor),
-              //             ),
-              //             SizedBox(
-              //               width: MediaQuery.of(context).size.width * 0.6,
-              //               child: Text(
-              //                 _filename,
-              //                 style: const TextStyle(
-              //                     fontSize: 12, color: Colors.grey),
-              //                 overflow: TextOverflow.ellipsis,
-              //                 softWrap: false,
-              //               ),
-              //             ),
-              //           ],
-              //         )
-              //       ],
-              //     ),
-              //   ),
-              // ),
-            ]),
-          ),
-        ));
+                Container(
+                  padding: const EdgeInsets.only(
+                      top: 20, bottom: 14, left: 20, right: 20),
+                  margin: const EdgeInsets.only(
+                      left: 20, right: 20, top: 0, bottom: 0),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.vertical(
+                          bottom: Radius.circular(10)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Get.theme.focusColor.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5)),
+                      ],
+                      border: Border.all(
+                          color: Get.theme.focusColor.withOpacity(0.05))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        "Country",
+                        style: Get.textTheme.bodyText1,
+                        textAlign: TextAlign.start,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: DropdownSearch<String>(
+                          mode: Mode.BOTTOM_SHEET,
+                          showSelectedItems: true,
+                          items: nationality,
+                          //  label: "Country",
+                          onChanged: (item) {
+                            _formData['company_country_id'] = '';
+                            final data = nationalityList
+                                .firstWhere((e) => e['name'] == item);
+                            _formData['company_country_id'] = data['id'];
+                            setState(() {
+                              selectedCountry = data['name'];
+                            });
+                          },
+                          onSaved: (item) {
+                            final data = nationalityList
+                                .firstWhere((e) => e['name'] == item);
+                            _formData['company_country_id'] = data['id'];
+                          },
+                          selectedItem: selectedCountry,
+                          validator: (item) {
+                            if (item == null) {
+                              return "Please select country";
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // InkWell(
+                //   onTap: () {
+                //     _onAddFileClick();
+                //   },
+                //   child: Container(
+                //     padding: const EdgeInsets.only(
+                //         top: 20, bottom: 14, left: 20, right: 20),
+                //     margin: const EdgeInsets.only(
+                //         left: 20, right: 20, top: 20, bottom: 20),
+                //     decoration: BoxDecoration(
+                //         color: Colors.white,
+                //         borderRadius: const BorderRadius.all(Radius.circular(10)),
+                //         boxShadow: [
+                //           BoxShadow(
+                //               color: Get.theme.focusColor.withOpacity(0.1),
+                //               blurRadius: 10,
+                //               offset: const Offset(0, 5)),
+                //         ],
+                //         border: Border.all(
+                //             color: Get.theme.focusColor.withOpacity(0.05))),
+                //     child: Column(
+                //       crossAxisAlignment: CrossAxisAlignment.stretch,
+                //       children: [
+                //         Text(
+                //           "SSM Certificate",
+                //           style: Get.textTheme.bodyText1,
+                //           textAlign: TextAlign.start,
+                //         ),
+                //         Row(
+                //           children: [
+                //             const Padding(
+                //               padding: EdgeInsets.all(8.0),
+                //               child: Icon(Icons.file_copy,
+                //                   size: 25, color: kPrimaryColor),
+                //             ),
+                //             SizedBox(
+                //               width: MediaQuery.of(context).size.width * 0.6,
+                //               child: Text(
+                //                 _filename,
+                //                 style: const TextStyle(
+                //                     fontSize: 12, color: Colors.grey),
+                //                 overflow: TextOverflow.ellipsis,
+                //                 softWrap: false,
+                //               ),
+                //             ),
+                //           ],
+                //         )
+                //       ],
+                //     ),
+                //   ),
+                // ),
+              ]),
+            ),
+          )),
+    );
   }
 
   void _setInputValue(String field, String value) {

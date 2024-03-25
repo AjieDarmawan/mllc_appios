@@ -100,6 +100,7 @@ class _AdvPageState extends State<AdvPage> with SingleTickerProviderStateMixin {
         return _buildContent(context, vouchersList, rewardsList, sponsoredList);
       } else {
         return Scaffold(
+           resizeToAvoidBottomInset: false,
             appBar: AppBar(
               title: const Text(
                 "Adv Zone",
@@ -123,35 +124,46 @@ class _AdvPageState extends State<AdvPage> with SingleTickerProviderStateMixin {
     final double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
+       resizeToAvoidBottomInset: false,
         body: DefaultTabController(
       length: sponsoredList.isNotEmpty ? myTabs.length : myTabs2.length,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Adv Zone'),
-          automaticallyImplyLeading: false,
-          backgroundColor: kPrimaryColor,
-          centerTitle: true,
-          bottom: TabBar(
-              indicatorColor: Colors.white,
-              tabs: sponsoredList.isNotEmpty ? myTabs : myTabs2),
-        ),
-        body: Stack(
-          children: [
-            sponsoredList.isNotEmpty
-                ? TabBarView(
-                    children: <Widget>[
-                      RewardsListPage(data: rewardsList),
-                      VouchersListPage(data: vouchersList),
-                      SponsoredListPage(data: sponsoredList)
-                    ],
-                  )
-                : TabBarView(
-                    children: <Widget>[
-                      RewardsListPage(data: rewardsList),
-                      VouchersListPage(data: vouchersList),
-                    ],
-                  )
-          ],
+      child: GestureDetector(
+         onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+        child: Scaffold(
+           resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            title: const Text('Adv Zone'),
+            automaticallyImplyLeading: false,
+            backgroundColor: kPrimaryColor,
+            centerTitle: true,
+            bottom: TabBar(
+                indicatorColor: Colors.white,
+                tabs: sponsoredList.isNotEmpty ? myTabs : myTabs2),
+          ),
+          body: Stack(
+            children: [
+              sponsoredList.isNotEmpty
+                  ? TabBarView(
+                      children: <Widget>[
+                        RewardsListPage(data: rewardsList),
+                        VouchersListPage(data: vouchersList),
+                        SponsoredListPage(data: sponsoredList)
+                      ],
+                    )
+                  : TabBarView(
+                      children: <Widget>[
+                        RewardsListPage(data: rewardsList),
+                        VouchersListPage(data: vouchersList),
+                      ],
+                    )
+            ],
+          ),
         ),
       ),
     ));

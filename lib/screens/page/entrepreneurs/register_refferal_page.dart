@@ -6,6 +6,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 
 import 'package:get/get.dart';
@@ -131,403 +132,419 @@ class _RegisterRefferalPageState extends State<RegisterRefferalPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "Referral Passing Form",
-            style: TextStyle(
-              color: Colors.white,
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            title: const Text(
+              "Referral Passing Form",
+              style: TextStyle(
+                color: Colors.white,
+              ),
             ),
+            centerTitle: true,
+            backgroundColor: kPrimaryColor,
+            elevation: 0,
           ),
-          centerTitle: true,
-          backgroundColor: kPrimaryColor,
-          elevation: 0,
-        ),
-        body: DelayedDisplay(
-          delay: const Duration(
-            milliseconds: 600,
-          ),
-          child: BlocBuilder<AuthBloc, AuthState>(
-              builder: (BuildContext context, AuthState state) {
-            if (state is GetUserDetailsSuccessful) {
-              userData = state.userData[0];
-              // _formData['user_id'] = userData['id'];
-              // _formData['title_id'] = userData['title_id'];
-              // _formData['nationality_id'] = userData['nationality_id'];
-              // _formData['state_id'] = userData['state_id'];
-              // _formData['name'] = userData['name'];
-              // _formData['preferred_name'] = userData['preferred_name'];
-              // _formData['chinese_name'] = userData['chinese_name'];
-              // _formData['identity_card'] = userData['identity_card'];
-              // _formData['phone_number'] = userData['phone_number'];
-              // _formData['passport_number'] = userData['passport_number'];
-              // _formData['others_nationality'] = userData['others_nationality'];
-              // _formData['others_state'] = userData['others_state'];
-              // _formData['gender'] = userData['gender'];
-              // _formData['introduction'] = userData['introduction'];
+          body: DelayedDisplay(
+            delay: const Duration(
+              milliseconds: 600,
+            ),
+            child: BlocBuilder<AuthBloc, AuthState>(
+                builder: (BuildContext context, AuthState state) {
+              if (state is GetUserDetailsSuccessful) {
+                userData = state.userData[0];
+                // _formData['user_id'] = userData['id'];
+                // _formData['title_id'] = userData['title_id'];
+                // _formData['nationality_id'] = userData['nationality_id'];
+                // _formData['state_id'] = userData['state_id'];
+                // _formData['name'] = userData['name'];
+                // _formData['preferred_name'] = userData['preferred_name'];
+                // _formData['chinese_name'] = userData['chinese_name'];
+                // _formData['identity_card'] = userData['identity_card'];
+                // _formData['phone_number'] = userData['phone_number'];
+                // _formData['passport_number'] = userData['passport_number'];
+                // _formData['others_nationality'] = userData['others_nationality'];
+                // _formData['others_state'] = userData['others_state'];
+                // _formData['gender'] = userData['gender'];
+                // _formData['introduction'] = userData['introduction'];
 
-              _formData['name'] =
-                  userData['name'] == null ? '' : userData['name'];
-              _formData['email'] =
-                  userData['email'] == null ? '' : userData['email'];
-              _formData['phone_number'] = userData['phone_number'] == null
-                  ? ''
-                  : userData['phone_number'];
-              _formData['company_name'] = userData['company_name'] == null
-                  ? ''
-                  : userData['company_name'];
-              _formData['company_state_id'] =
-                  userData['company_state_id'] == null ? '' : userData['name'];
+                _formData['name'] =
+                    userData['name'] == null ? '' : userData['name'];
+                _formData['email'] =
+                    userData['email'] == null ? '' : userData['email'];
+                _formData['phone_number'] = userData['phone_number'] == null
+                    ? ''
+                    : userData['phone_number'];
+                _formData['company_name'] = userData['company_name'] == null
+                    ? ''
+                    : userData['company_name'];
+                _formData['company_state_id'] =
+                    userData['company_details']['company_state_id'] == null
+                        ? ''
+                        : userData['company_details']['company_state_id'];
 
-              _formData['nationality_id'] = userData['nationality_id'] == null
-                  ? ''
-                  : userData['nationality_id'];
-              _formData['company_address'] =
-                  userData['company_details']['company_address'] == null
-                      ? ''
-                      : userData['company_address'];
+                _formData['nationality_id'] = userData['nationality_id'] == null
+                    ? ''
+                    : userData['nationality_id'];
+                _formData['company_address'] =
+                    userData['company_details']['company_address'] == null
+                        ? ''
+                        : userData['company_details']['company_address'];
 
-              _formData['company_postcode'] =
-                  userData['company_details']['company_postcode'] == null
-                      ? ''
-                      : userData['company_postcode'];
+                _formData['company_postcode'] =
+                    userData['company_details']['company_postcode'] == null
+                        ? ''
+                        : userData['company_details']['company_postcode'];
 
-              _formData['company_state_id'] =
-                  userData['company_details']['company_state_id'] == null
-                      ? ''
-                      : userData['company_state_id'];
-              _formData['company_city'] =
-                  userData['company_details']['company_city'] == null
-                      ? ''
-                      : userData['company_city'];
+                _formData['company_state_id'] =
+                    userData['company_details']['company_state_id'] == null
+                        ? ''
+                        : userData['company_details']['company_state_id'];
+                _formData['company_city'] =
+                    userData['company_details']['company_city'] == null
+                        ? ''
+                        : userData['company_details']['company_city'];
+                if (userData['thumbnail'] != null) {
+                  thumbnail = userData['thumbnail'];
+                }
 
-              if (userData['thumbnail'] != null) {
-                thumbnail = userData['thumbnail'];
-              }
-
-              return ListView(
-                primary: true,
-                children: [
-                  Stack(
-                      alignment: AlignmentDirectional.bottomCenter,
-                      children: [
-                        Container(
-                          height: 160,
-                          width: MediaQuery.of(context).size.width,
-                          decoration: const BoxDecoration(
-                            color: kPrimaryColor,
-                            borderRadius: BorderRadius.vertical(
-                                bottom: Radius.circular(10)),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: kThirdColor,
-                                  blurRadius: 10,
-                                  offset: Offset(0, 5)),
-                            ],
-                          ),
-                          margin: const EdgeInsets.only(bottom: 50),
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              children: [
-                                Text(
-                                  userData['title'] + " " + userData['name'],
-                                  style: const TextStyle(
-                                      color: Colors.white, fontSize: 24),
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  userData['company_name'] == null
-                                      ? ''
-                                      : userData['company_name'],
-                                  style: const TextStyle(color: Colors.white),
-                                  textAlign: TextAlign.center,
-                                ),
-                                // Text("Fill the following credentials to login your account",
-                                //     style: TextStyle(color: Colors.white)),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: kPrimaryColor,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(14)),
-                            boxShadow: const [
-                              BoxShadow(
-                                  color: kThirdColor,
-                                  blurRadius: 10,
-                                  offset: Offset(0, 5)),
-                            ],
-                            border: Border.all(color: kThirdColor),
-                            // gradient: gradient,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(10)),
-                              child: Image.network(
-                                userData['thumbnail'],
-                                fit: BoxFit.contain,
-                                width: 100,
-                                height: 100,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ]),
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        TextFieldWidget(
-                            labelText: "Email Address",
-                            hintText: "johndoe@gmail.com",
-                            iconData: Icons.alternate_email,
-                            keyboardType: TextInputType.emailAddress,
-                            isFirst: true,
-                            isLast: false,
-                            setValue: _setInputValue,
-                            initialValue: _formData['email'],
-                            field: 'email',
-                            validator: emailValidator),
-                        TextFieldWidget(
-                          labelText: "Name",
-                          hintText: "Lee Wei Wei",
-                          iconData: Icons.person_outline,
-                          isFirst: false,
-                          isLast: false,
-                          setValue: _setInputValue,
-                          initialValue: _formData['name'],
-                          field: 'name',
-                          validator:
-                              RequiredValidator(errorText: 'Name is required'),
-                        ),
-                        TextFieldWidget(
-                          labelText: "Phone Number",
-                          hintText: "0123456789",
-                          iconData: Icons.phone_iphone,
-                          keyboardType: TextInputType.phone,
-                          isFirst: false,
-                          isLast: true,
-                          setValue: _setInputValue,
-                          field: 'contact',
-                          initialValue: _formData['phone_number'],
-                          // validator: phoneNumberValidator,
-                        ),
-                        TextFieldWidget(
-                          labelText: "Company Name",
-                          hintText: "Company Name",
-                          iconData: Icons.business,
-                          setValue: _setInputValue,
-                          field: 'company_name',
-                          initialValue: _formData['company_name'],
-                        ),
-                        // TextFieldWidget(
-                        //   labelText: "Company Address",
-                        //   hintText: "Company Address",
-                        //   keyboardType: TextInputType.multiline,
-                        //   iconData: Icons.home,
-                        //   // keyboardType: TextInputType.phone,
-                        //   isFirst: true,
-                        //   isLast: false,
-                        //   setValue: _setInputValue,
-                        //   field: 'company_address',
-                        //   initialValue: _formData['company_address'],
-                        // ),
-                        // TextFieldWidget(
-                        //   labelText: "Postcode",
-                        //   hintText: "Postcode",
-                        //   keyboardType: TextInputType.number,
-                        //   iconData: Icons.home,
-                        //   // keyboardType: TextInputType.phone,
-                        //   setValue: _setInputValue,
-                        //   initialValue: _formData['company_postcode'],
-                        //   field: 'company_postcode',
-                        //   isFirst: false,
-                        //   isLast: false,
-                        // ),
-                        TextFieldWidget(
-                          labelText: "City",
-                          hintText: "City",
-                          iconData: Icons.home,
-                          // keyboardType: TextInputType.phone,
-                          setValue: _setInputValue,
-                          initialValue: _formData['company_city'],
-                          field: 'company_city',
-                          isFirst: false,
-                          isLast: false,
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(
-                              top: 20, bottom: 14, left: 20, right: 20),
-                          margin: const EdgeInsets.only(
-                              left: 20, right: 20, top: 0, bottom: 0),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(0)),
-                              boxShadow: [
-                                BoxShadow(
-                                    color:
-                                        Get.theme.focusColor.withOpacity(0.1),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 5)),
-                              ],
-                              border: Border.all(
-                                  color:
-                                      Get.theme.focusColor.withOpacity(0.05))),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Text(
-                                "State",
-                                style: Get.textTheme.bodyText1,
-                                textAlign: TextAlign.start,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: DropdownSearch<String>(
-                                  mode: Mode.BOTTOM_SHEET,
-                                  showSelectedItems: true,
-                                  items: state_state,
-                                  label: "State",
-                                  onChanged: (item) {
-                                    _formData['company_state_id'] = '';
-                                    final data = stateList
-                                        .firstWhere((e) => e['name'] == item);
-                                    _formData['company_state_id'] = data['id'];
-                                  },
-                                  onSaved: (item) {
-                                    final data = stateList
-                                        .firstWhere((e) => e['name'] == item);
-                                    _formData['company_state_id'] = data['id'];
-                                  },
-                                  selectedItem: selectedState,
-                                  validator: (item) {
-                                    if (item == null) {
-                                      return "Please select state";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(
-                              top: 20, bottom: 14, left: 20, right: 20),
-                          margin: const EdgeInsets.only(
-                              left: 20, right: 20, top: 0, bottom: 0),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: const BorderRadius.vertical(
+                return ListView(
+                  primary: true,
+                  children: [
+                    Stack(
+                        alignment: AlignmentDirectional.bottomCenter,
+                        children: [
+                          Container(
+                            height: 160,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: const BoxDecoration(
+                              color: kPrimaryColor,
+                              borderRadius: BorderRadius.vertical(
                                   bottom: Radius.circular(10)),
                               boxShadow: [
                                 BoxShadow(
-                                    color:
-                                        Get.theme.focusColor.withOpacity(0.1),
+                                    color: kThirdColor,
                                     blurRadius: 10,
-                                    offset: const Offset(0, 5)),
+                                    offset: Offset(0, 5)),
                               ],
-                              border: Border.all(
-                                  color:
-                                      Get.theme.focusColor.withOpacity(0.05))),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Text(
-                                "Country",
-                                style: Get.textTheme.bodyText1,
-                                textAlign: TextAlign.start,
+                            ),
+                            margin: const EdgeInsets.only(bottom: 50),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    userData['title'] + " " + userData['name'],
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 24),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    userData['company_name'] == null
+                                        ? ''
+                                        : userData['company_name'],
+                                    style: const TextStyle(color: Colors.white),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  // Text("Fill the following credentials to login your account",
+                                  //     style: TextStyle(color: Colors.white)),
+                                ],
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: DropdownSearch<String>(
-                                  mode: Mode.BOTTOM_SHEET,
-                                  showSelectedItems: true,
-                                  items: nationality,
-                                  label: "Country",
-                                  onChanged: (item) {
-                                    _formData['company_country_id'] = '';
-                                    final data = nationalityList
-                                        .firstWhere((e) => e['name'] == item);
-                                    _formData['company_country_id'] =
-                                        data['id'];
-                                  },
-                                  onSaved: (item) {
-                                    final data = nationalityList
-                                        .firstWhere((e) => e['name'] == item);
-                                    _formData['company_country_id'] =
-                                        data['id'];
-                                  },
-                                  selectedItem: selectedCountry,
-                                  validator: (item) {
-                                    if (item == null) {
-                                      return "Please select country";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: kPrimaryColor,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(14)),
+                              boxShadow: const [
+                                BoxShadow(
+                                    color: kThirdColor,
+                                    blurRadius: 10,
+                                    offset: Offset(0, 5)),
+                              ],
+                              border: Border.all(color: kThirdColor),
+                              // gradient: gradient,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: ClipRRect(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(10)),
+                                child: Image.network(
+                                  userData['thumbnail'],
+                                  fit: BoxFit.contain,
+                                  width: 100,
+                                  height: 100,
                                 ),
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                        TextFieldWidget(
-                          // labelText: "Remark / Reason",
-                          // hintText: "Remark / Reason",
-                          labelText: "Referral Passing Details",
-                          hintText: "Referral Passing Details",
+                        ]),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          TextFieldWidget(
+                              labelText: "Email Address",
+                              hintText: "johndoe@gmail.com",
+                              mandatory: '*',
+                              iconData: Icons.alternate_email,
+                              keyboardType: TextInputType.emailAddress,
+                              isFirst: true,
+                              isLast: false,
+                              setValue: _setInputValue,
+                              initialValue: _formData['email'],
+                              field: 'email',
+                              validator: emailValidator),
+                          TextFieldWidget(
+                            labelText: "Name",
+                            hintText: "Lee Wei Wei",
+                            mandatory: '*',
+                            iconData: Icons.person_outline,
+                            isFirst: false,
+                            isLast: false,
+                            setValue: _setInputValue,
+                            initialValue: _formData['name'],
+                            field: 'name',
+                            validator: RequiredValidator(
+                                errorText: 'Name is required'),
+                          ),
+                          TextFieldWidget(
+                            labelText: "Phone Number",
+                            hintText: "0123456789",
+                            mandatory: '*',
+                            iconData: Icons.phone_iphone,
+                            keyboardType: TextInputType.phone,
+                            isFirst: false,
+                            isLast: true,
+                            setValue: _setInputValue,
+                            field: 'contact',
+                            initialValue: _formData['phone_number'],
+                            validator: phoneNumberValidator,
+                          ),
+                          TextFieldWidget(
+                            labelText: "Company Name",
+                            hintText: "Company Name",
+                            iconData: Icons.business,
+                            setValue: _setInputValue,
+                            field: 'company_name',
+                            initialValue: _formData['company_name'],
+                          ),
+                          TextFieldWidget(
+                            labelText: "Company Address",
+                            hintText: "Company Address",
+                            keyboardType: TextInputType.multiline,
+                            iconData: Icons.home,
+                            // keyboardType: TextInputType.phone,
+                            isFirst: true,
+                            isLast: false,
+                            setValue: _setInputValue,
+                            field: 'company_address',
+                            initialValue: _formData['company_address'],
+                          ),
+                          TextFieldWidget(
+                            labelText: "Postcode",
+                            hintText: "Postcode",
+                            keyboardType: TextInputType.number,
+                            iconData: Icons.home,
+                            // keyboardType: TextInputType.phone,
+                            setValue: _setInputValue,
+                            initialValue: _formData['company_postcode'],
+                            field: 'company_postcode',
+                            isFirst: false,
+                            isLast: false,
+                          ),
+                          TextFieldWidget(
+                            labelText: "City",
+                            hintText: "City",
+                            iconData: Icons.home,
+                            // keyboardType: TextInputType.phone,
+                            setValue: _setInputValue,
+                            initialValue: _formData['company_city'],
+                            field: 'company_city',
+                            isFirst: false,
+                            isLast: false,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(
+                                top: 20, bottom: 14, left: 20, right: 20),
+                            margin: const EdgeInsets.only(
+                                left: 20, right: 20, top: 0, bottom: 0),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(0)),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color:
+                                          Get.theme.focusColor.withOpacity(0.1),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 5)),
+                                ],
+                                border: Border.all(
+                                    color: Get.theme.focusColor
+                                        .withOpacity(0.05))),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(
+                                  "State",
+                                  style: Get.textTheme.bodyText1,
+                                  textAlign: TextAlign.start,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: DropdownSearch<String>(
+                                    mode: Mode.BOTTOM_SHEET,
+                                    showSelectedItems: true,
+                                    items: state_state,
+                                    //label: "State",
+                                    onChanged: (item) {
+                                      _formData['company_state_id'] = '';
+                                      final data = stateList
+                                          .firstWhere((e) => e['name'] == item);
+                                      _formData['company_state_id'] =
+                                          data['id'];
+                                    },
+                                    onSaved: (item) {
+                                      final data = stateList
+                                          .firstWhere((e) => e['name'] == item);
+                                      _formData['company_state_id'] =
+                                          data['id'];
+                                    },
+                                    selectedItem: selectedState,
+                                    validator: (item) {
+                                      if (item == null) {
+                                        return "Please select state";
+                                      } else {
+                                        return null;
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(
+                                top: 20, bottom: 14, left: 20, right: 20),
+                            margin: const EdgeInsets.only(
+                                left: 20, right: 20, top: 0, bottom: 0),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: const BorderRadius.vertical(
+                                    bottom: Radius.circular(10)),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color:
+                                          Get.theme.focusColor.withOpacity(0.1),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 5)),
+                                ],
+                                border: Border.all(
+                                    color: Get.theme.focusColor
+                                        .withOpacity(0.05))),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(
+                                  "Country",
+                                  style: Get.textTheme.bodyText1,
+                                  textAlign: TextAlign.start,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: DropdownSearch<String>(
+                                    mode: Mode.BOTTOM_SHEET,
+                                    showSelectedItems: true,
+                                    items: nationality,
+                                    //label: "Country",
+                                    onChanged: (item) {
+                                      _formData['company_country_id'] = '';
+                                      final data = nationalityList
+                                          .firstWhere((e) => e['name'] == item);
+                                      _formData['company_country_id'] =
+                                          data['id'];
+                                    },
+                                    onSaved: (item) {
+                                      final data = nationalityList
+                                          .firstWhere((e) => e['name'] == item);
+                                      _formData['company_country_id'] =
+                                          data['id'];
+                                    },
+                                    selectedItem: selectedCountry,
+                                    validator: (item) {
+                                      if (item == null) {
+                                        return "Please select country";
+                                      } else {
+                                        return null;
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          TextFieldWidget(
+                            // labelText: "Remark / Reason",
+                            // hintText: "Remark / Reason",
+                            labelText: "Referral Passing Details",
+                            hintText: "Referral Passing Details",
 
-                          keyboardType: TextInputType.multiline,
-                          iconData: Icons.textsms,
-                          // keyboardType: TextInputType.phone,
-                          setValue: _setInputValue,
-                          field: 'remark',
-                          validator: RequiredValidator(
-                              errorText:
-                                  'Referral Passing Details is required'),
-                        ),
-                        BlockButtonWidget(
-                          onPressed: () async {
-                            _validateInputs();
-                          },
-                          color: kPrimaryColor,
-                          text: const Text(
-                            "Submit",
-                            style: TextStyle(color: Colors.white),
+                            keyboardType: TextInputType.multiline,
+                            iconData: Icons.textsms,
+                            // keyboardType: TextInputType.phone,
+                            setValue: _setInputValue,
+                            field: 'remark',
+                            validator: RequiredValidator(
+                                errorText:
+                                    'Referral Passing Details is required'),
                           ),
-                        ).paddingOnly(top: 15, bottom: 5, right: 20, left: 20)
-                      ],
+                          BlockButtonWidget(
+                            onPressed: () async {
+                              _validateInputs();
+                            },
+                            color: kPrimaryColor,
+                            text: const Text(
+                              "Submit",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ).paddingOnly(top: 15, bottom: 5, right: 20, left: 20)
+                        ],
+                      ),
+                    )
+                  ],
+                );
+              } else {
+                return Scaffold(
+                  appBar: AppBar(
+                    title: const Text(
+                      "My Profile",
+                      style: TextStyle(
+                        color: kSecondaryColor,
+                      ),
                     ),
-                  )
-                ],
-              );
-            } else {
-              return Scaffold(
-                appBar: AppBar(
-                  title: const Text(
-                    "My Profile",
-                    style: TextStyle(
-                      color: kSecondaryColor,
-                    ),
+                    automaticallyImplyLeading: false,
+                    centerTitle: true,
+                    backgroundColor: kPrimaryColor,
+                    elevation: 0,
                   ),
-                  automaticallyImplyLeading: false,
-                  centerTitle: true,
-                  backgroundColor: kPrimaryColor,
-                  elevation: 0,
-                ),
-                body: const LoadingWidget(),
-              );
-            }
-          }),
-        ));
+                  body: const LoadingWidget(),
+                );
+              }
+            }),
+          )),
+    );
   }
 
   void _setInputValue(String field, String value) {
@@ -552,7 +569,7 @@ class _RegisterRefferalPageState extends State<RegisterRefferalPage> {
   final phoneNumberValidator = MultiValidator([
     RequiredValidator(errorText: 'Phone Number is required'),
     MinLengthValidator(10, errorText: 'Phone Number must follow the format'),
-    MaxLengthValidator(11, errorText: 'Phone Number must follow the format'),
+    MaxLengthValidator(13, errorText: 'Phone Number must follow the format'),
     PatternValidator(r'(01[0-9]{8,9})',
         errorText: 'Phone Number must follow the format'),
   ]);
@@ -566,9 +583,9 @@ class _RegisterRefferalPageState extends State<RegisterRefferalPage> {
     formData['contact'] = "+6${_formData['phone_number']}";
     formData['email'] = _formData['email'];
     formData['remark'] = _formData['remark'];
-    // formData['company_name'] = _formData['company_name'];
-    // formData['company_address'] = _formData['company_address'];
-    // formData['company_postcode'] = _formData['company_postcode'];
+    formData['company_name'] = _formData['company_name'];
+    formData['company_address'] = _formData['company_address'];
+    formData['company_postcode'] = _formData['company_postcode'];
     formData['company_city'] = _formData['company_city'];
     formData['company_state_id'] = _formData['company_state_id'];
     formData['company_country_id'] = 8;

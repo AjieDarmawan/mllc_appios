@@ -8,10 +8,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+// import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:mlcc_app_ios/constant.dart';
 
-class TextFieldWidget extends StatelessWidget {
-  const TextFieldWidget(
+// import '../../../common/ui.dart';
+
+class TextFieldLoginWidget extends StatelessWidget {
+  const TextFieldLoginWidget(
       {Key? key,
       // this.onSaved,
       @required this.field,
@@ -26,7 +29,6 @@ class TextFieldWidget extends StatelessWidget {
       this.iconData,
       this.labelText,
       this.mandatory,
-      this.textMark,
       this.obscureText,
       this.suffixIcon,
       this.isFirst,
@@ -56,8 +58,6 @@ class TextFieldWidget extends StatelessWidget {
   final TextAlign? textAlign;
   final String? labelText;
   final String? mandatory;
-  final String? textMark;
-
   final TextStyle? style;
   final IconData? iconData;
   final bool? obscureText;
@@ -93,10 +93,30 @@ class TextFieldWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(
-                labelText ?? "",
-                style: Get.textTheme.bodyText1,
-                textAlign: textAlign ?? TextAlign.start,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        labelText ?? "",
+                        style: Get.textTheme.bodyText1,
+                        textAlign: textAlign ?? TextAlign.start,
+                      ),
+                      Text(
+                        exampleText ?? "",
+                        style: TextStyle(color: Colors.grey, fontSize: 10),
+                        textAlign: textAlign ?? TextAlign.start,
+                      ),
+                    ],
+                  ),
+                  // Text(
+                  //   exampleText ?? "",
+                  //   style: TextStyle(color: Colors.grey, fontSize: 10),
+                  //   textAlign: textAlign ?? TextAlign.start,
+                  // ),
+                ],
               ),
               Text(
                 mandatory ?? "",
@@ -105,22 +125,11 @@ class TextFieldWidget extends StatelessWidget {
                 ),
                 textAlign: textAlign ?? TextAlign.start,
               ),
-              if (textMark != null)
-                Tooltip(
-                  message: textMark.toString(),
-                  height: 60.0,
-                  padding: EdgeInsets.all(10.0),
-                  verticalOffset: 48,
-                  preferBelow: false,
-                  triggerMode: TooltipTriggerMode.tap,
-                  child: Image.asset("assets/exclamation-mark.png",
-                      height: 15, width: 15, fit: BoxFit.cover),
-                ),
-              Text(
-                exampleText ?? "",
-                style: Get.textTheme.bodyText1,
-                textAlign: textAlign ?? TextAlign.start,
-              ),
+              // Text(
+              //   exampleText ?? "",
+              //   style: Get.textTheme.bodyText1,
+              //   textAlign: textAlign ?? TextAlign.start,
+              // ),
             ],
           ),
           TextFormField(
@@ -154,7 +163,7 @@ class TextFieldWidget extends StatelessWidget {
               hintText: hintText,
               hintStyle: Get.textTheme.caption,
               prefixIcon: iconData != null
-                  ? Icon(iconData, color: kPrimaryColor).marginOnly(right: 14)
+                  ? Icon(iconData, color: kGreyColor).marginOnly(right: 14)
                   : const SizedBox(),
               prefixIconConstraints: iconData != null
                   ? const BoxConstraints.expand(width: 38, height: 38)

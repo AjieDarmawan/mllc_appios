@@ -340,189 +340,189 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
         ),
 
         //     )),
-        if (widget.total_no == 1)
-          Positioned(
-              top: 40,
-              right: 0,
-              child: InkWell(
-                onTap: () {
-                  if (_textSelect(timer_state.toString()) == 'TimerRunComplete')
-                    close();
-                },
-                child: _textSelect(timer_state.toString()) != 'TimerRunComplete'
-                    ? Container(
-                        height: 40,
-                        // margin: EdgeInsets.all(5),
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            color: Colors.grey,
-                            border: Border.all(
-                              color: Colors.grey,
-                            ),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(20))),
+        // if (widget.total_no == 1)
+        //   Positioned(
+        //       top: 40,
+        //       right: 0,
+        //       child: InkWell(
+        //         onTap: () {
+        //           if (_textSelect(timer_state.toString()) == 'TimerRunComplete')
+        //             close();
+        //         },
+        //         child: _textSelect(timer_state.toString()) != 'TimerRunComplete'
+        //             ? Container(
+        //                 height: 40,
+        //                 // margin: EdgeInsets.all(5),
+        //                 padding: EdgeInsets.all(10),
+        //                 decoration: BoxDecoration(
+        //                     color: Colors.grey,
+        //                     border: Border.all(
+        //                       color: Colors.grey,
+        //                     ),
+        //                     borderRadius:
+        //                         const BorderRadius.all(Radius.circular(20))),
 
-                        child: Row(children: [
-                          // Pause
-                          // ElevatedButton(
-                          //   child: Text('Pause'),
-                          //   onPressed: () {
-                          //     _controller.pause();
-                          //   },
-                          // ),
-                          // // Resume
-                          // ElevatedButton(
-                          //   child: Text('Resume'),
-                          //   onPressed: () {
-                          //     _controller.resume();
-                          //   },
-                          // ),
-                          // Stop
+        //                 child: Row(children: [
+        //                   // Pause
+        //                   // ElevatedButton(
+        //                   //   child: Text('Pause'),
+        //                   //   onPressed: () {
+        //                   //     _controller.pause();
+        //                   //   },
+        //                   // ),
+        //                   // // Resume
+        //                   // ElevatedButton(
+        //                   //   child: Text('Resume'),
+        //                   //   onPressed: () {
+        //                   //     _controller.resume();
+        //                   //   },
+        //                   // ),
+        //                   // Stop
 
-                          Container(
-                            height: 20,
-                            child: Row(
-                              children: [
-                                //  Text("${_textSelect(timer_state.toString())}"),
-                                Countdown(
-                                  controller: _controller,
-                                  seconds: 5,
-                                  build: (BuildContext context, double time) => Text(
-                                      "${time.toString().replaceAll('.0', '')} Second Remaining",
-                                      // Text(
-                                      //     "${_textSelect(timer_state.toString())} Second Remaining",
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: Colors.white,
-                                      )),
-                                  interval: Duration(seconds: 1),
-                                  onFinished: () {
-                                    setState(() {
-                                      widget.slider = true;
-                                      //widget.slide_close = true;
-                                      print("slide timer-masuk}");
-                                      print(
-                                          "slide timer-masukslide${widget.slider}}");
-                                      //print("slide timer-slide_new${slide_new}}");
-                                    });
-                                  },
-                                ),
-                                Container(
-                                  padding: EdgeInsets.only(
-                                      top: 0, left: 0, right: 0, bottom: 70),
-                                  decoration: new BoxDecoration(
-                                    color: Colors.grey[300],
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: IconButton(
-                                    iconSize: 16.0,
-                                    padding: EdgeInsets.only(
-                                        top: 0, left: 0, right: 0, bottom: 0),
-                                    icon: Icon(Icons.close, color: Colors.grey),
-                                    onPressed: () {
-                                      if (_textSelect(timer_state.toString()) ==
-                                          'TimerRunComplete') close();
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ]),
-                      )
-                    : Container(
-                        height: 20,
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(
-                                  top: 0, left: 0, right: 0, bottom: 70),
-                              decoration: new BoxDecoration(
-                                color: Colors.grey[300],
-                                shape: BoxShape.circle,
-                              ),
-                              child: IconButton(
-                                iconSize: 16.0,
-                                padding: EdgeInsets.only(
-                                    top: 0, left: 0, right: 0, bottom: 0),
-                                icon: Icon(Icons.close, color: Colors.grey),
-                                onPressed: () {
-                                  close();
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
+        //                   Container(
+        //                     height: 20,
+        //                     child: Row(
+        //                       children: [
+        //                         // Countdown(
+        //                         //   controller: _controller,
+        //                         //   seconds: 5,
+        //                         //   build: (BuildContext context, double time) => Text(
+        //                         //       "${time.toString().replaceAll('.0', '')} Second Remaining",
+
+        //                         //       style: TextStyle(
+        //                         //         fontSize: 10,
+        //                         //         color: Colors.white,
+        //                         //       )),
+        //                         //   interval: Duration(seconds: 1),
+        //                         //   onFinished: () {
+        //                         //     setState(() {
+        //                         //       widget.slider = true;
+        //                         //       //widget.slide_close = true;
+        //                         //       print("slide timer-masuk}");
+        //                         //       print(
+        //                         //           "slide timer-masukslide${widget.slider}}");
+
+        //                         //     });
+        //                         //   },
+        //                         // ),
+        //                         Container(
+        //                           padding: EdgeInsets.only(
+        //                               top: 0, left: 0, right: 0, bottom: 70),
+        //                           decoration: new BoxDecoration(
+        //                             color: Colors.grey[300],
+        //                             shape: BoxShape.circle,
+        //                           ),
+        //                           child: IconButton(
+        //                             iconSize: 16.0,
+        //                             padding: EdgeInsets.only(
+        //                                 top: 0, left: 0, right: 0, bottom: 0),
+        //                             icon: Icon(Icons.close, color: Colors.grey),
+        //                             onPressed: () {
+        //                               close();
+        //                               // if (_textSelect(timer_state.toString()) ==
+        //                               //     'TimerRunComplete') close();
+        //                             },
+        //                           ),
+        //                         ),
+        //                       ],
+        //                     ),
+        //                   ),
+        //                 ]),
+        //               )
+        //             : Container(
+        //                 height: 20,
+        //                 child: Row(
+        //                   children: [
+        //                     Container(
+        //                       padding: EdgeInsets.only(
+        //                           top: 0, left: 0, right: 0, bottom: 70),
+        //                       decoration: new BoxDecoration(
+        //                         color: Colors.grey[300],
+        //                         shape: BoxShape.circle,
+        //                       ),
+        //                       child: IconButton(
+        //                         iconSize: 16.0,
+        //                         padding: EdgeInsets.only(
+        //                             top: 0, left: 0, right: 0, bottom: 0),
+        //                         icon: Icon(Icons.close, color: Colors.grey),
+        //                         onPressed: () {
+        //                           close();
+        //                         },
+        //                       ),
+        //                     ),
+        //                   ],
+        //                 ),
+        //               ),
+        //       )),
+
+        // if (widget.total_no == 2)
+        //   if (widget.total_no_ != 0)
+        Positioned(
+            top: 40,
+            right: 0,
+            child: InkWell(
+              onTap: () {
+                print("testes_loading-finish");
+                close();
+              },
+              child: Container(
+                height: 20,
+                child: Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(
+                          top: 0, left: 0, right: 0, bottom: 70),
+                      decoration: new BoxDecoration(
+                        color: Colors.grey[300],
+                        shape: BoxShape.circle,
                       ),
-              )),
-
-        if (widget.total_no == 2)
-          if (widget.total_no_ != 0)
-            Positioned(
-                top: 40,
-                right: 0,
-                child: InkWell(
-                  onTap: () {
-                    print("testes_loading-finish");
-                    close();
-                  },
-                  child: Container(
-                    height: 20,
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.only(
-                              top: 0, left: 0, right: 0, bottom: 70),
-                          decoration: new BoxDecoration(
-                            color: Colors.grey[300],
-                            shape: BoxShape.circle,
-                          ),
-                          child: IconButton(
-                            iconSize: 16.0,
-                            padding: EdgeInsets.only(
-                                top: 0, left: 0, right: 0, bottom: 0),
-                            icon: Icon(Icons.close, color: Colors.grey),
-                            onPressed: () {
-                              close();
-                            },
-                          ),
-                        ),
-                      ],
+                      child: IconButton(
+                        iconSize: 16.0,
+                        padding: EdgeInsets.only(
+                            top: 0, left: 0, right: 0, bottom: 0),
+                        icon: Icon(Icons.close, color: Colors.grey),
+                        onPressed: () {
+                          close();
+                        },
+                      ),
                     ),
-                  ),
-                )),
+                  ],
+                ),
+              ),
+            )),
       ],
     );
   }
 
   void close() {
-    showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: const Text('Close Ad ?'),
-              content: Text('Are you Sure?\nYou will miss out the opportunity',
-                  style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400)),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Close Ad'),
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(Colors.blueAccent)),
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Resume Ad',
-                      style: TextStyle(color: Colors.white)),
-                ),
-              ],
-            ));
+    Navigator.pop(context);
+    //   showDialog<String>(
+    //       context: context,
+    //       builder: (BuildContext context) => AlertDialog(
+    //             title: const Text('Close Ad ?'),
+    //             content: Text('Are you Sure?\nYou will miss out the opportunity',
+    //                 style: TextStyle(
+    //                     color: Colors.grey,
+    //                     fontSize: 16,
+    //                     fontWeight: FontWeight.w400)),
+    //             actions: <Widget>[
+    //               TextButton(
+    //                 onPressed: () {
+    //                   Navigator.pop(context);
+    //                   Navigator.pop(context);
+    //                 },
+    //                 child: const Text('Close Ad'),
+    //               ),
+    //               TextButton(
+    //                 style: ButtonStyle(
+    //                     backgroundColor:
+    //                         MaterialStateProperty.all(Colors.blueAccent)),
+    //                 onPressed: () => Navigator.pop(context),
+    //                 child: const Text('Resume Ad',
+    //                     style: TextStyle(color: Colors.white)),
+    //               ),
+    //             ],
+    //           ));
   }
 }
 

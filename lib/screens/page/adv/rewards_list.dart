@@ -66,6 +66,7 @@ class _RewardsListPageState extends State<RewardsListPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: Container(),
         backgroundColor: kPrimaryColor,

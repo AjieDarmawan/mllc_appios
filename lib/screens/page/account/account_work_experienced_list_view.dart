@@ -91,35 +91,35 @@ class AccountWorkExperiencedListViewPage extends StatelessWidget {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                Text(item['company_name'],
+                Text(item['company_name'] ?? '',
                     style: Theme.of(context).textTheme.bodyText2),
                 Text('${item['entity']}',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText2!
                         .copyWith(color: Colors.grey)),
-                Text('${item['designation']}',
+                Text('${item['designation'] ?? ''}',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText2!
                         .copyWith(color: Colors.grey)),
-                Text('${item['business_category']}',
+                Text('${item['business_category'] ?? ''}',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText2!
                         .copyWith(color: Colors.grey)),
-                Text('${item['sub_business_category']}',
+                Text('${item['sub_business_category'] ?? ''}',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText2!
                         .copyWith(color: Colors.grey)),
-                Text('${item['start_date']}',
+                Text('${item['start_date'] ?? ''}',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText2!
                         .copyWith(color: Colors.grey)),
                 item['current_role'] == 0
-                    ? Text('${item['end_date']}',
+                    ? Text('${item['end_date'] ?? ''}',
                         style: Theme.of(context)
                             .textTheme
                             .bodyText2!

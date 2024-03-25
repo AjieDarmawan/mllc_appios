@@ -41,95 +41,105 @@ class _AccountSocialMediaViewPageState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "Social Media",
-            style: TextStyle(
+    return GestureDetector(
+        onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            title: const Text(
+              "Social Media",
+              style: TextStyle(
+                color: kSecondaryColor,
+              ),
+            ),
+            centerTitle: true,
+            backgroundColor: kPrimaryColor,
+            elevation: 0,
+          ),
+          bottomNavigationBar: Container(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            decoration: BoxDecoration(
               color: kSecondaryColor,
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+              boxShadow: [
+                BoxShadow(
+                    color: kThirdColor.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, -5)),
+              ],
             ),
+            child: Row(
+              children: [
+                Expanded(child: BlocBuilder<AuthBloc, AuthState>(
+                    builder: (BuildContext context, AuthState state) {
+                  if (state is AuthLoading) {
+                    return const LoadingWidget();
+                  } else {
+                    return MaterialButton(
+                      onPressed: () {
+                        final form = _formKey.currentState;
+                        if (form!.validate()) {
+                          form.save();
+                          context
+                              .read<AuthBloc>()
+                              .add(CreateUpdateSocialMedia(_formData));
+                          Navigator.pop(context);
+                        }
+                      },
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      color: kPrimaryColor,
+                      child: const Text("Save",
+                          style: TextStyle(color: kSecondaryColor)),
+                      elevation: 0,
+                      highlightElevation: 0,
+                      hoverElevation: 0,
+                      focusElevation: 0,
+                    );
+                  }
+                })),
+              ],
+            ).paddingSymmetric(vertical: 10, horizontal: 20),
           ),
-          centerTitle: true,
-          backgroundColor: kPrimaryColor,
-          elevation: 0,
-        ),
-        bottomNavigationBar: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            color: kSecondaryColor,
-            borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-            boxShadow: [
-              BoxShadow(
-                  color: kThirdColor.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, -5)),
-            ],
-          ),
-          child: Row(
-            children: [
-              Expanded(child: BlocBuilder<AuthBloc, AuthState>(
-                  builder: (BuildContext context, AuthState state) {
-                if (state is AuthLoading) {
-                  return const LoadingWidget();
-                } else {
-                  return MaterialButton(
-                    onPressed: () {
-                      final form = _formKey.currentState;
-                      if (form!.validate()) {
-                        form.save();
-                        context
-                            .read<AuthBloc>()
-                            .add(CreateUpdateSocialMedia(_formData));
-                        Navigator.pop(context);
-                      }
-                    },
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    color: kPrimaryColor,
-                    child: const Text("Save",
-                        style: TextStyle(color: kSecondaryColor)),
-                    elevation: 0,
-                    highlightElevation: 0,
-                    hoverElevation: 0,
-                    focusElevation: 0,
-                  );
-                }
-              })),
-            ],
-          ).paddingSymmetric(vertical: 10, horizontal: 20),
-        ),
-        body: Form(
-          key: _formKey,
-          child: ListView(primary: true, children: [
-            // const Text("Profile details")
-            //     .paddingOnly(top: 25, bottom: 0, right: 22, left: 22),
-            // const Text("Change the following details and save them")
-            //     .paddingSymmetric(horizontal: 22, vertical: 5),
-            TextFieldWidget(
-              labelText: "Social Media Platform",
-              // iconData: Icons.ac_unit,
-              iconData: FontAwesomeIcons.hashtag,
-              setValue: _setInputValue,
-              field: 'platform',
-              validator: RequiredValidator(
-                  errorText: 'Social Media Platform is required'),
-              initialValue: _formData['platform'],
-            ),
-            TextFieldWidget(
-              labelText: "Social Media URL",
-              //iconData: Icons.ac_unit,
-              iconData: FontAwesomeIcons.link,
-              setValue: _setInputValue,
-              field: 'url',
-              validator:
-                  RequiredValidator(errorText: 'Social Media URL is required'),
-              initialValue: _formData['url'],
-            ),
-          ]),
-        ));
+          body: Form(
+            key: _formKey,
+            child: ListView(primary: true, children: [
+              // const Text("Profile details")
+              //     .paddingOnly(top: 25, bottom: 0, right: 22, left: 22),
+              // const Text("Change the following details and save them")
+              //     .paddingSymmetric(horizontal: 22, vertical: 5),
+              TextFieldWidget(
+                labelText: "Social Media Platform",
+                // iconData: Icons.ac_unit,
+                iconData: FontAwesomeIcons.hashtag,
+                setValue: _setInputValue,
+                field: 'platform',
+                validator: RequiredValidator(
+                    errorText: 'Social Media Platform is required'),
+                initialValue: _formData['platform'],
+              ),
+              TextFieldWidget(
+                labelText: "Social Media URL",
+                //iconData: Icons.ac_unit,
+                iconData: FontAwesomeIcons.link,
+                setValue: _setInputValue,
+                field: 'url',
+                validator:
+                    RequiredValidator(errorText: 'Social Media URL is required'),
+                initialValue: _formData['url'],
+              ),
+            ]),
+          )),
+    );
   }
 
   void _setInputValue(String field, String value) {

@@ -165,21 +165,7 @@ class _MainScreenState extends State<MainScreen> {
       case 1:
         return const EntrepreneursViewPage();
 
-      //case 2:
-      //if (users_id == 0 || users_id == null) {
-      //return Navigator.push(
-      //context,
-      //PageTransition(
-      //type: PageTransitionType.fade,
-      //child: const LoginPage(),
-      //),
-      //);
-      //} else {
-      //return const AccountViewPage();
-      //}
-
-      //case 2:
-      //return const  FavoritePage();
+     
 
       case 2:
         return const EventsViewPage();
@@ -244,89 +230,92 @@ class _MainScreenState extends State<MainScreen> {
     //SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     return WillPopScope(
       onWillPop: onWillPop,
-      child: Scaffold(
-        body: _showPage,
-        bottomNavigationBar: CurvedNavigationBar(
-          color: kPrimaryColor,
-          height: 70.0,
-          index: pageIndex,
-          backgroundColor: Colors.white,
-          items: <Widget>[
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.home, size: 30, color: kSecondaryColor),
-                //SizedBox(height: 4),
-                Text(
-                  'Home',
-                  style: TextStyle(color: kSecondaryColor, fontSize: 9),
-                ),
-              ],
-            ),
+      child: SafeArea(
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: _showPage,
+          bottomNavigationBar: CurvedNavigationBar(
+            color: kPrimaryColor,
+            height: 70.0,
+            index: pageIndex,
+            backgroundColor: Colors.white,
+            items: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.home, size: 30, color: kSecondaryColor),
+                  //SizedBox(height: 4),
+                  Text(
+                    'Home',
+                    style: TextStyle(color: kSecondaryColor, fontSize: 9),
+                  ),
+                ],
+              ),
 
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.groups, size: 30, color: kSecondaryColor),
-                //SizedBox(height: 4), // Optional: Add some space between the icon and text
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.groups, size: 30, color: kSecondaryColor),
+                  //SizedBox(height: 4), // Optional: Add some space between the icon and text
 
-                Text(
-                  'Members',
-                  style: TextStyle(color: kSecondaryColor, fontSize: 9),
-                ),
-              ],
-            ),
-            // Column(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     Icon(Icons.favorite, size: 30, color: kSecondaryColor),
-            //     //SizedBox(height: 4),
-            //     Text(
-            //       'Favorites',
-            //       style: TextStyle(color: kSecondaryColor, fontSize: 9),
-            //     ),
-            //   ],
-            // ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.calendar_today, size: 30, color: kSecondaryColor),
-                //SizedBox(height: 4),
-                Text(
-                  'Events',
-                  style: TextStyle(color: kSecondaryColor, fontSize: 9),
-                ),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.card_giftcard, size: 30, color: kSecondaryColor),
-                //SizedBox(height: 4),
-                Text(
-                  'Vouchers',
-                  style: TextStyle(color: kSecondaryColor, fontSize: 9),
-                ),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.person, size: 30, color: kSecondaryColor),
-                //SizedBox(height: 4),
-                Text(
-                  'User',
-                  style: TextStyle(color: kSecondaryColor, fontSize: 9),
-                ),
-              ],
-            ),
-          ],
+                  Text(
+                    'Members',
+                    style: TextStyle(color: kSecondaryColor, fontSize: 9),
+                  ),
+                ],
+              ),
+              // Column(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     Icon(Icons.favorite, size: 30, color: kSecondaryColor),
+              //     //SizedBox(height: 4),
+              //     Text(
+              //       'Favorites',
+              //       style: TextStyle(color: kSecondaryColor, fontSize: 9),
+              //     ),
+              //   ],
+              // ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.calendar_today, size: 30, color: kSecondaryColor),
+                  //SizedBox(height: 4),
+                  Text(
+                    'Events',
+                    style: TextStyle(color: kSecondaryColor, fontSize: 9),
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.card_giftcard, size: 30, color: kSecondaryColor),
+                  //SizedBox(height: 4),
+                  Text(
+                    'Vouchers',
+                    style: TextStyle(color: kSecondaryColor, fontSize: 9),
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.person, size: 30, color: kSecondaryColor),
+                  //SizedBox(height: 4),
+                  Text(
+                    'User',
+                    style: TextStyle(color: kSecondaryColor, fontSize: 9),
+                  ),
+                ],
+              ),
+            ],
 //),
-          onTap: (int tapIndex) {
-            setState(() {
-              _showPage = _pageChoose(tapIndex);
-            });
-          },
+            onTap: (int tapIndex) {
+              setState(() {
+                _showPage = _pageChoose(tapIndex);
+              });
+            },
+          ),
         ),
       ),
     );

@@ -315,6 +315,7 @@ class _EntrepreneurSearchResultPageState
       data: Theme.of(context).copyWith(canvasColor: Colors.white),
       child: Drawer(
           child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -2006,99 +2007,109 @@ class _EntrepreneurSearchResultPageState
   @override
   Widget build(BuildContext context) {
     print("UAUADEPANitem${items}");
-    return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.keyboard_arrow_left,
-                color: kSecondaryColor, size: 30),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          title: Text(
-            widget.name,
-            style: const TextStyle(
-              color: Colors.white,
-            ),
-          ),
-          centerTitle: true,
-          backgroundColor: kPrimaryColor,
-          elevation: 0,
-          actions: <Widget>[
-            Builder(
-              builder: (context) {
-                return IconButton(
-                  icon: const Icon(Icons.filter_alt,
-                      color: kSecondaryColor, size: 30),
-                  onPressed: () {
-                    Scaffold.of(context).openEndDrawer();
-                  },
-                );
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.keyboard_arrow_left,
+                  color: kSecondaryColor, size: 30),
+              onPressed: () {
+                Navigator.pop(context);
               },
-            )
-          ],
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(50.0),
-            child: Container(
-              padding:
-                  const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
-              height: 50,
-              child: TextField(
-                style: const TextStyle(color: Colors.white),
-                // autofocus: true,
-                cursorColor: kSecondaryColor,
-                onChanged: (value) {
-                  filterSearchResults(value);
+            ),
+            title: Text(
+              widget.name,
+              style: const TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            centerTitle: true,
+            backgroundColor: kPrimaryColor,
+            elevation: 0,
+            actions: <Widget>[
+              Builder(
+                builder: (context) {
+                  return IconButton(
+                    icon: const Icon(Icons.filter_alt,
+                        color: kSecondaryColor, size: 30),
+                    onPressed: () {
+                      Scaffold.of(context).openEndDrawer();
+                    },
+                  );
                 },
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: kSecondaryColor,
-                  ),
-                  contentPadding: EdgeInsets.all(10.0),
-                  hintText: 'Search',
-                  hintStyle: TextStyle(color: kSecondaryColor),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                    borderSide: BorderSide(color: kSecondaryColor, width: 1),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                    borderSide: BorderSide(color: kSecondaryColor),
+              )
+            ],
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(50.0),
+              child: Container(
+                padding:
+                    const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+                height: 50,
+                child: TextField(
+                  style: const TextStyle(color: Colors.white),
+                  // autofocus: true,
+                  cursorColor: kSecondaryColor,
+                  onChanged: (value) {
+                    filterSearchResults(value);
+                  },
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: kSecondaryColor,
+                    ),
+                    contentPadding: EdgeInsets.all(10.0),
+                    hintText: 'Search',
+                    hintStyle: TextStyle(color: kSecondaryColor),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                      borderSide: BorderSide(color: kSecondaryColor, width: 1),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                      borderSide: BorderSide(color: kSecondaryColor),
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-        endDrawer: populateDrawer(),
-        body: items.isNotEmpty
-            ? ListView.separated(
-                itemBuilder: (context, index) {
-                  return _buildEntrepreneursList(items[index]);
-                },
-                separatorBuilder: (context, index) => const Divider(),
-                itemCount: items.length,
-              )
-            : Center(
-                child: SizedBox(
-                  height: 600.0,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text("No records found!",
-                                style: TextStyle(
-                                    color: kThirdColor.withOpacity(0.7))),
-                          ],
-                        )
-                      ]),
-                ),
-              ));
+          endDrawer: populateDrawer(),
+          body: items.isNotEmpty
+              ? ListView.separated(
+                  itemBuilder: (context, index) {
+                    return _buildEntrepreneursList(items[index]);
+                  },
+                  separatorBuilder: (context, index) => const Divider(),
+                  itemCount: items.length,
+                )
+              : Center(
+                  child: SizedBox(
+                    height: 600.0,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("No records found!",
+                                  style: TextStyle(
+                                      color: kThirdColor.withOpacity(0.7))),
+                            ],
+                          )
+                        ]),
+                  ),
+                )),
+    );
   }
 
   Widget _buildEntrepreneursList(dynamic data) {

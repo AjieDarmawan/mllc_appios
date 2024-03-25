@@ -11,12 +11,18 @@ import Flutter
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
-  // ADD THIS CODE HERE
-  override func applicationWillResignActive(
-    _ application: UIApplication
-  ) {
-    self.window.isHidden = true;
+  // Hide your app’s preview window and ensure the keyboard is dismissed
+  override func applicationWillResignActive(_: UIApplication ) {
+    window?.rootViewController?.view.endEditing(true)
+    self.window?.isHidden = true;
   }
+
+  // ADD THIS CODE HERE
+  // override func applicationWillResignActive(
+  //   _ application: UIApplication
+  // ) {
+  //   self.window.isHidden = true;
+  // }
 
   override func applicationDidBecomeActive(
     _ application: UIApplication

@@ -50,7 +50,14 @@ class _RefereeDetailsViewPageState extends State<RefereeDetailsViewPage>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       userId = prefs.getInt("userId")!;
-      context.read<EntrepreneursBloc>().add(GetEntrepreneurDetails(userId));
+
+      final _formData_detail = {};
+      _formData_detail['user_id'] = userId;
+      _formData_detail['log_user_id'] = userId;
+
+      context
+          .read<EntrepreneursBloc>()
+          .add(GetEntrepreneurDetails(_formData_detail));
     });
   }
   // List<dynamic> entrepreneurData = [];
@@ -209,7 +216,7 @@ class _RefereeDetailsViewPageState extends State<RefereeDetailsViewPage>
                   icon: const Icon(Icons.keyboard_arrow_left, size: 30),
                 ),
                 title: const Text(
-                  "Referree Request Details",
+                  "Referee to Referral",
                   style: TextStyle(
                     color: kSecondaryColor,
                   ),

@@ -13,7 +13,9 @@ import 'package:mlcc_app_ios/screens/page/entrepreneurs/entrepreneur_search_resu
 
 class EntrepreneurSearchPage extends StatefulWidget {
   final dynamic data;
-  const EntrepreneurSearchPage({Key? key, this.data}) : super(key: key);
+  final String? typesearch;
+  const EntrepreneurSearchPage({Key? key, this.data, this.typesearch})
+      : super(key: key);
 
   @override
   _EntrepreneurSearchPageState createState() => _EntrepreneurSearchPageState();
@@ -96,49 +98,46 @@ class _EntrepreneurSearchPageState extends State<EntrepreneurSearchPage> {
   //   });
   // }
 
-  void filterSearchResults(String query) {
-    // List<UserInfo> dummySearchList = List();
-    // dummySearchList.addAll(widget.dataUserInfo);
-    print("itemsEntrepreneurssss${itemsEntrepreneurs}");
+  var search = [];
+  String global_query = '';
+  var loading_search = true;
+  void filterSearchResults(String query) async {
+    final _searchformData = {};
+    if (widget.typesearch == 'connected') {
+      _searchformData['type'] = 'connected';
+      _searchformData['user_id'] = userId;
+      _searchformData['search'] = query;
+    } else {
+      _searchformData['search'] = query;
+    }
+
+    if (query.isNotEmpty && query != "") {
+      setState(() {
+        global_query = query;
+      });
+      search =
+          await httpProvider.postHttp2("entrepreneur/search", _searchformData);
+      setState(() {
+        loading_search = false;
+      });
+    }
+
+    print("searchitemsEntrepreneurssss${search}");
+    print("searchitemsEntrepreneurssss--${_searchformData}");
     if (query.isNotEmpty && query != "") {
       List<dynamic> dummyListData = [];
-      for (var item in itemsEntrepreneurs) {
-        if (item['name'].toLowerCase().contains(query.toLowerCase()) ||
-            item['preferred_name']
-                .toLowerCase()
-                .contains(query.toLowerCase()) ||
-            item['company_name'].toLowerCase().contains(query.toLowerCase()) ||
-            item['business_category']
-                .toLowerCase()
-                .contains(query.toLowerCase()) ||
-            item['member_type_string']
-                .toLowerCase()
-                .contains(query.toLowerCase()) ||
-            item['name'].toUpperCase().contains(query.toUpperCase()) ||
-            item['preferred_name']
-                .toUpperCase()
-                .contains(query.toUpperCase()) ||
-            item['company_name'].toUpperCase().contains(query.toUpperCase()) ||
-            item['business_category']
-                .toUpperCase()
-                .contains(query.toUpperCase()) ||
-            item['member_type_string']
-                .toUpperCase()
-                .contains(query.toUpperCase())) {
-          dummyListData.add(item);
-        }
-      }
 
       setState(() {
         items.clear();
-        items.addAll(dummyListData);
+        items.addAll(search);
       });
     } else {
       Navigator.pushReplacement(
         context,
         PageTransition(
           type: PageTransitionType.fade,
-          child: EntrepreneurSearchPage(data: itemsEntrepreneurs),
+          child: EntrepreneurSearchPage(
+              data: itemsEntrepreneurs, typesearch: widget.typesearch),
         ),
       );
     }
@@ -146,162 +145,186 @@ class _EntrepreneurSearchPageState extends State<EntrepreneurSearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Search Member",
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: kPrimaryColor,
-        elevation: 0,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(50.0),
-          child: Container(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
-            height: 50,
-            child: TextField(
-              style: const TextStyle(color: Colors.white),
-              // autofocus: true,
-              cursorColor: kSecondaryColor,
-              onChanged: (value) {
-                filterSearchResults(value);
-              },
-              decoration: const InputDecoration(
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: kSecondaryColor,
-                ),
-                contentPadding: EdgeInsets.all(10.0),
-                hintText: 'Search',
-                hintStyle: TextStyle(color: kSecondaryColor),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                  borderSide: BorderSide(color: kSecondaryColor, width: 1),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                  borderSide: BorderSide(color: kSecondaryColor),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-      body: items.isNotEmpty
-          ? ListView.separated(
-              itemBuilder: (context, index) {
-                return _buildEntrepreneursList(items[index]);
-              },
-              separatorBuilder: (context, index) => const Divider(),
-              itemCount: items.length,
-            )
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                      width: MediaQuery.of(context).size.width,
-                      color: Colors.grey[300],
-                      padding: const EdgeInsets.all(10),
-                      child: const Text("Main Business Category")),
-                  SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.30,
-                      width: MediaQuery.of(context).size.width,
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Wrap(
-                            spacing: 6.0,
-                            runSpacing: 3.0,
-                            children: List<Widget>.generate(
-                                businessCategory.length, (int index) {
-                              return InkWell(
-                                onTap: () {
-                                  print("UAUADEPAN");
-                                  final data = businessCategoryList.firstWhere(
-                                      (e) =>
-                                          e['name'] == businessCategory[index]);
-                                  print("UAUADEPAN${data}");
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
 
-                                  int category_id = data['id'];
-                                  print(category_id);
-                                  Navigator.push(
-                                    context,
-                                    PageTransition(
-                                      type: PageTransitionType.fade,
-                                      child: EntrepreneurSearchResultPage(
-                                          id: category_id,
-                                          name: businessCategory[index],
-                                          type: 'Category'),
-                                    ),
-                                  );
-                                  // print(businessCategory[index]);
-                                },
-                                child: Chip(
-                                  label: Text(businessCategory[index]),
-                                  // onDeleted: () {
-                                  //   setState(() {
-                                  //     businessCategory.removeAt(index);
-                                  //   });
-                                  // },
-                                ),
-                              );
-                            }),
-                          ),
-                        ),
-                      )),
-                  Container(
-                      width: MediaQuery.of(context).size.width,
-                      color: Colors.grey[300],
-                      margin: const EdgeInsets.only(top: 10),
-                      padding: const EdgeInsets.all(10),
-                      child: const Text("Company State")),
-                  SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.40,
-                      width: MediaQuery.of(context).size.width,
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Wrap(
-                            spacing: 6.0,
-                            runSpacing: 3.0,
-                            children: List<Widget>.generate(state.length,
-                                (int index) {
-                              return InkWell(
-                                onTap: () {
-                                  final data = stateList.firstWhere(
-                                      (e) => e['name'] == state[index]);
-                                  int state_id = data['id'];
-                                  print(state_id);
-                                  Navigator.push(
-                                    context,
-                                    PageTransition(
-                                      type: PageTransitionType.fade,
-                                      child: EntrepreneurSearchResultPage(
-                                          id: state_id,
-                                          name: state[index],
-                                          type: 'State'),
-                                    ),
-                                  );
-                                },
-                                child: Chip(
-                                  label: Text(state[index]),
-                                  // onDeleted: () {
-                                  //   setState(() {
-                                  //     businessCategory.removeAt(index);
-                                  //   });
-                                  // },
-                                ),
-                              );
-                            }),
-                          ),
-                        ),
-                      )),
-                ],
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: const Text(
+            "Search Member",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          centerTitle: true,
+          backgroundColor: kPrimaryColor,
+          elevation: 0,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(50.0),
+            child: Container(
+              padding:
+                  const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+              height: 50,
+              child: TextField(
+                style: const TextStyle(color: Colors.white),
+                // autofocus: true,
+                cursorColor: kSecondaryColor,
+                onChanged: (value) {
+                  filterSearchResults(value);
+                },
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: kSecondaryColor,
+                  ),
+                  contentPadding: EdgeInsets.all(10.0),
+                  hintText: 'Search',
+                  hintStyle: TextStyle(color: kSecondaryColor),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                    borderSide: BorderSide(color: kSecondaryColor, width: 1),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                    borderSide: BorderSide(color: kSecondaryColor),
+                  ),
+                ),
               ),
             ),
+          ),
+        ),
+        body: global_query.isNotEmpty
+            ? loading_search == true
+                ? Center(
+                    child: CircularProgressIndicator(
+                    color: kPrimaryColor,
+                  ))
+                : items.isNotEmpty
+                    ? ListView.separated(
+                        itemBuilder: (context, index) {
+                          return _buildEntrepreneursList(items[index]);
+                        },
+                        separatorBuilder: (context, index) => const Divider(),
+                        itemCount: items.length,
+                      )
+                    : Center(
+                        child: Text("No record"),
+                        //   child: CircularProgressIndicator(
+                        //   color: kPrimaryColor,
+                        // )
+                      )
+            : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                        width: MediaQuery.of(context).size.width,
+                        color: Colors.grey[300],
+                        padding: const EdgeInsets.all(10),
+                        child: const Text("Main Business Category")),
+                    SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.30,
+                        width: MediaQuery.of(context).size.width,
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Wrap(
+                              spacing: 6.0,
+                              runSpacing: 3.0,
+                              children: List<Widget>.generate(
+                                  businessCategory.length, (int index) {
+                                return InkWell(
+                                  onTap: () {
+                                    print("UAUADEPAN");
+                                    final data =
+                                        businessCategoryList.firstWhere((e) =>
+                                            e['name'] ==
+                                            businessCategory[index]);
+                                    print("UAUADEPAN${data}");
+
+                                    int category_id = data['id'];
+                                    print(category_id);
+                                    Navigator.push(
+                                      context,
+                                      PageTransition(
+                                        type: PageTransitionType.fade,
+                                        child: EntrepreneurSearchResultPage(
+                                            id: category_id,
+                                            name: businessCategory[index],
+                                            type: 'Category'),
+                                      ),
+                                    );
+                                    // print(businessCategory[index]);
+                                  },
+                                  child: Chip(
+                                    label: Text(businessCategory[index]),
+                                    // onDeleted: () {
+                                    //   setState(() {
+                                    //     businessCategory.removeAt(index);
+                                    //   });
+                                    // },
+                                  ),
+                                );
+                              }),
+                            ),
+                          ),
+                        )),
+                    Container(
+                        width: MediaQuery.of(context).size.width,
+                        color: Colors.grey[300],
+                        margin: const EdgeInsets.only(top: 10),
+                        padding: const EdgeInsets.all(10),
+                        child: const Text("Company State")),
+                    SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.40,
+                        width: MediaQuery.of(context).size.width,
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Wrap(
+                              spacing: 6.0,
+                              runSpacing: 3.0,
+                              children: List<Widget>.generate(state.length,
+                                  (int index) {
+                                return InkWell(
+                                  onTap: () {
+                                    final data = stateList.firstWhere(
+                                        (e) => e['name'] == state[index]);
+                                    int state_id = data['id'];
+                                    print(state_id);
+                                    Navigator.push(
+                                      context,
+                                      PageTransition(
+                                        type: PageTransitionType.fade,
+                                        child: EntrepreneurSearchResultPage(
+                                            id: state_id,
+                                            name: state[index],
+                                            type: 'State'),
+                                      ),
+                                    );
+                                  },
+                                  child: Chip(
+                                    label: Text(state[index]),
+                                    // onDeleted: () {
+                                    //   setState(() {
+                                    //     businessCategory.removeAt(index);
+                                    //   });
+                                    // },
+                                  ),
+                                );
+                              }),
+                            ),
+                          ),
+                        )),
+                  ],
+                ),
+              ),
+      ),
     );
   }
 

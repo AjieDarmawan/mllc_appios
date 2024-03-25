@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mlcc_app_ios/screens/page/account/account_subcription.dart';
 import 'package:mlcc_app_ios/screens/page/account/order_history_view.dart';
 import 'package:mlcc_app_ios/screens/page/account/referral_view.dart';
+import 'package:mlcc_app_ios/screens/page/entrepreneurs/entrepreneurs_list_connected.dart';
 import 'package:mlcc_app_ios/screens/page/home/connect_list.dart';
 import 'package:mlcc_app_ios/screens/page/home/home_page.dart';
 import 'package:mlcc_app_ios/screens/page/home/newsletter_view.dart';
@@ -66,7 +67,6 @@ class _EntrepreneursViewPageState extends State<EntrepreneursViewPage>
               connectList.add(widget.data[i]);
             }
           }
-          //handleClickNotification(context);
         });
       }
     });
@@ -83,82 +83,6 @@ class _EntrepreneursViewPageState extends State<EntrepreneursViewPage>
     listenDynamicLinks();
     super.initState();
   }
-
-  // handleClickNotification(BuildContext context) {
-  //    OneSignal.Notifications.addClickListener((openedResult) async {
-  //     print(openedResult);
-
-  //     Map<String, dynamic> result =
-  //         openedResult.notification.additionalData as Map<String, dynamic>;
-  //     var id = result.values.first;
-  //     var type = result.values.last;
-  //     if (type == 'request') {
-  //       Navigator.push(
-  //         context,
-  //         PageTransition(
-  //             type: PageTransitionType.fade,
-  //             child: RequestListPage(userId: userId, resquestID: id)),
-  //       );
-  //     } else if (type == 'referral') {
-  //       Navigator.push(
-  //           context,
-  //           PageTransition(
-  //               type: PageTransitionType.fade,
-  //               child: ReferralRequestListPage(
-  //                 userID: userId,
-  //                 referralID: id,
-  //               )));
-  //     } else if (type == 'order') {
-  //       Navigator.push(
-  //           context,
-  //           PageTransition(
-  //               type: PageTransitionType.fade,
-  //               child: OrderHistoryListPage(
-  //                 userID: userId,
-  //                 orderID: id,
-  //               )));
-  //     } else if (type == 'Training') {
-  //       Navigator.pushNamed(context, '/training_details_view_page',
-  //           arguments: {'data': id, 'type': 'Notification'});
-  //     } else if (type == 'Event') {
-  //       Navigator.pushNamed(context, '/event_details_view_page',
-  //           arguments: {'data': id, 'type': 'Notification'});
-  //     } else if (type == 'Voucher') {
-  //       Navigator.pushNamed(context, '/voucher_details_view_page',
-  //           arguments: {'data': id, 'type': 'Notification'});
-  //     } else if (type == 'Rewards') {
-  //       Navigator.pushNamed(context, '/reward_details_view_page',
-  //           arguments: {'data': id, 'type': 'Notification'});
-  //     } else if (type == 'Product') {
-  //       Navigator.pushNamed(context, '/product_details_view_page',
-  //           arguments: {'data': id, 'type': 'Notification'});
-  //     } else if (type == 'Profile') {
-  //       SharedPreferences prefs = await SharedPreferences.getInstance();
-  //       if (prefs.getBool("isLoggedIn")! == true) {
-  //         userInfo = await httpProvider.postHttp2(
-  //             "entrepreneur/info", {'user_id': prefs.getInt("userId")!});
-  //         Navigator.push(
-  //           context,
-  //           PageTransition(
-  //               type: PageTransitionType.fade,
-  //               child:
-  //                   SubsciptionPlanPage(data: userInfo[0], planList: planList)),
-  //         );
-  //       }
-  //     } else {
-  //       // Navigator.push(
-  //       //   context,
-  //       //   PageTransition(
-  //       //       type: PageTransitionType.fade,
-  //       //       child: NotificationPage(
-  //       //           data: notificationList,
-  //       //           unread: notificationItem,
-  //       //           notificationID: id)),
-  //       // );
-  //       //getNewsLetterInfo(id);
-  //     }
-  //   });
-  // }
 
   var newLetter;
   getNewsLetterInfo(id) async {
@@ -253,6 +177,7 @@ class _EntrepreneursViewPageState extends State<EntrepreneursViewPage>
     return DefaultTabController(
       length: myTabs.length,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text('Members'),
           automaticallyImplyLeading: false,
@@ -277,8 +202,9 @@ class _EntrepreneursViewPageState extends State<EntrepreneursViewPage>
                   data: '',
                   // allUser: entrepreneursList,
                 ),
-                EntrepreneursListPage(
-                  data: 'connect',
+                EntrepreneursListConnectedPage(
+                  //data: 'connect',
+                  data: '',
                   // allUser: entrepreneursList,
                 )
               ],

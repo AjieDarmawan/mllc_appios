@@ -62,6 +62,11 @@ class _ReferralDetailViewPageState extends State<ReferralDetailViewPage> {
     _formData['remark'] = widget.data['remark'];
     _formData['company_name'] = widget.data['company_name'];
     _formData['company_address'] = widget.data['company_address'];
+    _formData['status'] = widget.data['status'];
+
+    bool rejected = false;
+    var _color;
+
     super.initState();
   }
 
@@ -88,148 +93,161 @@ class _ReferralDetailViewPageState extends State<ReferralDetailViewPage> {
       onWillPop: () async {
         return backtoPrevious();
       },
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                PageTransition(
-                    type: PageTransitionType.fade,
-                    child: ReferralRequestListPage(
-                      userID: userId,
-                      referralID: 0,
-                    )),
-              );
-            },
-            icon: const Icon(Icons.keyboard_arrow_left, size: 30),
-          ),
-          title: const Text(
-            "Referral Request Detail",
-            style: TextStyle(
-              color: Colors.white,
+      child: GestureDetector(
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        },
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  PageTransition(
+                      type: PageTransitionType.fade,
+                      child: ReferralRequestListPage(
+                        userID: userId,
+                        referralID: 0,
+                      )),
+                );
+              },
+              icon: const Icon(Icons.keyboard_arrow_left, size: 30),
             ),
+            title: const Text(
+              "Referee to Referral",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            centerTitle: true,
+            backgroundColor: kPrimaryColor,
+            elevation: 0,
           ),
-          centerTitle: true,
-          backgroundColor: kPrimaryColor,
-          elevation: 0,
-        ),
-        body: ListView(
-          primary: true,
-          children: [
-            if (widget.data['referral_name'] != null)
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child:
-                    Text('Send Request to : ' + widget.data['referral_name']),
-              ),
-            if (widget.data['referree_name'] != null)
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child:
-                    Text('Send Request to : ' + widget.data['referree_name']),
-              ),
-            Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Center(
-                    child: Text(
-                      widget.data['status'].toString(),
-                      style: const TextStyle(color: kThirdColor, fontSize: 18),
+          body: ListView(
+            primary: true,
+            children: [
+              if (widget.data['referral_name'] != null)
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child:
+                      Text('Send Request to : ' + widget.data['referral_name']),
+                ),
+              if (widget.data['referree_name'] != null)
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child:
+                      Text('Send Request to : ' + widget.data['referree_name']),
+                ),
+              Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Center(
+                      child: Text(
+                        widget.data['status'].toString(),
+                        style:
+                            const TextStyle(color: kThirdColor, fontSize: 18),
+                      ),
                     ),
-                  ),
-                  TextFieldWidget(
-                      labelText: "Email Address",
-                      hintText: "johndoe@gmail.com",
-                      iconData: Icons.alternate_email,
-                      keyboardType: TextInputType.emailAddress,
-                      isFirst: true,
+
+                    TextFieldWidget(
+                        labelText: "Email Address",
+                        hintText: "johndoe@gmail.com",
+                        iconData: Icons.alternate_email,
+                        keyboardType: TextInputType.emailAddress,
+                        isFirst: true,
+                        isLast: false,
+                        setValue: _setInputValue,
+                        field: 'email',
+                        readOnly: true,
+                        initialValue: _formData['email'],
+                        validator: emailValidator),
+                    TextFieldWidget(
+                      labelText: "Name",
+                      hintText: "Lee Wei Wei",
+                      iconData: Icons.person_outline,
+                      isFirst: false,
                       isLast: false,
                       setValue: _setInputValue,
-                      field: 'email',
+                      field: 'name',
                       readOnly: true,
-                      initialValue: _formData['email'],
-                      validator: emailValidator),
-                  TextFieldWidget(
-                    labelText: "Name",
-                    hintText: "Lee Wei Wei",
-                    iconData: Icons.person_outline,
-                    isFirst: false,
-                    isLast: false,
-                    setValue: _setInputValue,
-                    field: 'name',
-                    readOnly: true,
-                    initialValue: _formData['name'],
-                    validator: RequiredValidator(errorText: 'Name is required'),
-                  ),
-                  TextFieldWidget(
-                    labelText: "Phone Number",
-                    hintText: "0123456789",
-                    iconData: Icons.phone_iphone,
-                    keyboardType: TextInputType.phone,
-                    isFirst: false,
-                    isLast: true,
-                    setValue: _setInputValue,
-                    field: 'contact',
-                    readOnly: true,
-                    initialValue: _formData['contact'],
-                    validator: phoneNumberValidator,
-                  ),
-                  TextFieldWidget(
-                    labelText: "Company Name",
-                    hintText: "Company Address",
-                    iconData: Icons.business,
-                    isFirst: false,
-                    isLast: true,
-                    setValue: _setInputValue,
-                    field: 'company_name',
-                    readOnly: true,
-                    initialValue: _formData['company_name'],
-                  ),
-                  TextFieldWidget(
-                    labelText: "Company Address",
-                    hintText: "Company Address",
-                    keyboardType: TextInputType.multiline,
-                    iconData: Icons.home,
-                    // keyboardType: TextInputType.phone,
-                    isFirst: false,
-                    isLast: true,
-                    setValue: _setInputValue,
-                    field: 'company_address',
-                    readOnly: true,
-                    initialValue: _formData['company_address'],
-                  ),
-                  TextFieldWidget(
-                    labelText: "Remark / Reason",
-                    hintText: "Remark / Reason",
-                    keyboardType: TextInputType.multiline,
-                    iconData: Icons.textsms,
-                    // keyboardType: TextInputType.phone,
-                    isFirst: false,
-                    isLast: true,
-                    setValue: _setInputValue,
-                    field: 'remark',
-                    readOnly: true,
-                    initialValue: _formData['remark'],
-                    validator: RequiredValidator(
-                        errorText: 'Remark / Reason is required'),
-                  ),
-                  // BlockButtonWidget(
-                  //   onPressed: () async {
-                  //     _validateInputs();
-                  //   },
-                  //   color: kPrimaryColor,
-                  //   text: const Text(
-                  //     "Submit",
-                  //     style: TextStyle(color: Colors.white),
-                  //   ),
-                  // ).paddingOnly(top: 15, bottom: 5, right: 20, left: 20)
-                ],
-              ),
-            )
-          ],
+                      initialValue: _formData['name'],
+                      validator:
+                          RequiredValidator(errorText: 'Name is required'),
+                    ),
+                    TextFieldWidget(
+                      labelText: "Phone Number",
+                      hintText: "0123456789",
+                      iconData: Icons.phone_iphone,
+                      keyboardType: TextInputType.phone,
+                      isFirst: false,
+                      isLast: true,
+                      setValue: _setInputValue,
+                      field: 'contact',
+                      readOnly: true,
+                      initialValue: _formData['contact'],
+                      validator: phoneNumberValidator,
+                    ),
+                    TextFieldWidget(
+                      labelText: "Company Name",
+                      hintText: "Company Address",
+                      iconData: Icons.business,
+                      isFirst: false,
+                      isLast: true,
+                      setValue: _setInputValue,
+                      field: 'company_name',
+                      readOnly: true,
+                      initialValue: _formData['company_name'],
+                    ),
+                    TextFieldWidget(
+                      labelText: "Company Address",
+                      hintText: "Company Address",
+                      keyboardType: TextInputType.multiline,
+                      iconData: Icons.home,
+                      // keyboardType: TextInputType.phone,
+                      isFirst: false,
+                      isLast: true,
+                      setValue: _setInputValue,
+                      field: 'company_address',
+                      readOnly: true,
+                      initialValue: _formData['company_address'],
+                    ),
+                    TextFieldWidget(
+                      labelText: "Remark / Reason",
+                      hintText: "Remark / Reason",
+                      keyboardType: TextInputType.multiline,
+                      iconData: Icons.textsms,
+                      // keyboardType: TextInputType.phone,
+                      isFirst: false,
+                      isLast: true,
+                      setValue: _setInputValue,
+                      field: 'remark',
+                      readOnly: true,
+                      initialValue: _formData['remark'],
+                      validator: RequiredValidator(
+                          errorText: 'Remark / Reason is required'),
+                    ),
+                    // BlockButtonWidget(
+                    //   onPressed: () async {
+                    //     _validateInputs();
+                    //   },
+                    //   color: kPrimaryColor,
+                    //   text: const Text(
+                    //     "Submit",
+                    //     style: TextStyle(color: Colors.white),
+                    //   ),
+                    // ).paddingOnly(top: 15, bottom: 5, right: 20, left: 20)
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

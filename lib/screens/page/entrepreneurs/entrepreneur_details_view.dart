@@ -33,6 +33,7 @@ import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 class EntrepreneurDetailsViewPage extends StatefulWidget {
   final dynamic data;
   final dynamic allUsers;
+
   const EntrepreneurDetailsViewPage({Key? key, this.data, this.allUsers})
       : super(key: key);
 
@@ -96,6 +97,14 @@ class _EntrepreneurDetailsViewPageState
       //   _connect = "Reject";
       // }
     });
+
+    final _formData_detail = {};
+    _formData_detail['user_id'] = widget.data['id'];
+    _formData_detail['log_user_id'] = userId;
+
+    context
+        .read<EntrepreneursBloc>()
+        .add(GetEntrepreneurDetails(_formData_detail));
   }
   // List<dynamic> entrepreneurData = [];
 
@@ -112,13 +121,11 @@ class _EntrepreneurDetailsViewPageState
 
   @override
   void initState() {
+    // print('idconnect${widget.data['id']}');
     secureScreen();
     DisableScreenshots.disable();
     getUser();
     // Timer(const Duration(milliseconds: 2000), () {
-    context
-        .read<EntrepreneursBloc>()
-        .add(GetEntrepreneurDetails(widget.data['id']));
 
     Timer(const Duration(milliseconds: 1000), () {
       setState(() {
@@ -156,6 +163,9 @@ class _EntrepreneurDetailsViewPageState
         builder: (BuildContext context, EntrepreneursState state) {
       if (state is GetEntrepreneurDetailSuccessful) {
         dynamic entrepreneurData = state.entrepreneurData[0];
+        dynamic status_ = state.check_status;
+
+        print("entrepreneurDataentrepreneurData${entrepreneurData}");
 
         //entrepreneurData['work_experiences'][0]['entity'] = '';
         // entrepreneurData['work_experiences'][0]['designation'] = '';
@@ -212,13 +222,14 @@ class _EntrepreneurDetailsViewPageState
           _connect = "Reject";
         }
 
-        return _buildContent(context, entrepreneurData);
+        return _buildContent(context, entrepreneurData, status_);
       } else {
         return WillPopScope(
           onWillPop: () async {
             return backtoPrevious();
           },
           child: Scaffold(
+              resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 leading: IconButton(
                   onPressed: () {
@@ -234,7 +245,7 @@ class _EntrepreneurDetailsViewPageState
                   },
                   icon: const Icon(Icons.keyboard_arrow_left, size: 30),
                 ),
-                title: const Text(
+                title: Text(
                   "Members Details",
                   style: TextStyle(
                     color: kSecondaryColor,
@@ -373,8 +384,10 @@ class _EntrepreneurDetailsViewPageState
         ),
       ));
 
-  Widget _buildContent(BuildContext context, entrepreneurData) {
+  Widget _buildContent(BuildContext context, entrepreneurData, status_) {
     print("entrepreneurData${entrepreneurData}");
+    print("status_${status_}");
+
     List<Widget> images = [
       Padding(
         padding: const EdgeInsets.all(5.0),
@@ -484,222 +497,116 @@ class _EntrepreneurDetailsViewPageState
           centerTitle: true,
           backgroundColor: kPrimaryColor,
           elevation: 0,
-          // bottom: PreferredSize(
-          //   preferredSize: _connect == ''
-          //       ? const Size.fromHeight(0.0)
-          //       : const Size.fromHeight(20.0),
-          //   child: _connect == ''
-          //       ? Container()
-          //       : Marquee(
-          //           animationDuration: const Duration(milliseconds: 7000),
-          //           pauseDuration: const Duration(milliseconds: 100),
-          //           textDirection: TextDirection.ltr,
-          //           directionMarguee: DirectionMarguee.oneDirection,
-          //           child: Container(
-          //             color: kThirdColor,
-          //             height: 25,
-          //             width: 1000,
-          //             child: Column(
-          //               children: <Widget>[
-          //                 // Container(
-          //                 //     width: 1000,
-          //                 //     height: 260,
-          //                 //     child: Image.network(
-          //                 //       'https://cdn-images-1.medium.com/max/1000/1*upTyVPOfBb0c4o1r57C9_w.png',
-          //                 //       fit: BoxFit.fitWidth,
-          //                 //       filterQuality: FilterQuality.high,
-          //                 //     )),
-          //                 if (_connect == "Approve")
-          //                   Container(
-          //                     padding: const EdgeInsets.only(top: 5.0),
-          //                     // color: Colors.green,
-          //                     child: Text(
-          //                       'You have connected to the ' + name,
-          //                       style: const TextStyle(
-          //                           fontSize: 13, color: kSecondaryColor),
-          //                     ),
-          //                   ),
-          //                 if (_connect == "Pending")
-          //                   Container(
-          //                     padding: const EdgeInsets.only(top: 5.0),
-          //                     // color: kThirdColor,
-          //                     child: Text(
-          //                       'Waiting for approved by ' + name,
-          //                       style: const TextStyle(
-          //                           fontSize: 13, color: kSecondaryColor),
-          //                     ),
-          //                   ),
-          //                 if (_connect == "Reject")
-          //                   Container(
-          //                     padding: const EdgeInsets.only(top: 5.0),
-          //                     // color: Colors.redAccent,
-          //                     child: Text(
-          //                       'You have rejected by ' + name,
-          //                       style: const TextStyle(
-          //                           fontSize: 13, color: kSecondaryColor),
-          //                     ),
-          //                   )
-          //               ],
-          //             ),
-          //           )),
-          // )),
         ),
         bottomNavigationBar: GestureDetector(
           onHorizontalDragEnd: (DragEndDetails details) {
-            print(details.primaryVelocity);
-            print(_connect);
-            if (details.primaryVelocity! > 0) {
-              print("Test1");
-              setState(() {
-                if (_connect == "" || _connect == "Reject") {
-                  if (_connect == '') {
-                    _swipeText = "Connect";
-                    _color = kThirdColor;
-                  } else {
-                    _swipeText = "Rejected ( Request Again)";
-                    _color = Colors.red;
-                  }
-                  showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                            title: const Text('Notices'),
-                            content:
-                                Text('Are you sure want to connect to ' + name),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('No'),
-                                style:
-                                    TextButton.styleFrom(primary: Colors.black),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  _validateInputs();
-                                },
-                                child: const Text('Yes'),
-                                style:
-                                    TextButton.styleFrom(primary: Colors.blue),
-                              ),
-                            ],
-                          ));
-                } else if (_connect == "Pending") {
-                  _swipeText = "Pending for Approval";
-                  _color = Colors.grey;
-                  showDialog<String>(
-                      // barrierDismissible: false,
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                            title: const Text('Pending for Approval'),
-                            content: RichText(
-                                text: TextSpan(
-                                    // Note: Styles for TextSpans must be explicitly defined.
-                                    // Child text spans will inherit styles from parent
-                                    style: const TextStyle(
-                                      fontSize: 13.0,
-                                      color: Colors.black,
-                                    ),
-                                    children: <TextSpan>[
-                                  const TextSpan(
-                                      text: 'You have sent request to the '),
-                                  TextSpan(
-                                      text: name + ". \n\n",
-                                      style: const TextStyle(
-                                          fontSize: 15.0,
-                                          fontWeight: FontWeight.bold)),
-                                  const TextSpan(
-                                    text: ' Please wait for response...',
-                                    style: TextStyle(
-                                      fontSize: 13.0,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ])),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('OK'),
-                                style:
-                                    TextButton.styleFrom(primary: Colors.black),
-                              ),
-                            ],
-                          ));
-                } else if (_connect == "Approve") {
-                  _swipeText = "Connected";
-                  _color = Colors.green.shade300;
-                  showDialog<String>(
-                      // barrierDismissible: false,
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                            title: const Text('Connected'),
-                            content: RichText(
-                                text: TextSpan(
-                                    // Note: Styles for TextSpans must be explicitly defined.
-                                    // Child text spans will inherit styles from parent
-                                    style: const TextStyle(
-                                      fontSize: 13.0,
-                                      color: Colors.black,
-                                    ),
-                                    children: <TextSpan>[
-                                  const TextSpan(
-                                      text: 'You have connected to the '),
-                                  TextSpan(
-                                      text: name + ". \n\n",
-                                      style: const TextStyle(
-                                          fontSize: 15.0,
-                                          fontWeight: FontWeight.bold)),
-                                ])),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  // Navigator.pushReplacementNamed(
-                                  //     context,
-                                  //     '/entrepreneur_details_view_page',
-                                  //     arguments: {
-                                  //       'data': widget.data
-                                  //     });
-                                },
-                                child: const Text('OK'),
-                                style:
-                                    TextButton.styleFrom(primary: Colors.black),
-                              ),
-                            ],
-                          ));
-                }
-              });
-            } else if (details.primaryVelocity! < 0) {
-              print("Test2");
-              setState(() {
-                Navigator.push(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.fade,
-                    child: RegisterRefferalPage(data: entrepreneurData),
-                  ),
-                );
-                _swipeText = "Refferal";
-                _color = kThirdColor;
-              });
-            } else {
-              //cek
-              print("Test3");
+            // if (details.primaryVelocity! > 0) {
+            // print("Test1");
+            // setState(() {
+            //   if (_connect == "" || _connect == "Reject") {
+            //     if (_connect == '') {
+            //       _swipeText = "Connect";
+            //       _color = kThirdColor;
+            //     } else {
+            //       _swipeText = "Rejected ( Request Again)";
+            //       _color = Colors.red;
+            //     }
 
-              setState(() {
-                Navigator.push(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.fade,
-                    child: RegisterRefferalPage(data: entrepreneurData),
-                  ),
-                );
-                _swipeText = "Refferal";
-                _color = kThirdColor;
-              });
-            }
+            //     Navigator.push(
+            //       context,
+            //       PageTransition(
+            //         type: PageTransitionType.fade,
+            //         child: RegisterRefferalPage(data: entrepreneurData),
+            //       ),
+            //     );
+
+            //   } else if (_connect == "Pending") {
+            //     _swipeText = "Pending for Approval";
+            //     _color = Colors.grey;
+            //     showDialog<String>(
+            //         // barrierDismissible: false,
+            //         context: context,
+            //         builder: (BuildContext context) => AlertDialog(
+            //               title: const Text('Pending for Approval'),
+            //               content: RichText(
+            //                   text: TextSpan(
+            //                       // Note: Styles for TextSpans must be explicitly defined.
+            //                       // Child text spans will inherit styles from parent
+            //                       style: const TextStyle(
+            //                         fontSize: 13.0,
+            //                         color: Colors.black,
+            //                       ),
+            //                       children: <TextSpan>[
+            //                     const TextSpan(
+            //                         text: 'You have sent request to the '),
+            //                     TextSpan(
+            //                         text: name + ". \n\n",
+            //                         style: const TextStyle(
+            //                             fontSize: 15.0,
+            //                             fontWeight: FontWeight.bold)),
+            //                     const TextSpan(
+            //                       text: ' Please wait for response...',
+            //                       style: TextStyle(
+            //                         fontSize: 13.0,
+            //                         color: Colors.black,
+            //                       ),
+            //                     ),
+            //                   ])),
+            //               actions: <Widget>[
+            //                 TextButton(
+            //                   onPressed: () {
+            //                     Navigator.pop(context);
+            //                   },
+            //                   child: const Text('OK'),
+            //                   style:
+            //                       TextButton.styleFrom(primary: Colors.black),
+            //                 ),
+            //               ],
+            //             ));
+            //   } else if (_connect == "Approve") {
+            //     _swipeText = "Connected";
+            //     _color = Colors.green.shade300;
+            //     showDialog<String>(
+            //         // barrierDismissible: false,
+            //         context: context,
+            //         builder: (BuildContext context) => AlertDialog(
+            //               title: const Text('Connected'),
+            //               content: RichText(
+            //                   text: TextSpan(
+            //                       // Note: Styles for TextSpans must be explicitly defined.
+            //                       // Child text spans will inherit styles from parent
+            //                       style: const TextStyle(
+            //                         fontSize: 13.0,
+            //                         color: Colors.black,
+            //                       ),
+            //                       children: <TextSpan>[
+            //                     const TextSpan(
+            //                         text: 'You have connected to the '),
+            //                     TextSpan(
+            //                         text: name + ". \n\n",
+            //                         style: const TextStyle(
+            //                             fontSize: 15.0,
+            //                             fontWeight: FontWeight.bold)),
+            //                   ])),
+            //               actions: <Widget>[
+            //                 TextButton(
+            //                   onPressed: () {
+            //                     Navigator.pop(context);
+            //                     // Navigator.pushReplacementNamed(
+            //                     //     context,
+            //                     //     '/entrepreneur_details_view_page',
+            //                     //     arguments: {
+            //                     //       'data': widget.data
+            //                     //     });
+            //                   },
+            //                   child: const Text('OK'),
+            //                   style:
+            //                       TextButton.styleFrom(primary: Colors.black),
+            //                 ),
+            //               ],
+            //             ));
+            //   }
+            // });
           },
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 10),
@@ -716,6 +623,7 @@ class _EntrepreneurDetailsViewPageState
             ),
             child: Row(
               children: [
+                //if (_connect.isEmpty)
                 Expanded(
                     flex: 8,
                     child: SizedBox(
@@ -726,39 +634,109 @@ class _EntrepreneurDetailsViewPageState
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Image.asset("assets/left.gif",
-                                    height: 60, width: 60, fit: BoxFit.cover),
-                                Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text('Swipe Left',
-                                        style: const TextStyle(
-                                            fontSize: 15, color: kTextColor)),
-                                    Text('Referral',
-                                        style: const TextStyle(
-                                            fontSize: 15,
-                                            color: kPrimaryColor)),
-                                  ],
+                                InkWell(
+                                  onTap: () {
+                                    functionreferral(status_['referral_status'],
+                                        entrepreneurData);
+                                  },
+                                  child: Image.asset("assets/left.gif",
+                                      height: 60, width: 60, fit: BoxFit.cover),
                                 ),
-                                Column(
-                                  children: [
-                                   
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text('Swipe Right',
-                                        style: const TextStyle(
-                                            fontSize: 15, color: kTextColor)),
-                                    Text('Connect',
-                                        style: const TextStyle(
-                                            fontSize: 15,
-                                            color: kPrimaryColor)),
-                                  ],
+                                InkWell(
+                                  onTap: () {
+                                    functionreferral(status_['referral_status'],
+                                        entrepreneurData);
+                                    // Navigator.push(
+                                    //   context,
+                                    //   PageTransition(
+                                    //     type: PageTransitionType.fade,
+                                    //     child: RegisterRefferalPage(
+                                    //         data: entrepreneurData),
+                                    //   ),
+                                    // );
+                                  },
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text('Swipe Left ',
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: kTextColor)),
+                                          Text('(Referral)',
+                                              style: const TextStyle(
+                                                  fontSize: 10,
+                                                  color: kTextColor)),
+                                        ],
+                                      ),
+                                      Text(
+                                          'Status: ${status_['referral_status']} ',
+                                          style: const TextStyle(
+                                              fontSize: 10,
+                                              color: kPrimaryColor)),
+                                    ],
+                                  ),
                                 ),
-                                Image.asset("assets/right.gif",
-                                    height: 60, width: 60, fit: BoxFit.cover),
+                                InkWell(
+                                  onTap: () {
+                                    // Navigator.push(
+                                    //   context,
+                                    //   PageTransition(
+                                    //     type: PageTransitionType.fade,
+                                    //     child: RegisterRefferalPage(
+                                    //         data: entrepreneurData),
+                                    //   ),
+                                    // );
+                                    functionconnect(
+                                        status_['connected_status']);
+                                  },
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text('Swipe Right ',
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: kTextColor)),
+                                          Text('(Connect)',
+                                              style: const TextStyle(
+                                                  fontSize: 10,
+                                                  color: kTextColor)),
+                                        ],
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                            'Status : ${status_['connected_status']} ',
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                                fontSize: 10,
+                                                color: kPrimaryColor)),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    // Navigator.push(
+                                    //   context,
+                                    //   PageTransition(
+                                    //     type: PageTransitionType.fade,
+                                    //     child: RegisterRefferalPage(
+                                    //         data: entrepreneurData),
+                                    //   ),
+                                    // );
+                                    functionconnect(
+                                        status_['connected_status']);
+                                  },
+                                  child: Image.asset("assets/right.gif",
+                                      height: 60, width: 60, fit: BoxFit.cover),
+                                ),
                               ],
                             ))))
               ],
@@ -1764,6 +1742,8 @@ class _EntrepreneurDetailsViewPageState
     _formData['user_id'] = userId;
     _formData['connector_id'] = connector_id;
 
+    print("_formDataconnect${_formData}");
+
     Timer(const Duration(milliseconds: 600), () {
       showProgress(context);
       context
@@ -1838,4 +1818,159 @@ class _EntrepreneurDetailsViewPageState
     PatternValidator(r'(01[0-9]{8,9})',
         errorText: 'Phone Number must follow the format'),
   ]);
+
+  void functionconnect(status_sent_connect) {
+    if (status_sent_connect == 'not connected')
+      showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: const Text('Notices'),
+                content: Text('Are you sure want to connect to ' + name),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('No'),
+                    style: TextButton.styleFrom(primary: Colors.black),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      _validateInputs();
+                    },
+                    child: const Text('Yes'),
+                    style: TextButton.styleFrom(primary: Colors.blue),
+                  ),
+                ],
+              ));
+
+    if (status_sent_connect == 'Pending')
+      showDialog<String>(
+          // barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: const Text('Pending for Approval'),
+                content: RichText(
+                    text: TextSpan(
+                        // Note: Styles for TextSpans must be explicitly defined.
+                        // Child text spans will inherit styles from parent
+                        style: const TextStyle(
+                          fontSize: 13.0,
+                          color: Colors.black,
+                        ),
+                        children: <TextSpan>[
+                      const TextSpan(text: 'You have sent request to the '),
+                      TextSpan(
+                          text: name + ". \n\n",
+                          style: const TextStyle(
+                              fontSize: 15.0, fontWeight: FontWeight.bold)),
+                      const TextSpan(
+                        text: ' Please wait for response...',
+                        style: TextStyle(
+                          fontSize: 13.0,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ])),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('OK'),
+                    style: TextButton.styleFrom(primary: Colors.black),
+                  ),
+                ],
+              ));
+
+    if (status_sent_connect == 'Approve')
+      showDialog<String>(
+          // barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: const Text('Connected'),
+                content: RichText(
+                    text: TextSpan(
+                        // Note: Styles for TextSpans must be explicitly defined.
+                        // Child text spans will inherit styles from parent
+                        style: const TextStyle(
+                          fontSize: 13.0,
+                          color: Colors.black,
+                        ),
+                        children: <TextSpan>[
+                      const TextSpan(text: 'You have connected to the '),
+                      TextSpan(
+                          text: name + ". \n\n",
+                          style: const TextStyle(
+                              fontSize: 15.0, fontWeight: FontWeight.bold)),
+                    ])),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      // Navigator.pushReplacementNamed(
+                      //     context,
+                      //     '/entrepreneur_details_view_page',
+                      //     arguments: {
+                      //       'data': widget.data
+                      //     });
+                    },
+                    child: const Text('OK'),
+                    style: TextButton.styleFrom(primary: Colors.black),
+                  ),
+                ],
+              ));
+  }
+
+  functionreferral(status_refferal, entrepreneurData) {
+    if (status_refferal == 'not referral') {
+      Navigator.push(
+        context,
+        PageTransition(
+          type: PageTransitionType.fade,
+          child: RegisterRefferalPage(data: entrepreneurData),
+        ),
+      );
+    } else {
+      showDialog<String>(
+          // barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: const Text('Referral'),
+                content: RichText(
+                    text: TextSpan(
+                        // Note: Styles for TextSpans must be explicitly defined.
+                        // Child text spans will inherit styles from parent
+                        style: const TextStyle(
+                          fontSize: 13.0,
+                          color: Colors.black,
+                        ),
+                        children: <TextSpan>[
+                      TextSpan(text: "The referral previously made to"),
+                      TextSpan(
+                          text: " ${entrepreneurData['name']} ",
+                          style: const TextStyle(
+                              fontSize: 15.0, fontWeight: FontWeight.bold)),
+                      TextSpan(
+                          text:
+                              "is currently still ${status_refferal.toString()}"),
+                    ])),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      // Navigator.pushReplacementNamed(
+                      //     context,
+                      //     '/entrepreneur_details_view_page',
+                      //     arguments: {
+                      //       'data': widget.data
+                      //     });
+                    },
+                    child: const Text('OK'),
+                    style: TextButton.styleFrom(primary: Colors.black),
+                  ),
+                ],
+              ));
+    }
+  }
 }

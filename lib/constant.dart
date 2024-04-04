@@ -62,6 +62,72 @@ const kredColor = Color(0xFFFF0000);
 const kGreenColor = Color(0xFF038439);
 const korangeColor = Color(0xFFFF8C00);
 
-// const kTextLightColor = Color(0xFFEEEEF6);
+const kTextLightColor = Color(0xFFEEEEF6);
 // const kText2Color = Color(0xFF010103);
 // const kTextLight2Color = Color(0xFFEEEEF6);
+
+class EduButton extends StatelessWidget {
+  final GestureTapCallback onPressed;
+  final String? buttonText;
+  final int? textSize;
+  final Color? buttonColor, textColor;
+  EduButton(
+      {required this.onPressed,
+      this.buttonText,
+      this.textSize,
+      this.buttonColor,
+      this.textColor});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        primary: buttonColor ?? kPrimaryColor,
+        shape: StadiumBorder(),
+      ),
+      child: Center(
+        child: Text(
+          buttonText ?? 'Click',
+          maxLines: 1,
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: textColor ?? kSecondaryColor),
+        ),
+      ),
+      onPressed: onPressed,
+    );
+  }
+}
+
+class EduButtonSecond extends StatelessWidget {
+  final GestureTapCallback onPressed;
+  final String? buttonText;
+  final int? textSize;
+
+  EduButtonSecond({
+    required this.onPressed,
+    this.buttonText,
+    this.textSize,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        primary: Colors.white,
+        side: BorderSide(width: 2.0, color: kPrimaryColor),
+        shape: StadiumBorder(),
+      ),
+      child: Center(
+        child: Text(
+          buttonText ?? 'Click',
+          maxLines: 1,
+          style: TextStyle(
+              color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: 14),
+        ),
+      ),
+      onPressed: onPressed,
+    );
+  }
+}

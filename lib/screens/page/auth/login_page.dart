@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:mlcc_app_ios/screens/page/auth/register_one.dart';
 import 'package:mlcc_app_ios/widget/text_fieldLogin_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       },
       child: Scaffold(
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
               leading: IconButton(
                 onPressed: () {
@@ -504,16 +505,29 @@ class _LoginPageState extends State<LoginPage> {
                             if (updateAccessDataReturn == "Success") {
                               Navigator.of(context)
                                   .popUntil((route) => route.isFirst);
+                              // Navigator.pushReplacement(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (BuildContext context) =>
+                              //             RegisterOne()));
+
+                              // Navigator.pushReplacement(
+                              //   context,
+                              //   PageTransition(
+                              //     type: PageTransitionType.fade,
+                              //     child: const MainScreen(
+                              //       page: HomePage(),
+                              //       index: 0,
+                              //     ),
+                              //   ),
+                              // );
+                              //pertama login setelah daftar
+
                               Navigator.pushReplacement(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.fade,
-                                  child: const MainScreen(
-                                    page: HomePage(),
-                                    index: 0,
-                                  ),
-                                ),
-                              );
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          RegisterOne()));
                             }
                           } else if (loginDataReturn['device_token'] != null) {
                             SharedPreferences prefs =
@@ -565,6 +579,13 @@ class _LoginPageState extends State<LoginPage> {
                                                   "Success") {
                                                 Navigator.of(context).popUntil(
                                                     (route) => route.isFirst);
+                                                // Navigator.pushReplacement(
+                                                //     context,
+                                                //     MaterialPageRoute(
+                                                //         builder: (BuildContext
+                                                //                 context) =>
+                                                //             RegisterOne()));
+
                                                 Navigator.pushReplacement(
                                                   context,
                                                   PageTransition(
@@ -618,6 +639,11 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                               );
+                              // Navigator.pushReplacement(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (BuildContext context) =>
+                              //             RegisterOne()));
                             }
                           }
                         }
@@ -634,6 +660,11 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           );
+                          // Navigator.pushReplacement(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (BuildContext context) =>
+                          //             RegisterOne()));
                         }
                       }
                     },

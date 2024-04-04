@@ -53,6 +53,8 @@ class _EntrepreneursListPageState extends State<EntrepreneursListPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       userId = prefs.getInt("userId")!;
+      //userId = 206;
+      //userId = 40;
       showExpired = prefs.getBool("isExpired")!;
     });
   }
@@ -182,7 +184,7 @@ class _EntrepreneursListPageState extends State<EntrepreneursListPage> {
 
   @override
   void initState() {
-    secureScreen();
+    // secureScreen();
     DisableScreenshots.disable();
     getUser();
     //getAllData();
@@ -197,11 +199,11 @@ class _EntrepreneursListPageState extends State<EntrepreneursListPage> {
   }
 
   @override
-  void dispose() {
-    // TODO: implement dispose
-    clearSecureScreen();
-    super.dispose();
-  }
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   clearSecureScreen();
+  //   super.dispose();
+  // }
 
   Widget build(BuildContext context) {
     // print("getAllData-itemsEntrepreneurs${itemsEntrepreneurs.length}");

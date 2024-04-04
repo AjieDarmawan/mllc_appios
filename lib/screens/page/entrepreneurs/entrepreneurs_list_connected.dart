@@ -55,6 +55,8 @@ class _EntrepreneursListConnectedPageState
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       userId = prefs.getInt("userId")!;
+      //userId = 206;
+      //userId = 40;
       showExpired = prefs.getBool("isExpired")!;
     });
   }
@@ -66,18 +68,22 @@ class _EntrepreneursListConnectedPageState
     if (isRefresh) {
       currentPage = 1;
     } else {
-      if (currentPage >= totalPages) {
-        refreshController.loadNoData();
-        return false;
-      }
+      // if (currentPage >= totalPages) {
+      refreshController.loadNoData();
+      return false;
+      //}
     }
 
     final _connectedformData = {};
     _connectedformData['userId'] = userId;
-    final response = await httpProvider.postHttp2(
-        "entrepreneur/connect/listing?page=$currentPage}", {'user_id': userId});
+    // final response = await httpProvider.postHttp2(
+    //     "entrepreneur/connect/listing?page=$currentPage}", {'user_id': userId});
+
+    final response = await httpProvider
+        .postHttp2("entrepreneur/connected/listing", {'user_id': userId});
 
     print("connected${response}");
+    print("connecteuser_id${userId}");
 
     if (response != null) {
       final result = response;
@@ -91,8 +97,6 @@ class _EntrepreneursListConnectedPageState
       currentPage++;
 
       // totalPages = result[0]['totalPages'] + 1 as int;
-
-      //totalPages = result[0]['totalPages'];
 
       print("WOI${items}");
       setState(() {});
@@ -135,7 +139,7 @@ class _EntrepreneursListConnectedPageState
 
   @override
   void initState() {
-    secureScreen();
+    //secureScreen();
     DisableScreenshots.disable();
     getUser();
 
@@ -144,12 +148,12 @@ class _EntrepreneursListConnectedPageState
     super.initState();
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    clearSecureScreen();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   clearSecureScreen();
+  //   super.dispose();
+  // }
 
   Widget build(BuildContext context) {
     // print("getAllData-itemsEntrepreneurs${itemsEntrepreneurs.length}");
@@ -459,7 +463,7 @@ class _EntrepreneursListConnectedPageState
                     children: [
                       Flexible(
                         child: Text(
-                          data['name'],
+                          data['name'] ?? '',
                           overflow: TextOverflow.ellipsis,
                           softWrap: true,
                           style: Theme.of(context).textTheme.bodyText1!.merge(
@@ -491,7 +495,7 @@ class _EntrepreneursListConnectedPageState
                     children: <Widget>[
                       Expanded(
                         child: Text(
-                          data['company_name'],
+                          data['company_name'] ?? '',
                           overflow: TextOverflow.ellipsis,
                           softWrap: false,
                           style: Theme.of(context).textTheme.bodyText1!.merge(
@@ -507,7 +511,7 @@ class _EntrepreneursListConnectedPageState
                     children: <Widget>[
                       Expanded(
                         child: Text(
-                          data['business_category'],
+                          data['business_category'] ?? '',
                           overflow: TextOverflow.ellipsis,
                           softWrap: false,
                           style: Theme.of(context).textTheme.bodyText1!.merge(

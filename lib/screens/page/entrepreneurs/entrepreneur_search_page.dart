@@ -111,16 +111,20 @@ class _EntrepreneurSearchPageState extends State<EntrepreneurSearchPage> {
       _searchformData['search'] = query;
     }
 
+    //Timer(const Duration(milliseconds: 3000), () async {
     if (query.isNotEmpty && query != "") {
       setState(() {
         global_query = query;
       });
+
       search =
           await httpProvider.postHttp2("entrepreneur/search", _searchformData);
+
       setState(() {
         loading_search = false;
       });
     }
+    // });
 
     print("searchitemsEntrepreneurssss${search}");
     print("searchitemsEntrepreneurssss--${_searchformData}");
@@ -129,7 +133,9 @@ class _EntrepreneurSearchPageState extends State<EntrepreneurSearchPage> {
 
       setState(() {
         items.clear();
-        items.addAll(search);
+        items = search;
+        // items.addAll(search);
+        // items.clear();
       });
     } else {
       Navigator.pushReplacement(
@@ -143,6 +149,7 @@ class _EntrepreneurSearchPageState extends State<EntrepreneurSearchPage> {
     }
   }
 
+  final _search = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -154,7 +161,7 @@ class _EntrepreneurSearchPageState extends State<EntrepreneurSearchPage> {
         }
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        //resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text(
             "Search Member",
@@ -167,35 +174,67 @@ class _EntrepreneurSearchPageState extends State<EntrepreneurSearchPage> {
           elevation: 0,
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(50.0),
-            child: Container(
-              padding:
-                  const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
-              height: 50,
-              child: TextField(
-                style: const TextStyle(color: Colors.white),
-                // autofocus: true,
-                cursorColor: kSecondaryColor,
-                onChanged: (value) {
-                  filterSearchResults(value);
-                },
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: kSecondaryColor,
-                  ),
-                  contentPadding: EdgeInsets.all(10.0),
-                  hintText: 'Search',
-                  hintStyle: TextStyle(color: kSecondaryColor),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                    borderSide: BorderSide(color: kSecondaryColor, width: 1),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                    borderSide: BorderSide(color: kSecondaryColor),
+            child: Row(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width / 1.5,
+                  padding:
+                      const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+                  height: 50,
+                  child: TextFormField(
+                    controller: _search,
+                    style: const TextStyle(color: Colors.white),
+                    // autofocus: true,
+                    cursorColor: kSecondaryColor,
+                    // onChanged: (value) {
+
+                    //   filterSearchResults(value);
+
+                    // },
+                    onFieldSubmitted: (value) {
+                      setState(() {
+                        loading_search = true;
+                      });
+                      filterSearchResults(value);
+                    },
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.all(10.0),
+                      hintText: 'Search',
+                      hintStyle: TextStyle(color: kSecondaryColor),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                        borderSide:
+                            BorderSide(color: kSecondaryColor, width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                        borderSide: BorderSide(color: kSecondaryColor),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: kSecondaryColor,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                Container(
+                  width: MediaQuery.of(context).size.width / 3,
+                  padding:
+                      const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+                  height: 50,
+                  child: EduButtonSecond(
+                    buttonText: "Search",
+                    onPressed: () {
+                      setState(() {
+                        loading_search = true;
+                      });
+
+                      print("searchss${_search.value.text}");
+                      filterSearchResults(_search.value.text);
+                    },
+                  ),
+                )
+              ],
             ),
           ),
         ),

@@ -55,54 +55,13 @@ class _AccountSocietiesViewPageState extends State<AccountSocietiesViewPage> {
           backgroundColor: kPrimaryColor,
           elevation: 0,
         ),
-        bottomNavigationBar: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            color: kSecondaryColor,
-            borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-            boxShadow: [
-              BoxShadow(
-                  color: kThirdColor.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, -5)),
-            ],
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: MaterialButton(
-                  onPressed: () {
-                    final form = _formKey.currentState;
-                    if (form!.validate()) {
-                      form.save();
-                      context
-                          .read<AuthBloc>()
-                          .add(CreateUpdateSocieties(_formData));
-                      Navigator.pop(context);
-                    }
-                  },
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  color: kPrimaryColor,
-                  child: const Text("Save",
-                      style: TextStyle(color: kSecondaryColor)),
-                  elevation: 0,
-                  highlightElevation: 0,
-                  hoverElevation: 0,
-                  focusElevation: 0,
-                ),
-              ),
-            ],
-          ).paddingSymmetric(vertical: 10, horizontal: 20),
-        ),
+        // bottomNavigationBar:
         body: Form(
           key: _formKey,
           child: ListView(primary: true, children: [
             TextFieldWidget(
               labelText: "Society Name",
+              mandatory: "*",
               // iconData: Icons.ac_unit,
               iconData: FontAwesomeIcons.users,
               setValue: _setInputValue,
@@ -115,6 +74,7 @@ class _AccountSocietiesViewPageState extends State<AccountSocietiesViewPage> {
               labelText: "Holding Position",
               // iconData: Icons.ac_unit,
               iconData: FontAwesomeIcons.userTag,
+              mandatory: "*",
               setValue: _setInputValue,
               field: 'holding_position',
               validator:
@@ -123,12 +83,14 @@ class _AccountSocietiesViewPageState extends State<AccountSocietiesViewPage> {
             ),
             DateFieldWidget(
               labelText: "Start Date",
+
               // iconData: Icons.ac_unit,
               iconData: FontAwesomeIcons.solidCalendarAlt,
               isFirst: true,
               isLast: false,
               setValue: _setInputValue,
               field: 'start_date',
+              mandatory: "*",
               validator: RequiredValidator(errorText: 'Start Date is required'),
               initialValue: _formData['start_date'],
             ),
@@ -139,9 +101,55 @@ class _AccountSocietiesViewPageState extends State<AccountSocietiesViewPage> {
               isFirst: false,
               isLast: true,
               setValue: _setInputValue,
+              mandatory: "*",
               field: 'end_date',
               validator: RequiredValidator(errorText: 'End Date is required'),
               initialValue: _formData['end_date'],
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                color: kSecondaryColor,
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
+                boxShadow: [
+                  BoxShadow(
+                      color: kThirdColor.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, -5)),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: MaterialButton(
+                      onPressed: () {
+                        final form = _formKey.currentState;
+                        if (form!.validate()) {
+                          form.save();
+                          context
+                              .read<AuthBloc>()
+                              .add(CreateUpdateSocieties(_formData));
+                          Navigator.pop(context);
+                        }
+                      },
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      color: kPrimaryColor,
+                      child: const Text("Save",
+                          style: TextStyle(color: kSecondaryColor)),
+                      elevation: 0,
+                      highlightElevation: 0,
+                      hoverElevation: 0,
+                      focusElevation: 0,
+                    ),
+                  ),
+                ],
+              ).paddingSymmetric(vertical: 10, horizontal: 20),
             ),
           ]),
         ));

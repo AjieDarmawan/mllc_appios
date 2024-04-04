@@ -211,7 +211,7 @@ class _RegisterPersonalBasicInfoPageState
         }
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        // resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text(
             "Register",
@@ -533,7 +533,8 @@ class _RegisterPersonalBasicInfoPageState
                     ),
                     TextFieldWidget(
                       labelText: "Chinese Name",
-                      hintText: "李薇薇",
+                      // hintText: "李薇薇",
+                      hintText: "姓名",
                       iconData: Icons.person_outline,
                       isFirst: false,
                       isLast: false,
@@ -543,7 +544,7 @@ class _RegisterPersonalBasicInfoPageState
                     TextFieldWidget(
                       labelText: "Phone Number",
                       mandatory: "*",
-                      textMark: "No dash (-) or space allowed. Eg: 0123456789",
+                      //textMark: "No dash (-) or space allowed. Eg: 0123456789",
                       hintText: "Eg: 0123456789",
                       iconData: Icons.phone_iphone,
                       keyboardType: TextInputType.phone,
@@ -791,33 +792,37 @@ class _RegisterPersonalBasicInfoPageState
                           )
                         : Container(),
                     showExpandingStateOther == true
-                        ? TextFieldWidget(
-                            labelText: "Identity Card",
-                            mandatory: "*",
-                            hintText: "XXXXXX-XX-XXXX",
-                            //iconData: Icons.ac_unit,
-                            iconData: FontAwesomeIcons.solidAddressCard,
-                            inputFormatters: [maskFormatter],
-                            // keyboardType: TextInputType.number,
-                            isFirst: false,
-                            isLast: false,
-                            setValue: _setInputValue,
-                            field: 'identity_card',
-                            validator: identityCardValidator,
-                          )
+                        ? Container()
+
+                        // TextFieldWidget(
+                        //     labelText: "Identity Card",
+                        //     mandatory: "*",
+                        //     hintText: "XXXXXX-XX-XXXX",
+                        //     iconData: Icons.ac_unit,
+                        //     //iconData: FontAwesomeIcons.solidAddressCard,
+                        //     inputFormatters: [maskFormatter],
+                        //     // keyboardType: TextInputType.number,
+                        //     isFirst: false,
+                        //     isLast: false,
+                        //     setValue: _setInputValue,
+                        //     field: 'identity_card',
+                        //     validator: identityCardValidator,
+                        //   )
                         : Container(),
                     showExpandingNationalityOther == true
-                        ? TextFieldWidget(
-                            labelText: "Passport No (For Non-Malaysians)",
-                            //hintText: "XXXXXXXXXXXXXXXX",
-                            iconData: Icons.ac_unit,
-                            //iconData: FontAwesomeIcons.solidAddressCard,
-                            isFirst: false,
-                            isLast: false,
-                            setValue: _setInputValue,
-                            keyboardType: TextInputType.number,
-                            field: 'passport_number',
-                          )
+                        ? Container()
+
+                        //  TextFieldWidget(
+                        //     labelText: "Passport No (For Non-Malaysians)",
+                        //     //hintText: "XXXXXXXXXXXXXXXX",
+                        //     iconData: Icons.ac_unit,
+                        //     //iconData: FontAwesomeIcons.solidAddressCard,
+                        //     isFirst: false,
+                        //     isLast: false,
+                        //     setValue: _setInputValue,
+                        //     keyboardType: TextInputType.number,
+                        //     field: 'passport_number',
+                        //   )
                         : Container(),
 
                     TextFieldWidget(
@@ -917,13 +922,16 @@ class _RegisterPersonalBasicInfoPageState
                               },
                               onSaved: (item) {
                                 print("item${item}");
-                                if (item == null) {
+                                if (item != '') {
+                                  print("itemmasuk");
+
                                   final data = businessCategoryList
                                       .firstWhere((e) => e['name'] == item);
 
                                   _formData['business_category_main_id'] =
                                       data['id'];
                                 } else {
+                                  print("itemkeluar");
                                   _formData['business_category_main_id'] = "";
                                 }
                               },
@@ -1126,12 +1134,12 @@ class _RegisterPersonalBasicInfoPageState
                         print("tes_save-success");
                         // Navigator.pushNamed(context, '/login_page');
                         showProgress(context);
-                      } else if (state is ErrorOccured) {
+                      } else if (state is UserNotFound) {
                         showDialog<String>(
                             context: context,
                             builder: (BuildContext context) => AlertDialog(
-                                  title: const Text('Register Error'),
-                                  content: Text("Email is already used"),
+                                  title: const Text('Error'),
+                                  content: Text(state.status),
                                   actions: <Widget>[
                                     TextButton(
                                       onPressed: () =>
@@ -1154,15 +1162,14 @@ class _RegisterPersonalBasicInfoPageState
                             // _formData['phone_number'] =
                             //     "+6${_formData['phone_number']}";
                             final form = _formKey.currentState;
+                            //  if (form!.validate()) {
+                            print("tes_save${_formData}");
+                            // form.save();
+                            context.read<AuthBloc>().add(Register(_formData));
+
                             if (form!.validate()) {
-                              print("tes_save${_formData}");
+                              print("tes_save_after_click${_formData}");
                               form.save();
-                              context.read<AuthBloc>().add(Register(_formData));
-                              // Navigator.pushNamed(
-                              //   context,
-                              //   '/login_page',
-                              // );
-                              //context.read<AuthBloc>().add(CheckEmail(_formData));
                             }
                           },
                           color: kPrimaryColor,
@@ -1250,14 +1257,15 @@ class _RegisterPersonalBasicInfoPageState
                       children: [
                         TextButton(
                           onPressed: () {
+                            showProgress(context);
                             // Navigator.popUntil(
                             //     context, ModalRoute.withName('/login_page'));
-                            Navigator.pushReplacement(
-                              context,
-                              PageTransition(
-                                  type: PageTransitionType.fade,
-                                  child: const LoginPage()),
-                            );
+                            // Navigator.pushReplacement(
+                            //   context,
+                            //   PageTransition(
+                            //       type: PageTransitionType.fade,
+                            //       child: const LoginPage()),
+                            //);
                           },
                           child: const Text("Already a Member? Sign In Here",
                               style: TextStyle(color: kPrimaryColor)),
@@ -1333,7 +1341,7 @@ class _RegisterPersonalBasicInfoPageState
         builder: (BuildContext context) => AlertDialog(
               title: const Text('Send Registration '),
               content: Text(
-                  'Registration  successfully submitted.\n Wait for confirmation from admin.\n  Please check your email regularly'),
+                  'Registration  successfully submitted. Wait for confirmation from admin.  Please check your email regularly'),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {

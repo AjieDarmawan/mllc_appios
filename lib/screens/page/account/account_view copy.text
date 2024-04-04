@@ -12,7 +12,6 @@ import 'package:mlcc_app_ios/screens/main_view.dart';
 import 'package:mlcc_app_ios/screens/page/account/account_subcription.dart';
 import 'package:mlcc_app_ios/screens/page/account/order_history_view.dart';
 import 'package:mlcc_app_ios/screens/page/account/referral_view.dart';
-import 'package:mlcc_app_ios/screens/page/entrepreneurs/entrepreneur_details_view.dart';
 import 'package:mlcc_app_ios/screens/page/home/connect_list.dart';
 import 'package:mlcc_app_ios/screens/page/home/home_page.dart';
 import 'package:mlcc_app_ios/screens/page/notification/notification_list.dart';
@@ -633,22 +632,17 @@ class _AccountViewPageState extends State<AccountViewPage> {
                       showProgress(context);
                     },
                   ),
-                  AccountLinkWidget(
-                    icon: const Icon(Icons.supervised_user_circle,
-                        color: kPrimaryColor),
-                    text: const Text("My Profile Detail"),
-                    onTap: (e) async {
-                      Navigator.push(
-                        context,
-                        PageTransition(
-                            type: PageTransitionType.fade,
-                            child: EntrepreneurDetailsViewPage(
-                              data: [],
-                              type: 'profile',
-                            )),
-                      );
-                    },
-                  ),
+                  // AccountLinkWidget(
+                  //   icon: const Icon(Icons.video_call, color: kPrimaryColor),
+                  //   text: const Text("Join Meeting"),
+                  //   onTap: (e) async {
+                  //     Navigator.push(
+                  //       context,
+                  //       PageTransition(
+                  //           type: PageTransitionType.fade, child: JoinWidget()),
+                  //     );
+                  //   },
+                  // ),
                 ],
               ),
             ),

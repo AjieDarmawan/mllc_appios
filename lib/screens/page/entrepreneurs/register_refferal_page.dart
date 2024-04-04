@@ -141,7 +141,7 @@ class _RegisterRefferalPageState extends State<RegisterRefferalPage> {
         }
       },
       child: Scaffold(
-          resizeToAvoidBottomInset: false,
+          //resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: const Text(
               "Referral Passing Form",
@@ -161,6 +161,9 @@ class _RegisterRefferalPageState extends State<RegisterRefferalPage> {
                 builder: (BuildContext context, AuthState state) {
               if (state is GetUserDetailsSuccessful) {
                 userData = state.userData[0];
+
+                print(
+                    "userdatacompany${userData['company_details']['company_city']}");
                 // _formData['user_id'] = userData['id'];
                 // _formData['title_id'] = userData['title_id'];
                 // _formData['nationality_id'] = userData['nationality_id'];

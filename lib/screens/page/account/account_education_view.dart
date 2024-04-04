@@ -43,118 +43,115 @@ class _AccountEducationViewPageState extends State<AccountEducationViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-       onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
-
-        if (!currentFocus.hasPrimaryFocus) {
-          currentFocus.unfocus();
-        }
-      },
-      child: Scaffold(
-         resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            title: const Text(
-              "Education",
-              style: TextStyle(
-                color: kSecondaryColor,
-              ),
-            ),
-            centerTitle: true,
-            backgroundColor: kPrimaryColor,
-            elevation: 0,
-          ),
-          bottomNavigationBar: Container(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            decoration: BoxDecoration(
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            "Education",
+            style: TextStyle(
               color: kSecondaryColor,
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-              boxShadow: [
-                BoxShadow(
-                    color: kThirdColor.withOpacity(0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, -5)),
-              ],
             ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: MaterialButton(
-                    onPressed: () {
-                      final form = _formKey.currentState;
-                      if (form!.validate()) {
-                        form.save();
-                        context
-                            .read<AuthBloc>()
-                            .add(CreateUpdateEducation(_formData));
-                        Navigator.pop(context);
-                      }
-                    },
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    color: kPrimaryColor,
-                    child: const Text("Save",
-                        style: TextStyle(color: kSecondaryColor)),
-                    elevation: 0,
-                    highlightElevation: 0,
-                    hoverElevation: 0,
-                    focusElevation: 0,
-                  ),
-                ),
-              ],
-            ).paddingSymmetric(vertical: 10, horizontal: 20),
           ),
-          body: Form(
-            key: _formKey,
-            child: ListView(primary: true, children: [
-              TextFieldWidget(
-                labelText: "Academic Instituion",
-                iconData: FontAwesomeIcons.userGraduate,
-                //iconData: Icons.ac_unit,
-                setValue: _setInputValue,
-                field: 'academic_institution',
-                validator: RequiredValidator(
-                    errorText: 'Academic Instituion is required'),
-                initialValue: _formData['academic_institution'],
+          centerTitle: true,
+          backgroundColor: kPrimaryColor,
+          elevation: 0,
+        ),
+        body: Form(
+          key: _formKey,
+          child: ListView(primary: true, children: [
+            TextFieldWidget(
+              labelText: "Academic Instituion",
+              iconData: FontAwesomeIcons.userGraduate,
+              //iconData: Icons.ac_unit,
+              setValue: _setInputValue,
+              field: 'academic_institution',
+              mandatory: "*",
+              validator: RequiredValidator(
+                  errorText: 'Academic Instituion is required'),
+              initialValue: _formData['academic_institution'],
+            ),
+            TextFieldWidget(
+              labelText: "Education Level",
+              mandatory: "*",
+              iconData: FontAwesomeIcons.graduationCap,
+              //iconData: Icons.ac_unit,
+              setValue: _setInputValue,
+              field: 'education_level',
+              validator:
+                  RequiredValidator(errorText: 'Education Level is required'),
+              initialValue: _formData['education_level'],
+            ),
+            DateFieldWidget(
+              labelText: "Start Date",
+
+              iconData: FontAwesomeIcons.solidCalendarAlt,
+              // iconData: Icons.ac_unit,
+              isFirst: true,
+              isLast: false,
+              setValue: _setInputValue,
+              field: 'start_date',
+              mandatory: "*",
+              validator: RequiredValidator(errorText: 'Start Date is required'),
+              initialValue: _formData['start_date'],
+            ),
+            DateFieldWidget(
+              labelText: "End Date",
+              mandatory: "*",
+              iconData: FontAwesomeIcons.solidCalendarAlt,
+              //iconData: Icons.ac_unit,
+              isFirst: false,
+              isLast: true,
+              setValue: _setInputValue,
+              field: 'end_date',
+              validator: RequiredValidator(errorText: 'End Date is required'),
+              initialValue: _formData['end_date'],
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                color: kSecondaryColor,
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
+                boxShadow: [
+                  BoxShadow(
+                      color: kThirdColor.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, -5)),
+                ],
               ),
-              TextFieldWidget(
-                labelText: "Education Level",
-                iconData: FontAwesomeIcons.graduationCap,
-                //iconData: Icons.ac_unit,
-                setValue: _setInputValue,
-                field: 'education_level',
-                validator:
-                    RequiredValidator(errorText: 'Education Level is required'),
-                initialValue: _formData['education_level'],
-              ),
-              DateFieldWidget(
-                labelText: "Start Date",
-                iconData: FontAwesomeIcons.solidCalendarAlt,
-                // iconData: Icons.ac_unit,
-                isFirst: true,
-                isLast: false,
-                setValue: _setInputValue,
-                field: 'start_date',
-                validator: RequiredValidator(errorText: 'Start Date is required'),
-                initialValue: _formData['start_date'],
-              ),
-              DateFieldWidget(
-                labelText: "End Date",
-                iconData: FontAwesomeIcons.solidCalendarAlt,
-                //iconData: Icons.ac_unit,
-                isFirst: false,
-                isLast: true,
-                setValue: _setInputValue,
-                field: 'end_date',
-                validator: RequiredValidator(errorText: 'End Date is required'),
-                initialValue: _formData['end_date'],
-              ),
-            ]),
-          )),
-    );
+              child: Row(
+                children: [
+                  Expanded(
+                    child: MaterialButton(
+                      onPressed: () {
+                        final form = _formKey.currentState;
+                        if (form!.validate()) {
+                          form.save();
+                          context
+                              .read<AuthBloc>()
+                              .add(CreateUpdateEducation(_formData));
+                          Navigator.pop(context);
+                        }
+                      },
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      color: kPrimaryColor,
+                      child: const Text("Save",
+                          style: TextStyle(color: kSecondaryColor)),
+                      elevation: 0,
+                      highlightElevation: 0,
+                      hoverElevation: 0,
+                      focusElevation: 0,
+                    ),
+                  ),
+                ],
+              ).paddingSymmetric(vertical: 10, horizontal: 20),
+            ),
+          ]),
+        ));
   }
 
   void _setInputValue(String field, String value) {

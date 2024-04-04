@@ -10,11 +10,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:get/get_utils/src/extensions/widget_extensions.dart';
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
+import 'package:mlcc_app_ios/screens/page/home/home_swiper_event.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/src/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,9 +40,11 @@ import 'events_view.dart';
 
 class EventDetailsViewPage extends StatefulWidget {
   final dynamic data;
+  final int? id;
   final bool? wish;
   final String? type;
-  const EventDetailsViewPage({Key? key, this.data, this.wish, this.type})
+  const EventDetailsViewPage(
+      {Key? key, this.data, this.wish, this.type, this.id})
       : super(key: key);
 
   @override
@@ -62,6 +66,7 @@ class _EventDetailsViewPageState extends State<EventDetailsViewPage> {
   String calendarVenue = "";
   String calendarTitle = "";
   String calendarDescription = "";
+  final SwiperController _swiperControllerevent = SwiperController();
   late bool showExpired = false;
   final Map<String, dynamic> _formData = {};
   final GlobalKey<FormState> _formKey2 = GlobalKey<FormState>();
@@ -76,10 +81,13 @@ class _EventDetailsViewPageState extends State<EventDetailsViewPage> {
 
   @override
   void initState() {
+    //context.read<EventsBloc>().add(GetEventDetails(34));
+
     if (widget.type != null) {
       context.read<EventsBloc>().add(GetEventDetails(widget.data));
     } else {
-      context.read<EventsBloc>().add(GetEventDetails(widget.data['id']));
+      context.read<EventsBloc>().add(
+          GetEventDetails(widget.id == null ? widget.data['id'] : widget.id));
     }
     getUser();
     initPlatformState();
@@ -308,10 +316,35 @@ class _EventDetailsViewPageState extends State<EventDetailsViewPage> {
                 leading: IconButton(
                   onPressed: () {
                     if (widget.type != null) {
-                      Navigator.pop(context);
+                      Navigator.pushReplacementNamed(
+                          context, '/events_view_page');
+
+                      // Navigator.pop(context);
+                      //       Navigator.push(
+                      //   context,
+
+                      //   PageTransition(
+                      //     type: PageTransitionType.fade,
+                      //     child: const MainScreen(
+                      //       page: EventsViewPage(),
+                      //       index: 2,
+                      //     ),
+                      //   ),
+                      // );
                     } else {
                       Navigator.pushReplacementNamed(
                           context, '/events_view_page');
+                      //       Navigator.push(
+                      //   context,
+
+                      //   PageTransition(
+                      //     type: PageTransitionType.fade,
+                      //     child: const MainScreen(
+                      //       page: EventsViewPage(),
+                      //       index: 2,
+                      //     ),
+                      //   ),
+                      // );
                     }
                   },
                   icon: const Icon(Icons.keyboard_arrow_left, size: 30),
@@ -391,25 +424,35 @@ class _EventDetailsViewPageState extends State<EventDetailsViewPage> {
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
-              if (widget.type != null) {
-                Navigator.pop(context);
-              } else {
-                // Navigator.pushReplacementNamed(context, '/events_view_page');
-                Navigator.push(
-                  context,
-                  // PageTransition(
-                  //   type: PageTransitionType.fade,
-                  //   child: const EventsViewPage(),
-                  // ),
-                  PageTransition(
-                    type: PageTransitionType.fade,
-                    child: const MainScreen(
-                      page: EventsViewPage(),
-                      index: 2,
-                    ),
-                  ),
-                );
-              }
+              Navigator.pushReplacementNamed(context, '/events_view_page');
+
+              // if (widget.type != null) {
+              //   // Navigator.pop(context);
+              //   Navigator.push(
+              //     context,
+
+              //     PageTransition(
+              //       type: PageTransitionType.fade,
+              //       child: const MainScreen(
+              //         page: EventsViewPage(),
+              //         index: 2,
+              //       ),
+              //     ),
+              //   );
+              // } else {
+              //   // Navigator.pushReplacementNamed(context, '/events_view_page');
+              //   Navigator.push(
+              //     context,
+
+              //     PageTransition(
+              //       type: PageTransitionType.fade,
+              //       child: const MainScreen(
+              //         page: EventsViewPage(),
+              //         index: 2,
+              //       ),
+              //     ),
+              //   );
+              // }
             },
             icon: const Icon(Icons.keyboard_arrow_left, size: 30),
           ),
@@ -803,36 +846,46 @@ class _EventDetailsViewPageState extends State<EventDetailsViewPage> {
                 background: Stack(
                   alignment: AlignmentDirectional.bottomCenter,
                   children: <Widget>[
-                    (eventData['banner'] != null && eventData['banner'] != "")
-                        ? GestureDetector(
-                            child: CachedNetworkImage(
-                              height: 350,
-                              width: double.infinity,
-                              fit: BoxFit.values[0],
-                              imageUrl: eventData['banner'],
-                              placeholder: (context, url) => Image.asset(
-                                'assets/loading.gif',
-                                fit: BoxFit.values[0],
+                    (eventData['multi_images'].length > 0 &&
+                            eventData['multi_images'].length > 0)
+                        ? HomeSwipeEvent(
+                            images: eventData['multi_images'],
+                            title: eventData['title'],
+                            swiperControllerbanner_: _swiperControllerevent,
+                            height: MediaQuery.of(context).size.height * 0.30,
+                          )
+                        : (eventData['banner'] != null &&
+                                eventData['banner'] != "")
+                            ? GestureDetector(
+                                child: CachedNetworkImage(
+                                  height: 350,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                  imageUrl: eventData['banner'],
+                                  placeholder: (context, url) => Image.asset(
+                                    'assets/loading.gif',
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: 350,
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error_outline),
+                                ),
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                      context, '/photo_webview_page',
+                                      arguments: {
+                                        'url': eventData['banner'],
+                                        'title': eventData['title']
+                                      });
+                                },
+                              )
+                            : Image.asset(
+                                'assets/mlcc_logo.jpg',
+                                fit: BoxFit.cover,
                                 width: double.infinity,
                                 height: 350,
                               ),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error_outline),
-                            ),
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, '/photo_webview_page', arguments: {
-                                'url': eventData['banner'],
-                                'title': eventData['title']
-                              });
-                            },
-                          )
-                        : Image.asset(
-                            'assets/mlcc_logo.jpg',
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: 350,
-                          ),
                   ],
                 ),
               ).marginOnly(bottom: 10),
@@ -1001,24 +1054,8 @@ class _EventDetailsViewPageState extends State<EventDetailsViewPage> {
     } else {
       Navigator.pushReplacementNamed(context, '/event_details_view_page',
           arguments: {'data': widget.data});
-
-      // Add2Calendar.addEvent2Cal(
-      //   buildEvent(),
-      // );
     }
   }
-
-  // Event buildEvent({Recurrence? recurrence}) {
-  //   return Event(
-  //     title: "MLCC - Event\n" + calendarTitle,
-  //     description: calendarDescription,
-  //     location: calendarVenue,
-  //     startDate: calendarStartAt,
-  //     endDate: calendarEndAt,
-  //     allDay: false,
-  //     recurrence: recurrence,
-  //   );
-  // }
 
   void _setInputValue(String field, String value) {
     setState(() => _formData[field] = value.trim());

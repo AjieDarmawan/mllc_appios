@@ -119,10 +119,10 @@ class _AccountWorkExperiencedViewPageState
         }
       },
       child: Scaffold(
-          resizeToAvoidBottomInset: false,
+          // resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: const Text(
-              "Work Experienced 1",
+              "Work Experienced",
               style: TextStyle(
                 color: kSecondaryColor,
               ),
@@ -131,49 +131,7 @@ class _AccountWorkExperiencedViewPageState
             backgroundColor: kPrimaryColor,
             elevation: 0,
           ),
-          bottomNavigationBar: Container(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            decoration: BoxDecoration(
-              color: kSecondaryColor,
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-              boxShadow: [
-                BoxShadow(
-                    color: kThirdColor.withOpacity(0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, -5)),
-              ],
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: MaterialButton(
-                    onPressed: () {
-                      final form = _formKey.currentState;
-                      if (form!.validate()) {
-                        form.save();
-                        context
-                            .read<AuthBloc>()
-                            .add(CreateUpdateWorkExperienced(_formData));
-                        Navigator.pop(context);
-                      }
-                    },
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    color: kPrimaryColor,
-                    child: const Text("Save",
-                        style: TextStyle(color: kSecondaryColor)),
-                    elevation: 0,
-                    highlightElevation: 0,
-                    hoverElevation: 0,
-                    focusElevation: 0,
-                  ),
-                ),
-              ],
-            ).paddingSymmetric(vertical: 10, horizontal: 20),
-          ),
+          //   bottomNavigationBar:
           body: DelayedDisplay(
             delay: const Duration(
               milliseconds: 600,
@@ -183,15 +141,17 @@ class _AccountWorkExperiencedViewPageState
               child: ListView(primary: true, children: [
                 TextFieldWidget(
                   labelText: "Company Name",
+                  mandatory: "*",
                   //iconData: Icons.ac_unit,
                   iconData: FontAwesomeIcons.building,
                   setValue: _setInputValue,
                   field: 'company_name',
-                  validator:
-                      RequiredValidator(errorText: 'Company Name is required'),
+
                   isFirst: true,
                   isLast: false,
                   initialValue: _formData['company_name'],
+                  validator:
+                      RequiredValidator(errorText: 'Company Name is required'),
                 ),
                 Container(
                   padding: const EdgeInsets.only(
@@ -213,25 +173,44 @@ class _AccountWorkExperiencedViewPageState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      DropdownSearch<String>(
-                        mode: Mode.BOTTOM_SHEET,
-                        showSelectedItems: true,
-                        items: organizationEntity,
-                        label: "Organization Entity",
-                        onChanged: (item) {
-                          _formData['entity'] = item;
-                        },
-                        onSaved: (item) {
-                          _formData['entity'] = item;
-                        },
-                        selectedItem: _formData['entity'],
-                        validator: (item) {
-                          if (item == null) {
-                            return "Please select an organization entity";
-                          } else {
-                            return null;
-                          }
-                        },
+                      Row(
+                        children: [
+                          Text(
+                            "  Organization Entity",
+                            style: Get.textTheme.bodyText1,
+                            textAlign: TextAlign.start,
+                          ),
+                          Text(
+                            "*",
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                            textAlign: TextAlign.start,
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: DropdownSearch<String>(
+                          mode: Mode.BOTTOM_SHEET,
+                          showSelectedItems: true,
+                          items: organizationEntity,
+                          //label: "Organization Entity",
+                          onChanged: (item) {
+                            _formData['entity'] = item;
+                          },
+                          onSaved: (item) {
+                            _formData['entity'] = item;
+                          },
+                          selectedItem: _formData['entity'],
+                          validator: (item) {
+                            if (item == null) {
+                              return "Please select an organization entity";
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -240,6 +219,7 @@ class _AccountWorkExperiencedViewPageState
                   labelText: "Designation",
                   iconData: Icons.business_center_rounded,
                   setValue: _setInputValue,
+                  mandatory: "*",
                   field: 'designation',
                   validator:
                       RequiredValidator(errorText: 'Designation is required'),
@@ -273,31 +253,54 @@ class _AccountWorkExperiencedViewPageState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      DropdownSearch<String>(
-                        mode: Mode.BOTTOM_SHEET,
-                        showSelectedItems: true,
-                        items: businessCategory,
-                        label: "Business Category",
-                        onChanged: (item) {
-                          final data = businessCategoryList
-                              .firstWhere((e) => e['name'] == item);
-                          _formData['business_category_main_id'] = data['id'];
-                          showExpandingSubCategory = true;
-                          getSubCategory(data['id']);
-                        },
-                        onSaved: (item) {
-                          final data = businessCategoryList
-                              .firstWhere((e) => e['name'] == item);
-                          _formData['business_category_main_id'] = data['id'];
-                        },
-                        selectedItem: selectedBusinessNature,
-                        validator: (item) {
-                          if (item == null) {
-                            return "Please select a Business Category";
-                          } else {
-                            return null;
-                          }
-                        },
+                      Row(
+                        children: [
+                          Text(
+                            "  Business Category",
+                            style: Get.textTheme.bodyText1,
+                            textAlign: TextAlign.start,
+                          ),
+                          Text(
+                            "*",
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                            textAlign: TextAlign.start,
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: DropdownSearch<String>(
+                          mode: Mode.BOTTOM_SHEET,
+                          showSelectedItems: true,
+                          items: businessCategory,
+                          //label: "Business Category",
+                          onChanged: (item) {
+                            final data = businessCategoryList
+                                .firstWhere((e) => e['name'] == item);
+                            _formData['business_category_main_id'] = data['id'];
+                            showExpandingSubCategory = true;
+                            getSubCategory(data['id']);
+                          },
+                          onSaved: (item) {
+                            final data = businessCategoryList
+                                .firstWhere((e) => e['name'] == item);
+                            _formData['business_category_main_id'] = data['id'];
+                          },
+                          selectedItem: selectedBusinessNature,
+                          validator: (item) {
+                            print("itembisnis${item}");
+                            if (item == '' || item == null) {
+                              print("itembisnis--a");
+                              return "Please select a Business Category";
+                            } else {
+                              print("itembisnis--b");
+                              return null;
+                              //return "Please select a Business Category";
+                            }
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -323,10 +326,21 @@ class _AccountWorkExperiencedViewPageState
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Text(
-                              "Sub Category of Business",
-                              style: Get.textTheme.bodyText1,
-                              textAlign: TextAlign.start,
+                            Row(
+                              children: [
+                                Text(
+                                  "   Sub Category of Business",
+                                  style: Get.textTheme.bodyText1,
+                                  textAlign: TextAlign.start,
+                                ),
+                                Text(
+                                  "*",
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                  ),
+                                  textAlign: TextAlign.start,
+                                ),
+                              ],
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -334,7 +348,7 @@ class _AccountWorkExperiencedViewPageState
                                 mode: Mode.BOTTOM_SHEET,
                                 showSelectedItems: true,
                                 items: SubCategory,
-                                label: "Sub Category of Business",
+                                //label: "Sub Category of Business",
                                 onChanged: (item) {
                                   final data = SubCategoryList.firstWhere(
                                       (e) => e['name'] == item);
@@ -349,10 +363,11 @@ class _AccountWorkExperiencedViewPageState
                                 },
                                 selectedItem: selectedSubBusinessNature,
                                 validator: (item) {
-                                  if (item == null) {
+                                  if (item == '' || item == null) {
                                     return "Please select sub business category";
                                   } else {
                                     return null;
+                                    //return "Please select sub business category";
                                   }
                                 },
                               ),
@@ -398,6 +413,7 @@ class _AccountWorkExperiencedViewPageState
                 ),
                 DateFieldWidget(
                   labelText: "Start Date",
+                  mandatory: "*",
                   //iconData: Icons.ac_unit,
                   iconData: FontAwesomeIcons.solidCalendarAlt,
                   keyboardType: TextInputType.datetime,
@@ -417,13 +433,59 @@ class _AccountWorkExperiencedViewPageState
                         keyboardType: TextInputType.datetime,
                         isFirst: false,
                         isLast: true,
+                        mandatory: "*",
                         setValue: _setInputValue,
                         field: 'end_date',
                         validator: RequiredValidator(
                             errorText: 'End Date is required'),
                         initialValue: _formData['end_date'],
                       )
-                    : Container()
+                    : Container(),
+
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: BoxDecoration(
+                    color: kSecondaryColor,
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: kThirdColor.withOpacity(0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, -5)),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: MaterialButton(
+                          onPressed: () {
+                            final form = _formKey.currentState;
+                            if (form!.validate()) {
+                              form.save();
+                              context
+                                  .read<AuthBloc>()
+                                  .add(CreateUpdateWorkExperienced(_formData));
+                              Navigator.pop(context);
+                            }
+                          },
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          color: kPrimaryColor,
+                          child: const Text("Save",
+                              style: TextStyle(color: kSecondaryColor)),
+                          elevation: 0,
+                          highlightElevation: 0,
+                          hoverElevation: 0,
+                          focusElevation: 0,
+                        ),
+                      ),
+                    ],
+                  ).paddingSymmetric(vertical: 10, horizontal: 20),
+                ),
               ]),
             ),
           )),

@@ -150,6 +150,7 @@ class _RegisterCompanyPageState extends State<RegisterCompanyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text(
           "Register",

@@ -225,10 +225,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 
     var registerDataReturn = await httpProvider.postHttp("register", data);
+
+    emit(GetUserDetailsSuccessful(registerDataReturn, registerDataReturn));
+
     if (registerDataReturn == "Registration success") {
       emit(const RegisterSuccessful());
     } else {
-      emit(const ErrorOccured());
+      emit(UserNotFound(registerDataReturn));
     }
   }
 

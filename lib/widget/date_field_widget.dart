@@ -25,6 +25,7 @@ class DateFieldWidget extends StatelessWidget {
       this.initialValue = "",
       this.hintText,
       this.errorText,
+      this.mandatory,
       this.iconData,
       this.labelText,
       this.obscureText,
@@ -47,6 +48,7 @@ class DateFieldWidget extends StatelessWidget {
   final String? hintText;
   final String? errorText;
   final TextAlign? textAlign;
+  final String? mandatory;
   final String? labelText;
   final TextStyle? style;
   final IconData? iconData;
@@ -76,10 +78,21 @@ class DateFieldWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            labelText ?? "",
-            style: Get.textTheme.bodyText1,
-            textAlign: textAlign ?? TextAlign.start,
+          Row(
+            children: [
+              Text(
+                labelText ?? "",
+                style: Get.textTheme.bodyText1,
+                textAlign: textAlign ?? TextAlign.start,
+              ),
+              Text(
+                mandatory ?? "",
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+                textAlign: textAlign ?? TextAlign.start,
+              ),
+            ],
           ),
           DateTimePicker(
             initialValue: initialValue,

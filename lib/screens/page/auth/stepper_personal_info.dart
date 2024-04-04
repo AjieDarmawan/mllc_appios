@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_typing_uninitialized_variables
-
 import 'dart:async';
 import 'dart:io';
 
@@ -21,22 +19,20 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
-class AccountPersonalBasicInfoViewPage extends StatefulWidget {
+class StepperPersonalinfo extends StatefulWidget {
   final dynamic data;
   final String? first;
   final bool disableEdit;
 
-  const AccountPersonalBasicInfoViewPage(
+  const StepperPersonalinfo(
       {Key? key, this.data, this.first, required this.disableEdit})
       : super(key: key);
 
   @override
-  _AccountPersonalBasicInfoViewPageState createState() =>
-      _AccountPersonalBasicInfoViewPageState();
+  State<StepperPersonalinfo> createState() => _StepperPersonalinfoState();
 }
 
-class _AccountPersonalBasicInfoViewPageState
-    extends State<AccountPersonalBasicInfoViewPage> {
+class _StepperPersonalinfoState extends State<StepperPersonalinfo> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
   File? selectImage;
@@ -71,33 +67,9 @@ class _AccountPersonalBasicInfoViewPageState
     'others_state': null
   };
 
-  // @override
-  // void didChangeDependencies() {
-  //   final dynamic args = ModalRoute.of(context)!.settings.arguments;
-  //   if (args != null) {
-  //     _formData['title_id'] = widget.data['title_id'];
-  //     _formData['nationality_id'] = widget.data['nationality_id'];
-  //     _formData['state_id'] = widget.data['state_id'];
-  //     _formData['name'] = widget.data['name'];
-  //     _formData['preferred_name'] = widget.data['preferred_name'];
-  //     _formData['chinese_name'] = widget.data['chinese_name'];
-  //     _formData['identity_card'] = widget.data['identity_card'];
-  //     _formData['phone_number'] = widget.data['phone_number'];
-  //     _formData['passport_number'] = widget.data['passport_number'];
-  //     _formData['others_nationality'] = widget.data['others_nationality'];
-  //     _formData['others_state'] = widget.data['others_state'];
-  //     email = widget.data['email'];
-  //     if (widget.data['thumbnail'] != null) {
-  //       thumbnail = widget.data['thumbnail'];
-  //     }
-  //     membershipExpiryDate = widget.data['expired_date'];
-  //     membershipRenewalDate = widget.data['renewal_date'];
-  //   }
-  //   super.didChangeDependencies();
-  // }
-
   @override
   void initState() {
+    print("userDatauserData${widget.data}");
     _formData['user_id'] = widget.data['id'];
     _formData['title_id'] = widget.data['title_id'];
     _formData['nationality_id'] = widget.data['nationality_id'];
@@ -112,10 +84,6 @@ class _AccountPersonalBasicInfoViewPageState
     _formData['others_state'] = widget.data['others_state'];
     _formData['gender'] = widget.data['gender'];
     _formData['introduction'] = widget.data['introduction'];
-
-    _formData['password'] = '';
-    _formData['new_password'] = '';
-
     email = widget.data['email'];
     if (widget.data['gender'] == 'Male') {
       setState(() {
@@ -161,19 +129,110 @@ class _AccountPersonalBasicInfoViewPageState
         }
       },
       child: Scaffold(
-          // resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            title: const Text(
-              "Personal Basic Info",
-              style: TextStyle(
-                color: kSecondaryColor,
-              ),
+          resizeToAvoidBottomInset: false,
+          bottomNavigationBar: SizedBox(
+            height: widget.disableEdit == true ? 0 : 90,
+            child: Column(
+              children: [
+                if (widget.disableEdit == false)
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color: kSecondaryColor,
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: kThirdColor.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, -5)),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: MaterialButton(
+                            onPressed: () {
+                              if ((_formData['new_password'] != null &&
+                                      _formData['new_password'] != "") &&
+                                  (_formData['password'] != null &&
+                                      _formData['password'] != "") &&
+                                  (_formData['new_password'] !=
+                                      _formData['password'])) {
+                                _showErrorMessage(context,
+                                    'Please confirm your new password!');
+                              } else {
+                                _formData['phone_number'] =
+                                    "+6${_formData['phone_number']}";
+                                final form = _formKey.currentState;
+                                if (form!.validate()) {
+                                  form.save();
+                                  context
+                                      .read<AuthBloc>()
+                                      .add(UpdateUserDetail(_formData));
+                                  Timer(const Duration(milliseconds: 500),
+                                      () async {
+                                    if (widget.first != null) {
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      prefs.setBool("isLoggedIn", true);
+                                      // prefs.setString("email", _formData['email']);
+                                      prefs.setString(
+                                          "username", _formData['name']);
+                                      prefs.setInt(
+                                          "userId", _formData['user_id']);
+                                      prefs.setBool("isExpired", false);
+                                      var updateAccessDataReturn =
+                                          await httpProvider
+                                              .postHttp("last_access", {
+                                        'user_id': _formData['user_id'],
+                                        'push_token': prefs
+                                            .getString("OneSignalPlayerID"),
+                                        'push_token_status': '1'
+                                      });
+                                      _showSuccessMessage(context,
+                                          'Update Personal Basic Info Successful');
+                                      if (updateAccessDataReturn == "Success") {
+                                        Navigator.of(context)
+                                            .popUntil((route) => route.isFirst);
+                                        Navigator.pushReplacement(
+                                          context,
+                                          PageTransition(
+                                            type: PageTransitionType.fade,
+                                            child: const MainScreen(
+                                              page: HomePage(),
+                                              index: 0,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    } else {
+                                      Navigator.pop(context);
+                                    }
+                                  });
+                                }
+                              }
+                            },
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            color: kPrimaryColor,
+                            child: const Text("Save",
+                                style: TextStyle(color: kSecondaryColor)),
+                            elevation: 0,
+                            highlightElevation: 0,
+                            hoverElevation: 0,
+                            focusElevation: 0,
+                          ),
+                        ),
+                      ],
+                    ).paddingSymmetric(vertical: 10, horizontal: 20),
+                  ),
+              ],
             ),
-            centerTitle: true,
-            backgroundColor: kPrimaryColor,
-            elevation: 0,
           ),
-          //bottomNavigationBar:
           body: Form(
             key: _formKey,
             child: ListView(primary: true, children: [
@@ -339,8 +398,7 @@ class _AccountPersonalBasicInfoViewPageState
                     .paddingSymmetric(horizontal: 22, vertical: 5),
               TextFieldWidget(
                 labelText: "Name",
-                hintText: "your name",
-                mandatory: "*",
+                hintText: "Lee Wei Wei",
                 iconData: Icons.person_outline,
                 isFirst: true,
                 isLast: false,
@@ -352,8 +410,7 @@ class _AccountPersonalBasicInfoViewPageState
               ),
               TextFieldWidget(
                 labelText: "Preferred Name",
-                hintText: "your preferred name",
-                mandatory: "*",
+                hintText: "Shirley Lee",
                 iconData: Icons.person_outline,
                 isFirst: false,
                 isLast: false,
@@ -366,8 +423,7 @@ class _AccountPersonalBasicInfoViewPageState
               ),
               TextFieldWidget(
                 labelText: "Chinese Name",
-                hintText: "姓名",
-                mandatory: "*",
+                hintText: "李薇薇",
                 iconData: Icons.person_outline,
                 isFirst: false,
                 isLast: true,
@@ -380,32 +436,29 @@ class _AccountPersonalBasicInfoViewPageState
               ),
               TextFieldWidget(
                   labelText: "Email Address (Read Only)",
-                  hintText: "your.email@gmail.com",
+                  hintText: "johndoe@gmail.com",
                   iconData: Icons.alternate_email,
-                  mandatory: "*",
                   keyboardType: TextInputType.emailAddress,
                   setValue: _setInputValue,
                   field: 'email',
                   initialValue: email,
                   validator: emailValidator,
                   readOnly: true),
-              // TextFieldWidget(
-              //   labelText: "Identity Card",
-              //   mandatory: "*",
-              //   hintText: "XXXXXX-XX-XXXX",
-              //   //iconData: Icons.ac_unit,
+              TextFieldWidget(
+                labelText: "Identity Card",
+                hintText: "XXXXXX-XX-XXXX",
+                //iconData: Icons.ac_unit,
 
-              //   inputFormatters: [maskFormatter],
-              //   setValue: _setInputValue,
-              //   field: 'identity_card',
-              //   readOnly: widget.disableEdit,
-              //   initialValue: _formData['identity_card'],
-              //   validator: identityCardValidator,
-              // ),
+                inputFormatters: [maskFormatter],
+                setValue: _setInputValue,
+                field: 'identity_card',
+                readOnly: widget.disableEdit,
+                initialValue: _formData['identity_card'],
+                validator: identityCardValidator,
+              ),
               TextFieldWidget(
                 labelText: "Phone Number",
-                mandatory: "*",
-                hintText: "Eg: 0123456789",
+                hintText: "0123456789",
                 iconData: Icons.phone_iphone,
                 keyboardType: TextInputType.phone,
                 setValue: _setInputValue,
@@ -433,21 +486,10 @@ class _AccountPersonalBasicInfoViewPageState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Row(
-                      children: [
-                        Text(
-                          "Gender",
-                          style: Get.textTheme.bodyText1,
-                          textAlign: TextAlign.start,
-                        ),
-                        Text(
-                          "*",
-                          style: TextStyle(
-                            color: Colors.red,
-                          ),
-                          textAlign: TextAlign.start,
-                        ),
-                      ],
+                    Text(
+                      "Gender",
+                      style: Get.textTheme.bodyText1,
+                      textAlign: TextAlign.start,
                     ),
                     Row(
                       children: [
@@ -517,7 +559,6 @@ class _AccountPersonalBasicInfoViewPageState
               TextFieldWidget(
                 labelText: "Introduction",
                 hintText: "Introduction",
-                mandatory: "*",
                 iconData: FontAwesomeIcons.solidStickyNote,
                 keyboardType: TextInputType.multiline,
                 isFirst: true,
@@ -526,8 +567,6 @@ class _AccountPersonalBasicInfoViewPageState
                 field: 'introduction',
                 readOnly: widget.disableEdit,
                 initialValue: _formData['introduction'],
-                validator:
-                    RequiredValidator(errorText: 'introduction is required'),
               ),
               // TextFieldWidget(
               //   labelText: "Introduction",
@@ -567,7 +606,6 @@ class _AccountPersonalBasicInfoViewPageState
               if (widget.first == null)
                 TextFieldWidget(
                   obscureText: hidePassword,
-                  // mandatory: "*",
                   labelText: "New Password",
                   hintText: "••••••••••••",
                   iconData: Icons.lock_outline,
@@ -576,7 +614,6 @@ class _AccountPersonalBasicInfoViewPageState
                   isLast: false,
                   setValue: _setInputValue,
                   field: 'new_password',
-                  initialValue: _formData['new_password'],
                   readOnly: widget.disableEdit,
                   suffixIcon: IconButton(
                     onPressed: () {
@@ -593,7 +630,6 @@ class _AccountPersonalBasicInfoViewPageState
               if (widget.first == null)
                 TextFieldWidget(
                   obscureText: hidePassword,
-                  //  mandatory: "*",
                   labelText: "Confirm New Password",
                   hintText: "••••••••••••",
                   iconData: Icons.lock_outline,
@@ -602,7 +638,6 @@ class _AccountPersonalBasicInfoViewPageState
                   isLast: true,
                   setValue: _setInputValue,
                   field: 'password',
-                  initialValue: _formData['password'],
                   readOnly: widget.disableEdit,
                 ),
 
@@ -645,112 +680,6 @@ class _AccountPersonalBasicInfoViewPageState
                   readOnly: widget.disableEdit,
                   validator: passwordValidator,
                 ),
-
-              SizedBox(
-                height: widget.disableEdit == true ? 0 : 90,
-                child: Column(
-                  children: [
-                    if (widget.disableEdit == false)
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        decoration: BoxDecoration(
-                          color: kSecondaryColor,
-                          borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20)),
-                          boxShadow: [
-                            BoxShadow(
-                                color: kThirdColor.withOpacity(0.1),
-                                blurRadius: 10,
-                                offset: const Offset(0, -5)),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: MaterialButton(
-                                onPressed: () {
-                                  if ((_formData['new_password'] != null &&
-                                          _formData['new_password'] != "") &&
-                                      (_formData['password'] != null &&
-                                          _formData['password'] != "") &&
-                                      (_formData['new_password'] !=
-                                          _formData['password'])) {
-                                    _showErrorMessage(context,
-                                        'Please confirm your new password!');
-                                  } else {
-                                    _formData['phone_number'] =
-                                        "+6${_formData['phone_number']}";
-                                    final form = _formKey.currentState;
-                                    if (form!.validate()) {
-                                      form.save();
-                                      context
-                                          .read<AuthBloc>()
-                                          .add(UpdateUserDetail(_formData));
-                                      Timer(const Duration(milliseconds: 500),
-                                          () async {
-                                        if (widget.first != null) {
-                                          SharedPreferences prefs =
-                                              await SharedPreferences
-                                                  .getInstance();
-                                          prefs.setBool("isLoggedIn", true);
-                                          // prefs.setString("email", _formData['email']);
-                                          prefs.setString(
-                                              "username", _formData['name']);
-                                          prefs.setInt(
-                                              "userId", _formData['user_id']);
-                                          prefs.setBool("isExpired", false);
-                                          var updateAccessDataReturn =
-                                              await httpProvider
-                                                  .postHttp("last_access", {
-                                            'user_id': _formData['user_id'],
-                                            'push_token': prefs
-                                                .getString("OneSignalPlayerID"),
-                                            'push_token_status': '1'
-                                          });
-                                          _showSuccessMessage(context,
-                                              'Update Personal Basic Info Successful');
-                                          if (updateAccessDataReturn ==
-                                              "Success") {
-                                            Navigator.of(context).popUntil(
-                                                (route) => route.isFirst);
-                                            Navigator.pushReplacement(
-                                              context,
-                                              PageTransition(
-                                                type: PageTransitionType.fade,
-                                                child: const MainScreen(
-                                                  page: HomePage(),
-                                                  index: 0,
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                        } else {
-                                          Navigator.pop(context);
-                                        }
-                                      });
-                                    }
-                                  }
-                                },
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 30, vertical: 12),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                                color: kPrimaryColor,
-                                child: const Text("Save",
-                                    style: TextStyle(color: kSecondaryColor)),
-                                elevation: 0,
-                                highlightElevation: 0,
-                                hoverElevation: 0,
-                                focusElevation: 0,
-                              ),
-                            ),
-                          ],
-                        ).paddingSymmetric(vertical: 10, horizontal: 20),
-                      ),
-                  ],
-                ),
-              ),
             ]),
           )),
     );

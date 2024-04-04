@@ -2058,6 +2058,7 @@ class _EntrepreneurSearchResultPageState
                   // autofocus: true,
                   cursorColor: kSecondaryColor,
                   onChanged: (value) {
+                    
                     filterSearchResults(value);
                   },
                   decoration: const InputDecoration(

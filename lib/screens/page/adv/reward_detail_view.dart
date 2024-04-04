@@ -53,6 +53,8 @@ class _RewardDetailsViewPageState extends State<RewardDetailsViewPage> {
 
   @override
   void initState() {
+    // secureScreen();
+    // DisableScreenshots.disable();
     getUser();
     // Timer(const Duration(milliseconds: 1000), () {
     if (widget.type != null) {
@@ -65,6 +67,13 @@ class _RewardDetailsViewPageState extends State<RewardDetailsViewPage> {
 
     // });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+
+    super.dispose();
   }
 
   Future<void> showProgressJoin(
@@ -210,7 +219,12 @@ class _RewardDetailsViewPageState extends State<RewardDetailsViewPage> {
                 Navigator.pushReplacement(
                   context,
                   PageTransition(
-                      type: PageTransitionType.fade, child: AdvPage()),
+                    type: PageTransitionType.fade,
+                    child: MainScreen(
+                      page: AdvPage(),
+                      index: 3,
+                    ),
+                  ),
                 );
               }
             },
@@ -351,19 +365,28 @@ class _RewardDetailsViewPageState extends State<RewardDetailsViewPage> {
                   alignment: AlignmentDirectional.bottomCenter,
                   children: <Widget>[
                     (rewardData['poster'] != null && rewardData['poster'] != "")
-                        ? CachedNetworkImage(
-                            height: 400,
-                            width: double.infinity,
-                            fit: BoxFit.contain,
-                            imageUrl: rewardData['poster'],
-                            placeholder: (context, url) => Image.asset(
-                              'assets/loading.gif',
-                              fit: BoxFit.contain,
-                              width: double.infinity,
+                        ? GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, '/photo_webview_page', arguments: {
+                                'url': rewardData['poster'],
+                                'title': rewardData['title']
+                              });
+                            },
+                            child: CachedNetworkImage(
                               height: 400,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              imageUrl: rewardData['poster'],
+                              placeholder: (context, url) => Image.asset(
+                                'assets/loading.gif',
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: 400,
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error_outline),
                             ),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error_outline),
                           )
                         : CachedNetworkImage(
                             height: 400,
@@ -374,7 +397,7 @@ class _RewardDetailsViewPageState extends State<RewardDetailsViewPage> {
                                 'assets/mlcc_noPic.png',
                             placeholder: (context, url) => Image.asset(
                               'assets/loading.gif',
-                              fit: BoxFit.contain,
+                              fit: BoxFit.cover,
                               width: double.infinity,
                               height: 400,
                             ),

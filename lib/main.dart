@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:mlcc_app_ios/Bloc/timer/timer_bloc.dart';
 import 'package:mlcc_app_ios/models/ticker.dart';
+import 'package:mlcc_app_ios/screens/main_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mlcc_app_ios/Bloc/adv/adv_bloc.dart';
 import 'package:mlcc_app_ios/Bloc/auth/auth_bloc.dart';
@@ -21,6 +22,7 @@ import 'package:mlcc_app_ios/screens/page/account/account_societies_view.dart';
 import 'package:mlcc_app_ios/screens/page/account/account_work_experienced_view.dart';
 import 'package:mlcc_app_ios/screens/page/account/contact_us.dart';
 import 'package:mlcc_app_ios/screens/page/adv/product_detail_view.dart';
+import 'package:mlcc_app_ios/screens/page/adv/reward_detail_view.dart';
 import 'package:mlcc_app_ios/screens/page/adv/reward_detail_view.dart';
 import 'package:mlcc_app_ios/screens/page/adv/sponsored_detail_view.dart';
 import 'package:mlcc_app_ios/screens/page/adv/voucher_detail_view.dart';
@@ -136,7 +138,14 @@ class MyApp extends StatelessWidget {
             //     const TrainingDetailsViewPage(),
             '/trainer_details_view_page': (context) =>
                 const TrainerDetailsViewPage(),
-            '/events_view_page': (context) => const EventsViewPage(),
+            '/events_view_page': (context) => const MainScreen(
+                  page: EventsViewPage(),
+                  index: 2,
+                ),
+            '/home_main': (context) => const MainScreen(
+                  page: HomePage(),
+                  index: 0,
+                ),
             // '/event_details_view_page': (context) =>
             //     const EventDetailsViewPage(),
           },
@@ -190,12 +199,12 @@ class MyApp extends StatelessWidget {
                         data: args!['data'],
                         first: args['first'],
                         disableEdit: args['disableEdit']));
-              // case '/reward_details_view_page':
-              //   final Map<String, dynamic>? args =
-              //       settings.arguments as Map<String, dynamic>?;
-              //   return MaterialPageRoute(
-              //       builder: (contet) => RewardDetailsViewPage(
-              //           data: args!['data'], type: args['type']));
+              case '/reward_details_view_page':
+                final Map<String, dynamic>? args =
+                    settings.arguments as Map<String, dynamic>?;
+                return MaterialPageRoute(
+                    builder: (contet) => RewardDetailsViewPage(
+                        data: args!['data'], type: args['type']));
               case '/sponsored_details_view_page':
                 final Map<String, dynamic>? args =
                     settings.arguments as Map<String, dynamic>?;

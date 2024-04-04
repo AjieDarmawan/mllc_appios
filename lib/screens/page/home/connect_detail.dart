@@ -68,14 +68,23 @@ class _ConnectDetailsViewPageState extends State<ConnectDetailsViewPage> {
   void initState() {
     getUser();
     // Timer(const Duration(milliseconds: 2000), () {
+
+    final _formData_detail = {};
+
     if (widget.status == 'Reject') {
+      _formData_detail['user_id'] = widget.data['connector_id'];
+      _formData_detail['log_user_id'] = userId;
+
       context
           .read<EntrepreneursBloc>()
-          .add(GetEntrepreneurDetails(widget.data['connector_id']));
+          .add(GetEntrepreneurDetails(_formData_detail));
     } else {
+      _formData_detail['user_id'] = widget.data['requestor_id'];
+      _formData_detail['log_user_id'] = userId;
+
       context
           .read<EntrepreneursBloc>()
-          .add(GetEntrepreneurDetails(widget.data['requestor_id']));
+          .add(GetEntrepreneurDetails(_formData_detail));
     }
 
     Timer(const Duration(milliseconds: 1500), () {

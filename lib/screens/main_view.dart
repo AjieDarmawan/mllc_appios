@@ -5,6 +5,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mlcc_app_ios/screens/page/adv/adv_view.dart';
+import 'package:mlcc_app_ios/screens/page/auth/register_one.dart';
 import 'package:mlcc_app_ios/screens/page/entrepreneurs/entrepreneurs_view.dart';
 import 'package:mlcc_app_ios/screens/page/events/events_view.dart';
 import 'package:page_transition/page_transition.dart';
@@ -101,6 +102,14 @@ class _MainScreenState extends State<MainScreen> {
             await httpProvider.postHttp2("entrepreneur/info", _formData);
 
         if (getUserDetails != null) {
+          var first_login = getUserDetails[0]['first_time'];
+          if (first_login == 0) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => RegisterOne()));
+          }
+
           var token = getUserDetails[0]['device_token'];
           if (token != deviceToken) {
             // if (announcement == 1) {
@@ -164,8 +173,6 @@ class _MainScreenState extends State<MainScreen> {
 
       case 1:
         return const EntrepreneursViewPage();
-
-     
 
       case 2:
         return const EventsViewPage();

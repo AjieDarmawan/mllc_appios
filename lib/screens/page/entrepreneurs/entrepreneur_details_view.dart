@@ -33,8 +33,10 @@ import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 class EntrepreneurDetailsViewPage extends StatefulWidget {
   final dynamic data;
   final dynamic allUsers;
+  final String? type;
 
-  const EntrepreneurDetailsViewPage({Key? key, this.data, this.allUsers})
+  const EntrepreneurDetailsViewPage(
+      {Key? key, this.data, this.allUsers, this.type})
       : super(key: key);
 
   @override
@@ -53,6 +55,7 @@ class _EntrepreneurDetailsViewPageState
   bool _isWork = false;
   bool _isEmail = false;
   bool _isNumber = false;
+
   String _connect = "";
   int userId = 0;
   String name = '';
@@ -82,8 +85,29 @@ class _EntrepreneurDetailsViewPageState
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       userId = prefs.getInt("userId")!;
-      connector_id = widget.data['id'];
-      name = widget.data['name'];
+
+      if (widget.type == 'profile') {
+        connector_id = userId;
+        name = "tes";
+      } else {
+        connector_id = widget.data['id'];
+        name = widget.data['name'];
+      }
+
+      Timer(const Duration(milliseconds: 2000), () {
+        setState(() {
+          _isIntro = true;
+          _isMedia = true;
+          _isEducation = true;
+          _isSocieties = true;
+          _isCert = true;
+          _isWork = true;
+          _isEmail = true;
+          _isNumber = true;
+          //print("testing--");
+        });
+      });
+
       // if (widget.data['connect_user_id'].isNotEmpty &&
       //     widget.data['connect_user_id'].contains(userId) == true) {
       //   _connect = "Approve";
@@ -99,7 +123,12 @@ class _EntrepreneurDetailsViewPageState
     });
 
     final _formData_detail = {};
-    _formData_detail['user_id'] = widget.data['id'];
+    if (widget.type == 'profile') {
+      _formData_detail['user_id'] = userId;
+    } else {
+      _formData_detail['user_id'] = widget.data['id'];
+    }
+
     _formData_detail['log_user_id'] = userId;
 
     context
@@ -127,23 +156,17 @@ class _EntrepreneurDetailsViewPageState
     getUser();
     // Timer(const Duration(milliseconds: 2000), () {
 
-    Timer(const Duration(milliseconds: 1000), () {
-      setState(() {
-        _isIntro = true;
-        _isMedia = true;
-        _isEducation = true;
-        _isSocieties = true;
-        _isCert = true;
-        _isWork = true;
-        _isEmail = true;
-        _isNumber = true;
-      });
-      // });
-
-      // Timer(const Duration(milliseconds: 2000), () {
-      //   setState(() {
-      //     _isIntro = false;
-      //   });
+    Timer(const Duration(milliseconds: 3000), () {
+      // setState(() {
+      //   _isIntro = true;
+      //   _isMedia = true;
+      //   _isEducation = true;
+      //   _isSocieties = true;
+      //   _isCert = true;
+      //   _isWork = true;
+      //   _isEmail = true;
+      //   _isNumber = true;
+      //   //print("testing--");
       // });
     });
     super.initState();
@@ -467,304 +490,287 @@ class _EntrepreneurDetailsViewPageState
                 style: TextStyle(color: kSecondaryColor))),
       )
     ];
-    return WillPopScope(
-      onWillPop: () async {
-        return backtoPrevious();
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              // Navigator.pushReplacement(
-              //   context,
-              //   PageTransition(
-              //       type: PageTransitionType.fade,
-              //       child: EntrepreneursViewPage(data: widget.allUsers)),
-              // );
-              Navigator.pop(context);
+    var scaffold = Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            // Navigator.pushReplacement(
+            //   context,
+            //   PageTransition(
+            //       type: PageTransitionType.fade,
+            //       child: EntrepreneursViewPage(data: widget.allUsers)),
+            // );
+            Navigator.pop(context);
 
-              // Navigator.pushReplacementNamed(
-              //     context, '/entrepreneurs_view_page');
-            },
-            icon: const Icon(Icons.keyboard_arrow_left, size: 30),
-          ),
-          title: Text(
-            entrepreneurData['title'] + " " + entrepreneurData['name'],
-            style: const TextStyle(
-              color: kSecondaryColor,
-            ),
-          ),
-          centerTitle: true,
-          backgroundColor: kPrimaryColor,
-          elevation: 0,
-        ),
-        bottomNavigationBar: GestureDetector(
-          onHorizontalDragEnd: (DragEndDetails details) {
-            // if (details.primaryVelocity! > 0) {
-            // print("Test1");
-            // setState(() {
-            //   if (_connect == "" || _connect == "Reject") {
-            //     if (_connect == '') {
-            //       _swipeText = "Connect";
-            //       _color = kThirdColor;
-            //     } else {
-            //       _swipeText = "Rejected ( Request Again)";
-            //       _color = Colors.red;
-            //     }
-
-            //     Navigator.push(
-            //       context,
-            //       PageTransition(
-            //         type: PageTransitionType.fade,
-            //         child: RegisterRefferalPage(data: entrepreneurData),
-            //       ),
-            //     );
-
-            //   } else if (_connect == "Pending") {
-            //     _swipeText = "Pending for Approval";
-            //     _color = Colors.grey;
-            //     showDialog<String>(
-            //         // barrierDismissible: false,
-            //         context: context,
-            //         builder: (BuildContext context) => AlertDialog(
-            //               title: const Text('Pending for Approval'),
-            //               content: RichText(
-            //                   text: TextSpan(
-            //                       // Note: Styles for TextSpans must be explicitly defined.
-            //                       // Child text spans will inherit styles from parent
-            //                       style: const TextStyle(
-            //                         fontSize: 13.0,
-            //                         color: Colors.black,
-            //                       ),
-            //                       children: <TextSpan>[
-            //                     const TextSpan(
-            //                         text: 'You have sent request to the '),
-            //                     TextSpan(
-            //                         text: name + ". \n\n",
-            //                         style: const TextStyle(
-            //                             fontSize: 15.0,
-            //                             fontWeight: FontWeight.bold)),
-            //                     const TextSpan(
-            //                       text: ' Please wait for response...',
-            //                       style: TextStyle(
-            //                         fontSize: 13.0,
-            //                         color: Colors.black,
-            //                       ),
-            //                     ),
-            //                   ])),
-            //               actions: <Widget>[
-            //                 TextButton(
-            //                   onPressed: () {
-            //                     Navigator.pop(context);
-            //                   },
-            //                   child: const Text('OK'),
-            //                   style:
-            //                       TextButton.styleFrom(primary: Colors.black),
-            //                 ),
-            //               ],
-            //             ));
-            //   } else if (_connect == "Approve") {
-            //     _swipeText = "Connected";
-            //     _color = Colors.green.shade300;
-            //     showDialog<String>(
-            //         // barrierDismissible: false,
-            //         context: context,
-            //         builder: (BuildContext context) => AlertDialog(
-            //               title: const Text('Connected'),
-            //               content: RichText(
-            //                   text: TextSpan(
-            //                       // Note: Styles for TextSpans must be explicitly defined.
-            //                       // Child text spans will inherit styles from parent
-            //                       style: const TextStyle(
-            //                         fontSize: 13.0,
-            //                         color: Colors.black,
-            //                       ),
-            //                       children: <TextSpan>[
-            //                     const TextSpan(
-            //                         text: 'You have connected to the '),
-            //                     TextSpan(
-            //                         text: name + ". \n\n",
-            //                         style: const TextStyle(
-            //                             fontSize: 15.0,
-            //                             fontWeight: FontWeight.bold)),
-            //                   ])),
-            //               actions: <Widget>[
-            //                 TextButton(
-            //                   onPressed: () {
-            //                     Navigator.pop(context);
-            //                     // Navigator.pushReplacementNamed(
-            //                     //     context,
-            //                     //     '/entrepreneur_details_view_page',
-            //                     //     arguments: {
-            //                     //       'data': widget.data
-            //                     //     });
-            //                   },
-            //                   child: const Text('OK'),
-            //                   style:
-            //                       TextButton.styleFrom(primary: Colors.black),
-            //                 ),
-            //               ],
-            //             ));
-            //   }
-            // });
+            // Navigator.pushReplacementNamed(
+            //     context, '/entrepreneurs_view_page');
           },
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            decoration: BoxDecoration(
-              color: kSecondaryColor,
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-              boxShadow: [
-                BoxShadow(
-                    color: kThirdColor.withOpacity(0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, -5)),
-              ],
-            ),
-            child: Row(
-              children: [
-                //if (_connect.isEmpty)
-                Expanded(
-                    flex: 8,
-                    child: SizedBox(
-                        height: 60,
-                        child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 0.0, vertical: 0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    functionreferral(status_['referral_status'],
-                                        entrepreneurData);
-                                  },
-                                  child: Image.asset("assets/left.gif",
-                                      height: 60, width: 60, fit: BoxFit.cover),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    functionreferral(status_['referral_status'],
-                                        entrepreneurData);
-                                    // Navigator.push(
-                                    //   context,
-                                    //   PageTransition(
-                                    //     type: PageTransitionType.fade,
-                                    //     child: RegisterRefferalPage(
-                                    //         data: entrepreneurData),
-                                    //   ),
-                                    // );
-                                  },
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text('Swipe Left ',
-                                              style: const TextStyle(
-                                                  fontSize: 12,
-                                                  color: kTextColor)),
-                                          Text('(Referral)',
-                                              style: const TextStyle(
-                                                  fontSize: 10,
-                                                  color: kTextColor)),
-                                        ],
-                                      ),
-                                      Text(
-                                          'Status: ${status_['referral_status']} ',
-                                          style: const TextStyle(
-                                              fontSize: 10,
-                                              color: kPrimaryColor)),
-                                    ],
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    // Navigator.push(
-                                    //   context,
-                                    //   PageTransition(
-                                    //     type: PageTransitionType.fade,
-                                    //     child: RegisterRefferalPage(
-                                    //         data: entrepreneurData),
-                                    //   ),
-                                    // );
-                                    functionconnect(
-                                        status_['connected_status']);
-                                  },
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text('Swipe Right ',
-                                              style: const TextStyle(
-                                                  fontSize: 12,
-                                                  color: kTextColor)),
-                                          Text('(Connect)',
-                                              style: const TextStyle(
-                                                  fontSize: 10,
-                                                  color: kTextColor)),
-                                        ],
-                                      ),
-                                      Flexible(
-                                        child: Text(
-                                            'Status : ${status_['connected_status']} ',
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                                fontSize: 10,
-                                                color: kPrimaryColor)),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    // Navigator.push(
-                                    //   context,
-                                    //   PageTransition(
-                                    //     type: PageTransitionType.fade,
-                                    //     child: RegisterRefferalPage(
-                                    //         data: entrepreneurData),
-                                    //   ),
-                                    // );
-                                    functionconnect(
-                                        status_['connected_status']);
-                                  },
-                                  child: Image.asset("assets/right.gif",
-                                      height: 60, width: 60, fit: BoxFit.cover),
-                                ),
-                              ],
-                            ))))
-              ],
-            ).paddingSymmetric(vertical: 10, horizontal: 20),
+          icon: const Icon(Icons.keyboard_arrow_left, size: 30),
+        ),
+        title: Text(
+          entrepreneurData['title'] + " " + entrepreneurData['name'],
+          style: const TextStyle(
+            color: kSecondaryColor,
           ),
         ),
-        body: CustomScrollView(
-          primary: true,
-          shrinkWrap: true,
-          slivers: <Widget>[
-            SliverAppBar(
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              expandedHeight: 350,
-              elevation: 0,
-              // floating: true,
-              iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-              centerTitle: true,
-              pinned: true,
-              automaticallyImplyLeading: false,
-              // bottom: entrepreneurTitleBarWidget(entrepreneurData['name']),
-              flexibleSpace: FlexibleSpaceBar(
-                collapseMode: CollapseMode.parallax,
-                background: Stack(
-                  alignment: AlignmentDirectional.bottomCenter,
-                  children: <Widget>[
-                    (entrepreneurData['thumbnail'] != null &&
-                            entrepreneurData['thumbnail'] != "")
-                        ? Container(
+        centerTitle: true,
+        backgroundColor: kPrimaryColor,
+        elevation: 0,
+      ),
+      bottomNavigationBar: widget.type != 'profile'
+          ? Container(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                color: kSecondaryColor,
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
+                boxShadow: [
+                  BoxShadow(
+                      color: kThirdColor.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, -5)),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 60,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                                flex: 1,
+                                child: GestureDetector(
+                                  onHorizontalDragUpdate: (details) {
+                                    // Note: Sensitivity is integer used when you don't want to mess up vertical drag
+                                    int sensitivity = 8;
+                                    if (details.delta.dx > sensitivity) {
+                                      functionreferral(
+                                          status_['referral_status'],
+                                          entrepreneurData);
+                                      // Right Swipe
+                                    } else if (details.delta.dx <
+                                        -sensitivity) {
+                                      functionreferral(
+                                          status_['referral_status'],
+                                          entrepreneurData);
+                                      //Left Swipe
+                                    }
+                                  },
+                                  // onTapDown: (details) {
+                                  //   functionreferral(status_['referral_status'],
+                                  //       entrepreneurData);
+                                  // },
+                                  // onTapUp: (details) {
+                                  //   functionreferral(status_['referral_status'],
+                                  //       entrepreneurData);
+                                  // },
+                                  // onLongPressEnd: (_) => setState(() {
+                                  //   functionreferral(status_['referral_status'],
+                                  //       entrepreneurData);
+                                  // }),
+                                  // onLongPress: () {
+                                  //   functionreferral(status_['referral_status'],
+                                  //       entrepreneurData);
+                                  // },
+                                  onTap: () {
+                                    functionreferral(status_['referral_status'],
+                                        entrepreneurData);
+                                  },
+                                  child: Container(
+                                    //color: Colors.red,
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          status_['referral_status'] ==
+                                                  'not referral'
+                                              ? Image.asset("assets/left.gif",
+                                                  height: 60,
+                                                  width: 60,
+                                                  fit: BoxFit.cover)
+                                              : Container(),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            child: Column(children: [
+                                              status_['referral_status'] ==
+                                                      'not referral'
+                                                  ? Text('Swipe Left ',
+                                                      style: const TextStyle(
+                                                        fontSize: 14,
+                                                        color: kTextColor,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                      ))
+                                                  : Text('Referral',
+                                                      style: const TextStyle(
+                                                        fontSize: 14,
+                                                        color: kTextColor,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                      )),
+                                              status_['referral_status'] !=
+                                                      'not referral'
+                                                  ? Text(
+                                                      'Status: ${status_['referral_status']} ',
+                                                      style: const TextStyle(
+                                                          fontSize: 12,
+                                                          color: kPrimaryColor))
+                                                  : Text('Referral',
+                                                      style: const TextStyle(
+                                                          fontSize: 12,
+                                                          color:
+                                                              kPrimaryColor)),
+                                            ]),
+                                          )
+                                        ]),
+                                  ),
+                                )),
+                            Expanded(
+                                flex: 1,
+                                child: GestureDetector(
+                                  onHorizontalDragUpdate: (details) {
+                                    // Note: Sensitivity is integer used when you don't want to mess up vertical drag
+                                    int sensitivity = 8;
+                                    if (details.delta.dx > sensitivity) {
+                                      functionconnect(
+                                          status_['connected_status']);
+                                      // Right Swipe
+                                    } else if (details.delta.dx <
+                                        -sensitivity) {
+                                      functionconnect(
+                                          status_['connected_status']);
+                                      //Left Swipe
+                                    }
+                                  },
+                                  // onTapDown: (details) {
+                                  //   functionconnect(
+                                  //       status_['connected_status']);
+                                  // },
+                                  // onTapUp: (details) {
+                                  //   functionconnect(
+                                  //       status_['connected_status']);
+                                  // },
+                                  // onLongPressEnd: (_) => setState(() {
+                                  //   functionconnect(
+                                  //       status_['connected_status']);
+                                  // }),
+                                  // onLongPress: () {
+                                  //   functionconnect(
+                                  //       status_['connected_status']);
+                                  // },
+                                  onTap: () {
+                                    functionconnect(
+                                        status_['connected_status']);
+                                  },
+                                  child: Container(
+                                    //color: Colors.blue,
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            child: Column(children: [
+                                              status_['connected_status'] ==
+                                                      'not connected'
+                                                  ? Text('Swipe Right ',
+                                                      style: const TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: kTextColor))
+                                                  : Text('Connect',
+                                                      style: const TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: kTextColor)),
+                                              status_['connected_status'] !=
+                                                      'not connected'
+                                                  ? Text(
+                                                      'Status : ${status_['connected_status']} ',
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: const TextStyle(
+                                                          fontSize: 12,
+                                                          color: kPrimaryColor))
+                                                  : Text('Connect',
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: const TextStyle(
+                                                          fontSize: 12,
+                                                          color:
+                                                              kPrimaryColor)),
+                                            ]),
+                                          ),
+                                          status_['connected_status'] ==
+                                                  'not connected'
+                                              ? Image.asset("assets/right.gif",
+                                                  height: 60,
+                                                  width: 60,
+                                                  fit: BoxFit.cover)
+                                              : Container(),
+                                        ]),
+                                  ),
+                                ))
+                          ]),
+                    ),
+                    flex: 1,
+                  )
+                ],
+              ))
+          : Container(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                color: kSecondaryColor,
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
+                boxShadow: [
+                  BoxShadow(
+                      color: kThirdColor.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, -5)),
+                ],
+              ),
+              child: Row(
+                children: [],
+              )),
+      body: CustomScrollView(
+        primary: true,
+        shrinkWrap: true,
+        slivers: <Widget>[
+          SliverAppBar(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            expandedHeight: 350,
+            elevation: 0,
+            // floating: true,
+            iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+            centerTitle: true,
+            pinned: true,
+            automaticallyImplyLeading: false,
+            // bottom: entrepreneurTitleBarWidget(entrepreneurData['name']),
+            flexibleSpace: FlexibleSpaceBar(
+              collapseMode: CollapseMode.parallax,
+              background: Stack(
+                alignment: AlignmentDirectional.bottomCenter,
+                children: <Widget>[
+                  (entrepreneurData['thumbnail'] != null &&
+                          entrepreneurData['thumbnail'] != "")
+                      ? GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, '/photo_webview_page',
+                                arguments: {
+                                  'url': entrepreneurData['thumbnail'],
+                                  'title': entrepreneurData['title']
+                                });
+                          },
+                          child: Container(
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
                                 begin: Alignment.topRight,
@@ -785,578 +791,688 @@ class _EntrepreneurDetailsViewPageState
                                 ),
                               ),
                             ),
-                          )
-                        : Image.asset(
+                          ),
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, '/photo_webview_page',
+                                arguments: {
+                                  'url': entrepreneurData['thumbnail'],
+                                  'title': entrepreneurData['title']
+                                });
+                          },
+                          child: Image.asset(
                             'assets/mlcc_logo.jpg',
                             fit: BoxFit.cover,
                             width: double.infinity,
                             height: 400,
                           ),
-                    if (entrepreneurData['member_type_string'] == 'Both')
-                      Positioned(
-                        bottom: 1,
-                        left: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: Image.asset("assets/mlcc_logo.png",
-                              width: 50, height: 50),
                         ),
+                  if (entrepreneurData['member_type_string'] == 'Both')
+                    Positioned(
+                      bottom: 1,
+                      left: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Image.asset("assets/mlcc_logo.png",
+                            width: 50, height: 50),
                       ),
-                    if (entrepreneurData['member_type_string'] == 'Both')
-                      Positioned(
-                        bottom: 1,
-                        left: 50,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: Image.asset("assets/mlcc_logo.png",
-                              width: 50, height: 50),
-                        ),
+                    ),
+                  if (entrepreneurData['member_type_string'] == 'Both')
+                    Positioned(
+                      bottom: 1,
+                      left: 50,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Image.asset("assets/mlcc_logo.png",
+                            width: 50, height: 50),
                       ),
-                    if (entrepreneurData['member_type_string'] == 'Ambassador')
-                      Positioned(
-                        bottom: 1,
-                        left: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: Image.asset("assets/mlcc_logo.png",
-                              width: 50, height: 50),
-                        ),
+                    ),
+                  if (entrepreneurData['member_type_string'] == 'Ambassador')
+                    Positioned(
+                      bottom: 1,
+                      left: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Image.asset("assets/mlcc_logo.png",
+                            width: 50, height: 50),
                       ),
-                    if (entrepreneurData['member_type_string'] == 'Consultant')
-                      Positioned(
-                        bottom: 1,
-                        left: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: Image.asset("assets/mlcc_logo.png",
-                              width: 50, height: 50),
-                        ),
+                    ),
+                  if (entrepreneurData['member_type_string'] == 'Consultant')
+                    Positioned(
+                      bottom: 1,
+                      left: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Image.asset("assets/mlcc_logo.png",
+                            width: 50, height: 50),
                       ),
+                    ),
+                ],
+              ),
+            ).marginOnly(bottom: 10),
+          ),
+          // Introduction
+          SliverToBoxAdapter(
+              child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(5),
+                margin: const EdgeInsets.only(left: 20, top: 20, right: 20),
+                decoration: BoxDecoration(
+                  color: kThirdColor,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(15),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
                   ],
                 ),
-              ).marginOnly(bottom: 10),
-            ),
-            // Introduction
-            SliverToBoxAdapter(
-                child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(5),
-                  margin: const EdgeInsets.only(left: 20, top: 20, right: 20),
-                  decoration: BoxDecoration(
-                    color: kThirdColor,
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(15),
-                      topLeft: Radius.circular(15),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset:
-                            const Offset(0, 3), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: InkWell(
-                    onTap: () => _toogleExpand(0),
-                    child: SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Introduction",
-                                  style: TextStyle(color: Colors.white)),
-                              if (_isIntro == true)
-                                const Icon(Icons.keyboard_arrow_up,
-                                    size: 30, color: kSecondaryColor)
-                              else
-                                const Icon(Icons.keyboard_arrow_down,
-                                    size: 30, color: kSecondaryColor),
-                            ],
-                          ),
-                        )
-                        // padding: EdgeInsets.all(5),
-                        ),
-                  ),
-                ),
-                ExpandedSection(
-                  expand: _isIntro,
+                child: InkWell(
+                  onTap: () => _toogleExpand(0),
                   child: SizedBox(
-                    width: double.infinity,
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      margin: const EdgeInsets.only(
-                          left: 20, bottom: 20, right: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[50],
-                        borderRadius: const BorderRadius.only(
-                          bottomRight: Radius.circular(15),
-                          bottomLeft: Radius.circular(15),
+                      width: MediaQuery.of(context).size.width,
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Introduction",
+                                style: TextStyle(color: Colors.white)),
+                            if (_isIntro == true)
+                              const Icon(Icons.keyboard_arrow_up,
+                                  size: 30, color: kSecondaryColor)
+                            else
+                              const Icon(Icons.keyboard_arrow_down,
+                                  size: 30, color: kSecondaryColor),
+                          ],
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.1),
-                            spreadRadius: 5,
-                            blurRadius: 7,
-                            offset: const Offset(
-                                0, 3), // changes position of shadow
-                          ),
-                        ],
+                      )
+                      // padding: EdgeInsets.all(5),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          entrepreneurData['introduction'] != ""
-                              // ? Text("tes")
-                              ? TilWidget(
-                                  check: "两个自己",
-                                  actions: const [],
-                                  title: const Text("Introduction",
-                                      style: TextStyle(
-                                          fontSize: 16, color: kPrimaryColor)),
-                                  content: Html(
-                                    data: entrepreneurData['introduction'],
-                                    // onLinkTap: (url, _, __, ___) {
-                                    //   launch(url!);
-                                    // },
-                                  ))
-                              : const SizedBox(
-                                  height: 60,
-                                  child: Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Text(
-                                      "Does not have any introduction",
-                                      textAlign: TextAlign.left,
-                                      // style: TextStyle(fontSize: 16, color: kPrimaryColor),
-                                    ),
-                                  )),
-                          // child: AccountInfo(user: widget.user),,
-                        ],
+                ),
+              ),
+              ExpandedSection(
+                expand: _isIntro,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    margin:
+                        const EdgeInsets.only(left: 20, bottom: 20, right: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: const BorderRadius.only(
+                        bottomRight: Radius.circular(15),
+                        bottomLeft: Radius.circular(15),
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        entrepreneurData['introduction'] != ""
+                            // ? Text("tes")
+                            ? TilWidget(
+                                check: "两个自己",
+                                actions: const [],
+                                title: const Text("Introduction",
+                                    style: TextStyle(
+                                        fontSize: 16, color: kPrimaryColor)),
+                                content: Html(
+                                  data: entrepreneurData['introduction'],
+                                  // onLinkTap: (url, _, __, ___) {
+                                  //   launch(url!);
+                                  // },
+                                ))
+                            : const SizedBox(
+                                height: 60,
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Does not have any introduction",
+                                    textAlign: TextAlign.left,
+                                    // style: TextStyle(fontSize: 16, color: kPrimaryColor),
+                                  ),
+                                )),
+                        // child: AccountInfo(user: widget.user),,
+                      ],
                     ),
                   ),
                 ),
-              ],
-            )),
+              ),
+            ],
+          )),
 
-            //social_medias
-            SliverToBoxAdapter(
-                child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(5),
-                  margin: const EdgeInsets.only(left: 20, top: 20, right: 20),
-                  decoration: BoxDecoration(
-                    color: kThirdColor,
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(15),
-                      topLeft: Radius.circular(15),
+          //social_medias
+          SliverToBoxAdapter(
+              child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(5),
+                margin: const EdgeInsets.only(left: 20, top: 20, right: 20),
+                decoration: BoxDecoration(
+                  color: kThirdColor,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(15),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset:
-                            const Offset(0, 3), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: InkWell(
-                    onTap: () => _toogleExpand(1),
-                    child: SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Social Medias",
-                                  style: TextStyle(color: Colors.white)),
-                              if (_isMedia == true)
-                                const Icon(Icons.keyboard_arrow_up,
-                                    size: 30, color: kSecondaryColor)
-                              else
-                                const Icon(Icons.keyboard_arrow_down,
-                                    size: 30, color: kSecondaryColor),
-                            ],
-                          ),
-                        )
-                        // padding: EdgeInsets.all(5),
-                        ),
-                  ),
+                  ],
                 ),
-                ExpandedSection(
-                  expand: _isMedia,
+                child: InkWell(
+                  onTap: () => _toogleExpand(1),
                   child: SizedBox(
-                    width: double.infinity,
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      margin: const EdgeInsets.only(
-                          left: 20, bottom: 20, right: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[50],
-                        borderRadius: const BorderRadius.only(
-                          bottomRight: Radius.circular(15),
-                          bottomLeft: Radius.circular(15),
+                      width: MediaQuery.of(context).size.width,
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Social Medias",
+                                style: TextStyle(color: Colors.white)),
+                            if (_isMedia == true)
+                              const Icon(Icons.keyboard_arrow_up,
+                                  size: 30, color: kSecondaryColor)
+                            else
+                              const Icon(Icons.keyboard_arrow_down,
+                                  size: 30, color: kSecondaryColor),
+                          ],
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.1),
-                            spreadRadius: 5,
-                            blurRadius: 7,
-                            offset: const Offset(
-                                0, 3), // changes position of shadow
-                          ),
-                        ],
+                      )
+                      // padding: EdgeInsets.all(5),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          entrepreneurData['social_medias'].isNotEmpty
-                              ? TilWidget(
-                                  check: "两个自己",
-                                  actions: const [],
-                                  title: const Text("Social Media",
-                                      style: TextStyle(
-                                          fontSize: 16, color: kPrimaryColor)),
-                                  content: ItemWidget(
-                                      dataName: 'social_medias',
-                                      data: entrepreneurData['social_medias']))
-                              : const SizedBox(
-                                  height: 60,
-                                  child: Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Text(
-                                      "Does not have any social medias",
-                                      textAlign: TextAlign.left,
-                                      // style: TextStyle(fontSize: 16, color: kPrimaryColor),
-                                    ),
-                                  )),
+                ),
+              ),
+              ExpandedSection(
+                expand: _isMedia,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    margin:
+                        const EdgeInsets.only(left: 20, bottom: 20, right: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: const BorderRadius.only(
+                        bottomRight: Radius.circular(15),
+                        bottomLeft: Radius.circular(15),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        entrepreneurData['social_medias'].isNotEmpty
+                            ? TilWidget(
+                                check: "两个自己",
+                                actions: const [],
+                                title: const Text("Social Media",
+                                    style: TextStyle(
+                                        fontSize: 16, color: kPrimaryColor)),
+                                content: ItemWidget(
+                                    dataName: 'social_medias',
+                                    data: entrepreneurData['social_medias']))
+                            : const SizedBox(
+                                height: 60,
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Does not have any social medias",
+                                    textAlign: TextAlign.left,
+                                    // style: TextStyle(fontSize: 16, color: kPrimaryColor),
+                                  ),
+                                )),
 
-                          // child: AccountInfo(user: widget.user),,
-                        ],
-                      ),
+                        // child: AccountInfo(user: widget.user),,
+                      ],
                     ),
                   ),
                 ),
-              ],
-            )),
-            //Eduction
-            SliverToBoxAdapter(
-                child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(5),
-                  margin: const EdgeInsets.only(left: 20, top: 20, right: 20),
-                  decoration: BoxDecoration(
-                    color: kThirdColor,
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(15),
-                      topLeft: Radius.circular(15),
+              ),
+            ],
+          )),
+          //Eduction
+          SliverToBoxAdapter(
+              child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(5),
+                margin: const EdgeInsets.only(left: 20, top: 20, right: 20),
+                decoration: BoxDecoration(
+                  color: kThirdColor,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(15),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset:
-                            const Offset(0, 3), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: InkWell(
-                    onTap: () => _toogleExpand(2),
-                    child: SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Educations",
-                                  style: TextStyle(color: Colors.white)),
-                              if (_isEducation == true)
-                                const Icon(Icons.keyboard_arrow_up,
-                                    size: 30, color: kSecondaryColor)
-                              else
-                                const Icon(Icons.keyboard_arrow_down,
-                                    size: 30, color: kSecondaryColor),
-                            ],
-                          ),
-                        )
-                        // padding: EdgeInsets.all(5),
-                        ),
-                  ),
+                  ],
                 ),
-                ExpandedSection(
-                  expand: _isEducation,
+                child: InkWell(
+                  onTap: () => _toogleExpand(2),
                   child: SizedBox(
-                    width: double.infinity,
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      margin: const EdgeInsets.only(
-                          left: 20, bottom: 20, right: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[50],
-                        borderRadius: const BorderRadius.only(
-                          bottomRight: Radius.circular(15),
-                          bottomLeft: Radius.circular(15),
+                      width: MediaQuery.of(context).size.width,
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Educations",
+                                style: TextStyle(color: Colors.white)),
+                            if (_isEducation == true)
+                              const Icon(Icons.keyboard_arrow_up,
+                                  size: 30, color: kSecondaryColor)
+                            else
+                              const Icon(Icons.keyboard_arrow_down,
+                                  size: 30, color: kSecondaryColor),
+                          ],
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.1),
-                            spreadRadius: 5,
-                            blurRadius: 7,
-                            offset: const Offset(
-                                0, 3), // changes position of shadow
-                          ),
-                        ],
+                      )
+                      // padding: EdgeInsets.all(5),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          entrepreneurData['educations'].isNotEmpty
-                              ? TilWidget(
-                                  check: "两个自己",
-                                  actions: const [],
-                                  title: const Text("Education",
-                                      style: TextStyle(
-                                          fontSize: 16, color: kPrimaryColor)),
-                                  content: ItemWidget(
-                                      dataName: 'educations',
-                                      data: entrepreneurData['educations']))
-                              : const SizedBox(
-                                  height: 60,
-                                  child: Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Text(
-                                      "Does not have any educations",
-                                      textAlign: TextAlign.left,
-                                      // style: TextStyle(fontSize: 16, color: kPrimaryColor),
-                                    ),
-                                  )),
+                ),
+              ),
+              ExpandedSection(
+                expand: _isEducation,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    margin:
+                        const EdgeInsets.only(left: 20, bottom: 20, right: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: const BorderRadius.only(
+                        bottomRight: Radius.circular(15),
+                        bottomLeft: Radius.circular(15),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        entrepreneurData['educations'].isNotEmpty
+                            ? TilWidget(
+                                check: "两个自己",
+                                actions: const [],
+                                title: const Text("Education",
+                                    style: TextStyle(
+                                        fontSize: 16, color: kPrimaryColor)),
+                                content: ItemWidget(
+                                    dataName: 'educations',
+                                    data: entrepreneurData['educations']))
+                            : const SizedBox(
+                                height: 60,
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Does not have any educations",
+                                    textAlign: TextAlign.left,
+                                    // style: TextStyle(fontSize: 16, color: kPrimaryColor),
+                                  ),
+                                )),
 
-                          // child: AccountInfo(user: widget.user),,
-                        ],
-                      ),
+                        // child: AccountInfo(user: widget.user),,
+                      ],
                     ),
                   ),
                 ),
-              ],
-            )),
-            //Scieties
-            SliverToBoxAdapter(
-                child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(5),
-                  margin: const EdgeInsets.only(left: 20, top: 20, right: 20),
-                  decoration: BoxDecoration(
-                    color: kThirdColor,
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(15),
-                      topLeft: Radius.circular(15),
+              ),
+            ],
+          )),
+          //Scieties
+          SliverToBoxAdapter(
+              child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(5),
+                margin: const EdgeInsets.only(left: 20, top: 20, right: 20),
+                decoration: BoxDecoration(
+                  color: kThirdColor,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(15),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset:
-                            const Offset(0, 3), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: InkWell(
-                    onTap: () => _toogleExpand(3),
-                    child: SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Societies",
-                                  style: TextStyle(color: Colors.white)),
-                              if (_isSocieties == true)
-                                const Icon(Icons.keyboard_arrow_up,
-                                    size: 30, color: kSecondaryColor)
-                              else
-                                const Icon(Icons.keyboard_arrow_down,
-                                    size: 30, color: kSecondaryColor),
-                            ],
-                          ),
-                        )
-                        // padding: EdgeInsets.all(5),
-                        ),
-                  ),
+                  ],
                 ),
-                ExpandedSection(
-                  expand: _isSocieties,
+                child: InkWell(
+                  onTap: () => _toogleExpand(3),
                   child: SizedBox(
-                    width: double.infinity,
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      margin: const EdgeInsets.only(
-                          left: 20, bottom: 20, right: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[50],
-                        borderRadius: const BorderRadius.only(
-                          bottomRight: Radius.circular(15),
-                          bottomLeft: Radius.circular(15),
+                      width: MediaQuery.of(context).size.width,
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Societies",
+                                style: TextStyle(color: Colors.white)),
+                            if (_isSocieties == true)
+                              const Icon(Icons.keyboard_arrow_up,
+                                  size: 30, color: kSecondaryColor)
+                            else
+                              const Icon(Icons.keyboard_arrow_down,
+                                  size: 30, color: kSecondaryColor),
+                          ],
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.1),
-                            spreadRadius: 5,
-                            blurRadius: 7,
-                            offset: const Offset(
-                                0, 3), // changes position of shadow
-                          ),
-                        ],
+                      )
+                      // padding: EdgeInsets.all(5),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          entrepreneurData['societies'].isNotEmpty
-                              ? TilWidget(
-                                  check: "两个自己",
-                                  actions: const [],
-                                  title: const Text("Societies",
-                                      style: TextStyle(
-                                          fontSize: 16, color: kPrimaryColor)),
-                                  content: ItemWidget(
-                                      dataName: 'societies',
-                                      data: entrepreneurData['societies']))
-                              : const SizedBox(
-                                  height: 60,
-                                  child: Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Text(
-                                      "Does not have any societies",
-                                      textAlign: TextAlign.left,
-                                      // style: TextStyle(fontSize: 16, color: kPrimaryColor),
-                                    ),
-                                  )),
-                          // child: AccountInfo(user: widget.user),,
-                        ],
+                ),
+              ),
+              ExpandedSection(
+                expand: _isSocieties,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    margin:
+                        const EdgeInsets.only(left: 20, bottom: 20, right: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: const BorderRadius.only(
+                        bottomRight: Radius.circular(15),
+                        bottomLeft: Radius.circular(15),
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        entrepreneurData['societies'].isNotEmpty
+                            ? TilWidget(
+                                check: "两个自己",
+                                actions: const [],
+                                title: const Text("Societies",
+                                    style: TextStyle(
+                                        fontSize: 16, color: kPrimaryColor)),
+                                content: ItemWidget(
+                                    dataName: 'societies',
+                                    data: entrepreneurData['societies']))
+                            : const SizedBox(
+                                height: 60,
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Does not have any societies",
+                                    textAlign: TextAlign.left,
+                                    // style: TextStyle(fontSize: 16, color: kPrimaryColor),
+                                  ),
+                                )),
+                        // child: AccountInfo(user: widget.user),,
+                      ],
                     ),
                   ),
                 ),
-              ],
-            )),
-            //Professional Cert & Rewards
-            SliverToBoxAdapter(
-                child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(5),
-                  margin: const EdgeInsets.only(left: 20, top: 20, right: 20),
-                  decoration: BoxDecoration(
-                    color: kThirdColor,
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(15),
-                      topLeft: Radius.circular(15),
+              ),
+            ],
+          )),
+          //Professional Cert & Rewards
+          SliverToBoxAdapter(
+              child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(5),
+                margin: const EdgeInsets.only(left: 20, top: 20, right: 20),
+                decoration: BoxDecoration(
+                  color: kThirdColor,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(15),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset:
-                            const Offset(0, 3), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: InkWell(
-                    onTap: () => _toogleExpand(4),
-                    child: SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Professional Cert & Rewards",
-                                  style: TextStyle(color: Colors.white)),
-                              if (_isCert == true)
-                                const Icon(Icons.keyboard_arrow_up,
-                                    size: 30, color: kSecondaryColor)
-                              else
-                                const Icon(Icons.keyboard_arrow_down,
-                                    size: 30, color: kSecondaryColor),
-                            ],
-                          ),
-                        )
-                        // padding: EdgeInsets.all(5),
-                        ),
-                  ),
+                  ],
                 ),
-                ExpandedSection(
-                  expand: _isCert,
+                child: InkWell(
+                  onTap: () => _toogleExpand(4),
                   child: SizedBox(
-                    width: double.infinity,
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      margin: const EdgeInsets.only(
-                          left: 20, bottom: 20, right: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[50],
-                        borderRadius: const BorderRadius.only(
-                          bottomRight: Radius.circular(15),
-                          bottomLeft: Radius.circular(15),
+                      width: MediaQuery.of(context).size.width,
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Professional Cert & Rewards",
+                                style: TextStyle(color: Colors.white)),
+                            if (_isCert == true)
+                              const Icon(Icons.keyboard_arrow_up,
+                                  size: 30, color: kSecondaryColor)
+                            else
+                              const Icon(Icons.keyboard_arrow_down,
+                                  size: 30, color: kSecondaryColor),
+                          ],
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.1),
-                            spreadRadius: 5,
-                            blurRadius: 7,
-                            offset: const Offset(
-                                0, 3), // changes position of shadow
-                          ),
-                        ],
+                      )
+                      // padding: EdgeInsets.all(5),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          entrepreneurData['professional_certs'].isNotEmpty
-                              ? TilWidget(
-                                  check: "两个自己",
-                                  actions: const [],
-                                  title: const Text(
-                                      "Professional Cert & Rewards",
-                                      style: TextStyle(
-                                          fontSize: 16, color: kPrimaryColor)),
-                                  content: ItemWidget(
-                                      dataName: 'professional_certs',
-                                      data: entrepreneurData[
-                                          'professional_certs']))
-                              : const SizedBox(
-                                  height: 60,
-                                  child: Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Text(
-                                      "Does not have any professional Cert & Rewards",
-                                      textAlign: TextAlign.left,
-                                      // style: TextStyle(fontSize: 16, color: kPrimaryColor),
-                                    ),
-                                  )),
+                ),
+              ),
+              ExpandedSection(
+                expand: _isCert,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    margin:
+                        const EdgeInsets.only(left: 20, bottom: 20, right: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: const BorderRadius.only(
+                        bottomRight: Radius.circular(15),
+                        bottomLeft: Radius.circular(15),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        entrepreneurData['professional_certs'].isNotEmpty
+                            ? TilWidget(
+                                check: "两个自己",
+                                actions: const [],
+                                title: const Text("Professional Cert & Rewards",
+                                    style: TextStyle(
+                                        fontSize: 16, color: kPrimaryColor)),
+                                content: ItemWidget(
+                                    dataName: 'professional_certs',
+                                    data:
+                                        entrepreneurData['professional_certs']))
+                            : const SizedBox(
+                                height: 60,
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Does not have any professional Cert & Rewards",
+                                    textAlign: TextAlign.left,
+                                    // style: TextStyle(fontSize: 16, color: kPrimaryColor),
+                                  ),
+                                )),
 
-                          // child: AccountInfo(user: widget.user),,
-                        ],
-                      ),
+                        // child: AccountInfo(user: widget.user),,
+                      ],
                     ),
                   ),
                 ),
-              ],
-            )),
-            //Work Experienced
+              ),
+            ],
+          )),
+          //Work Experienced
+          SliverToBoxAdapter(
+              child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(5),
+                margin: const EdgeInsets.only(left: 20, top: 20, right: 20),
+                decoration: BoxDecoration(
+                  color: kThirdColor,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(15),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: InkWell(
+                  onTap: () => _toogleExpand(5),
+                  child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Work Experienced",
+                                style: TextStyle(color: Colors.white)),
+                            if (_isWork == true)
+                              const Icon(Icons.keyboard_arrow_up,
+                                  size: 30, color: kSecondaryColor)
+                            else
+                              const Icon(Icons.keyboard_arrow_down,
+                                  size: 30, color: kSecondaryColor),
+                          ],
+                        ),
+                      )
+                      // padding: EdgeInsets.all(5),
+                      ),
+                ),
+              ),
+              ExpandedSection(
+                expand: _isWork,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    margin:
+                        const EdgeInsets.only(left: 20, bottom: 20, right: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: const BorderRadius.only(
+                        bottomRight: Radius.circular(15),
+                        bottomLeft: Radius.circular(15),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        // entrepreneurData['societies'].isNotEmpty
+                        entrepreneurData['work_experiences'].isNotEmpty
+                            ? TilWidget(
+                                check: "两个自己",
+                                actions: const [],
+                                title: const Text("Work Experienced",
+                                    style: TextStyle(
+                                        fontSize: 16, color: kPrimaryColor)),
+                                content: ItemWidget(
+                                    dataName: 'work_experiences',
+                                    data: entrepreneurData['work_experiences']))
+                            : const SizedBox(
+                                height: 60,
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Does not have any work experienced",
+                                    textAlign: TextAlign.left,
+                                    // style: TextStyle(fontSize: 16, color: kPrimaryColor),
+                                  ),
+                                )),
+                        // child: AccountInfo(user: widget.user),,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // const SizedBox(
+              //   height: 100,
+              // )
+            ],
+          )),
+          if (_connect == 'Approve')
+            //Personal Information
             SliverToBoxAdapter(
                 child: Column(
               children: [
@@ -1380,7 +1496,7 @@ class _EntrepreneurDetailsViewPageState
                     ],
                   ),
                   child: InkWell(
-                    onTap: () => _toogleExpand(5),
+                    onTap: () => _toogleExpand(6),
                     child: SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: Padding(
@@ -1388,9 +1504,9 @@ class _EntrepreneurDetailsViewPageState
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text("Work Experienced",
+                              const Text("Email Address",
                                   style: TextStyle(color: Colors.white)),
-                              if (_isWork == true)
+                              if (_isEmail == true)
                                 const Icon(Icons.keyboard_arrow_up,
                                     size: 30, color: kSecondaryColor)
                               else
@@ -1404,7 +1520,7 @@ class _EntrepreneurDetailsViewPageState
                   ),
                 ),
                 ExpandedSection(
-                  expand: _isWork,
+                  expand: _isEmail,
                   child: SizedBox(
                     width: double.infinity,
                     child: Container(
@@ -1430,24 +1546,37 @@ class _EntrepreneurDetailsViewPageState
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          // entrepreneurData['societies'].isNotEmpty
-                          entrepreneurData['work_experiences'].isNotEmpty
-                              ? TilWidget(
-                                  check: "两个自己",
-                                  actions: const [],
-                                  title: const Text("Work Experienced",
-                                      style: TextStyle(
-                                          fontSize: 16, color: kPrimaryColor)),
-                                  content: ItemWidget(
-                                      dataName: 'work_experiences',
-                                      data:
-                                          entrepreneurData['work_experiences']))
+                          entrepreneurData['email'] != null
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: InkWell(
+                                        onTap: () {
+                                          launch("mailto:" +
+                                              entrepreneurData['email']);
+                                        },
+                                        child: Text(
+                                          entrepreneurData['email'],
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: false,
+                                          maxLines: 2,
+                                          style: const TextStyle(
+                                              color: Colors.blue,
+                                              decoration:
+                                                  TextDecoration.underline),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
                               : const SizedBox(
                                   height: 60,
                                   child: Padding(
                                     padding: EdgeInsets.all(8.0),
                                     child: Text(
-                                      "Does not have any work experienced",
+                                      "Does not have any email",
                                       textAlign: TextAlign.left,
                                       // style: TextStyle(fontSize: 16, color: kPrimaryColor),
                                     ),
@@ -1463,251 +1592,132 @@ class _EntrepreneurDetailsViewPageState
                 // )
               ],
             )),
-            if (_connect == 'Approve')
-              //Personal Information
-              SliverToBoxAdapter(
-                  child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(5),
-                    margin: const EdgeInsets.only(left: 20, top: 20, right: 20),
-                    decoration: BoxDecoration(
-                      color: kThirdColor,
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        topLeft: Radius.circular(15),
+          //Personal Phone
+          if (_connect == 'Approve')
+            SliverToBoxAdapter(
+                child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(5),
+                  margin: const EdgeInsets.only(left: 20, top: 20, right: 20),
+                  decoration: BoxDecoration(
+                    color: kThirdColor,
+                    borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(15),
+                      topLeft: Radius.circular(15),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset:
+                            const Offset(0, 3), // changes position of shadow
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.1),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset:
-                              const Offset(0, 3), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: InkWell(
-                      onTap: () => _toogleExpand(6),
-                      child: SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text("Email Address",
-                                    style: TextStyle(color: Colors.white)),
-                                if (_isEmail == true)
-                                  const Icon(Icons.keyboard_arrow_up,
-                                      size: 30, color: kSecondaryColor)
-                                else
-                                  const Icon(Icons.keyboard_arrow_down,
-                                      size: 30, color: kSecondaryColor),
-                              ],
-                            ),
-                          )
-                          // padding: EdgeInsets.all(5),
-                          ),
-                    ),
+                    ],
                   ),
-                  ExpandedSection(
-                    expand: _isEmail,
+                  child: InkWell(
+                    onTap: () => _toogleExpand(7),
                     child: SizedBox(
-                      width: double.infinity,
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        margin: const EdgeInsets.only(
-                            left: 20, bottom: 20, right: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[50],
-                          borderRadius: const BorderRadius.only(
-                            bottomRight: Radius.circular(15),
-                            bottomLeft: Radius.circular(15),
+                        width: MediaQuery.of(context).size.width,
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("Phone Number",
+                                  style: TextStyle(color: Colors.white)),
+                              if (_isNumber == true)
+                                const Icon(Icons.keyboard_arrow_up,
+                                    size: 30, color: kSecondaryColor)
+                              else
+                                const Icon(Icons.keyboard_arrow_down,
+                                    size: 30, color: kSecondaryColor),
+                            ],
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.1),
-                              spreadRadius: 5,
-                              blurRadius: 7,
-                              offset: const Offset(
-                                  0, 3), // changes position of shadow
-                            ),
-                          ],
+                        )
+                        // padding: EdgeInsets.all(5),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            entrepreneurData['email'] != null
-                                ? Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: InkWell(
-                                          onTap: () {
-                                            launch("mailto:" +
-                                                entrepreneurData['email']);
-                                          },
-                                          child: Text(
-                                            entrepreneurData['email'],
-                                            overflow: TextOverflow.ellipsis,
-                                            softWrap: false,
-                                            maxLines: 2,
-                                            style: const TextStyle(
-                                                color: Colors.blue,
-                                                decoration:
-                                                    TextDecoration.underline),
-                                          ),
+                  ),
+                ),
+                ExpandedSection(
+                  expand: _isNumber,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      margin: const EdgeInsets.only(
+                          left: 20, bottom: 20, right: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[50],
+                        borderRadius: const BorderRadius.only(
+                          bottomRight: Radius.circular(15),
+                          bottomLeft: Radius.circular(15),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.1),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: const Offset(
+                                0, 3), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          entrepreneurData['phone_number'] != null
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: InkWell(
+                                        onTap: () {
+                                          _makePhoneCall("tel:" +
+                                              entrepreneurData['phone_number']);
+                                        },
+                                        child: Text(
+                                          entrepreneurData['phone_number'],
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: false,
+                                          maxLines: 2,
+                                          style: const TextStyle(
+                                              color: Colors.blue,
+                                              decoration:
+                                                  TextDecoration.underline),
                                         ),
                                       ),
-                                    ],
-                                  )
-                                : const SizedBox(
-                                    height: 60,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text(
-                                        "Does not have any email",
-                                        textAlign: TextAlign.left,
-                                        // style: TextStyle(fontSize: 16, color: kPrimaryColor),
-                                      ),
-                                    )),
-                            // child: AccountInfo(user: widget.user),,
-                          ],
-                        ),
+                                    ),
+                                  ],
+                                )
+                              : const SizedBox(
+                                  height: 60,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "Does not have any Phone Number",
+                                      textAlign: TextAlign.left,
+                                      // style: TextStyle(fontSize: 16, color: kPrimaryColor),
+                                    ),
+                                  )),
+                          // child: AccountInfo(user: widget.user),,
+                        ],
                       ),
                     ),
                   ),
-                  // const SizedBox(
-                  //   height: 100,
-                  // )
-                ],
-              )),
-            //Personal Phone
-            if (_connect == 'Approve')
-              SliverToBoxAdapter(
-                  child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(5),
-                    margin: const EdgeInsets.only(left: 20, top: 20, right: 20),
-                    decoration: BoxDecoration(
-                      color: kThirdColor,
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        topLeft: Radius.circular(15),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.1),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset:
-                              const Offset(0, 3), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: InkWell(
-                      onTap: () => _toogleExpand(7),
-                      child: SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text("Phone Number",
-                                    style: TextStyle(color: Colors.white)),
-                                if (_isNumber == true)
-                                  const Icon(Icons.keyboard_arrow_up,
-                                      size: 30, color: kSecondaryColor)
-                                else
-                                  const Icon(Icons.keyboard_arrow_down,
-                                      size: 30, color: kSecondaryColor),
-                              ],
-                            ),
-                          )
-                          // padding: EdgeInsets.all(5),
-                          ),
-                    ),
-                  ),
-                  ExpandedSection(
-                    expand: _isNumber,
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        margin: const EdgeInsets.only(
-                            left: 20, bottom: 20, right: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[50],
-                          borderRadius: const BorderRadius.only(
-                            bottomRight: Radius.circular(15),
-                            bottomLeft: Radius.circular(15),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.1),
-                              spreadRadius: 5,
-                              blurRadius: 7,
-                              offset: const Offset(
-                                  0, 3), // changes position of shadow
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            entrepreneurData['phone_number'] != null
-                                ? Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: InkWell(
-                                          onTap: () {
-                                            _makePhoneCall("tel:" +
-                                                entrepreneurData[
-                                                    'phone_number']);
-                                          },
-                                          child: Text(
-                                            entrepreneurData['phone_number'],
-                                            overflow: TextOverflow.ellipsis,
-                                            softWrap: false,
-                                            maxLines: 2,
-                                            style: const TextStyle(
-                                                color: Colors.blue,
-                                                decoration:
-                                                    TextDecoration.underline),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : const SizedBox(
-                                    height: 60,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text(
-                                        "Does not have any Phone Number",
-                                        textAlign: TextAlign.left,
-                                        // style: TextStyle(fontSize: 16, color: kPrimaryColor),
-                                      ),
-                                    )),
-                            // child: AccountInfo(user: widget.user),,
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              )),
-          ],
-        ),
+                ),
+              ],
+            )),
+        ],
       ),
+    );
+    return WillPopScope(
+      onWillPop: () async {
+        return backtoPrevious();
+      },
+      child: scaffold,
     );
   }
 
@@ -1933,14 +1943,11 @@ class _EntrepreneurDetailsViewPageState
       );
     } else {
       showDialog<String>(
-          // barrierDismissible: false,
           context: context,
           builder: (BuildContext context) => AlertDialog(
                 title: const Text('Referral'),
                 content: RichText(
                     text: TextSpan(
-                        // Note: Styles for TextSpans must be explicitly defined.
-                        // Child text spans will inherit styles from parent
                         style: const TextStyle(
                           fontSize: 13.0,
                           color: Colors.black,

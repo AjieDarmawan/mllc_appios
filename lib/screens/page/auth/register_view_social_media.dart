@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get_utils/src/extensions/widget_extensions.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mlcc_app_ios/screens/page/auth/register_four_education.dart';
+import 'package:mlcc_app_ios/screens/page/auth/register_one.dart';
 import 'package:mlcc_app_ios/screens/page/auth/register_tree_social_media.dart';
 import 'package:mlcc_app_ios/screens/page/auth/register_two_company.dart';
 import 'package:mlcc_app_ios/widget/account_list_widget.dart';
@@ -92,11 +93,19 @@ class _RegisterviewSocialMediaState extends State<RegisterviewSocialMedia> {
               appBar: AppBar(
                 leading: IconButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                Register_two_company()));
+                    if (userData['is_company'] == 1) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  Register_two_company()));
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  RegisterOne()));
+                    }
                   },
                   icon: const Icon(Icons.keyboard_arrow_left, size: 30),
                 ),
@@ -110,19 +119,19 @@ class _RegisterviewSocialMediaState extends State<RegisterviewSocialMedia> {
                 backgroundColor: kPrimaryColor,
                 elevation: 0,
                 actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  Register_four_education()));
-                    },
-                    child: Text("Skip",
-                        style: TextStyle(
-                          color: kSecondaryColor,
-                        )),
-                  )
+                  // TextButton(
+                  //   onPressed: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (BuildContext context) =>
+                  //                 Register_four_education()));
+                  //   },
+                  //   child: Text("Skip",
+                  //       style: TextStyle(
+                  //         color: kSecondaryColor,
+                  //       )),
+                  // )
                 ],
               ),
               body: const LoadingWidget()),
@@ -142,11 +151,18 @@ class _RegisterviewSocialMediaState extends State<RegisterviewSocialMedia> {
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          Register_two_company()));
+              if (userData['is_company'] == 1) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            Register_two_company()));
+              } else {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => RegisterOne()));
+              }
             },
             icon: const Icon(Icons.keyboard_arrow_left, size: 30),
           ),
@@ -202,7 +218,10 @@ class _RegisterviewSocialMediaState extends State<RegisterviewSocialMedia> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10)),
                               color: kPrimaryColor,
-                              child: const Text("Skip",
+                              child: Text(
+                                  userDetailInfo['social_medias'].length >= 1
+                                      ? "Next"
+                                      : "Skip",
                                   style: TextStyle(color: kSecondaryColor)),
                               elevation: 0,
                               highlightElevation: 0,
@@ -245,11 +264,18 @@ class _RegisterviewSocialMediaState extends State<RegisterviewSocialMedia> {
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          Register_two_company()));
+              if (userData['is_company'] == 1) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            Register_two_company()));
+              } else {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => RegisterOne()));
+              }
             },
             icon: const Icon(Icons.keyboard_arrow_left, size: 30),
           ),

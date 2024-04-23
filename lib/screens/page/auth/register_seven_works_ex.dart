@@ -39,8 +39,9 @@ import '../../main_view.dart';
 class Register_seven_works_ex extends StatefulWidget {
   //final List data;
   // final Map arguments;
+  final String? type;
 
-  const Register_seven_works_ex({Key? key}) : super(key: key);
+  const Register_seven_works_ex({Key? key, this.type}) : super(key: key);
 
   @override
   _Register_seven_works_exState createState() =>
@@ -94,11 +95,21 @@ class _Register_seven_works_exState extends State<Register_seven_works_ex> {
               appBar: AppBar(
                 leading: IconButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                Register_six_reward()));
+                    widget.type != "true"
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    Register_six_reward()))
+                        : Navigator.pop(context);
+                    //  Navigator.pushReplacement(
+                    //     context,
+                    //     PageTransition(
+                    //       type: PageTransitionType.fade,
+                    //       child:
+                    //           const MainScreen(page: HomePage(), index: 0),
+                    //     ),
+                    //   );
                   },
                   icon: const Icon(Icons.keyboard_arrow_left, size: 30),
                 ),
@@ -203,38 +214,40 @@ class _Register_seven_works_exState extends State<Register_seven_works_ex> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                            child: MaterialButton(
-                              onPressed: () {
-                                Navigator.pushReplacement(
-                                    context,
-                                    PageTransition(
-                                      type: PageTransitionType.fade,
-                                      child: const MainScreen(
-                                        page: HomePage(),
-                                        index: 0,
-                                      ),
-                                    ));
-                              },
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 30, vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              color: kPrimaryColor,
-                              child: Text(
-                                  userDetailInfo['work_experiences'].length >= 1
-                                      ? "Next"
-                                      : "Skip",
-                                  style: TextStyle(color: kSecondaryColor)),
-                              elevation: 0,
-                              highlightElevation: 0,
-                              hoverElevation: 0,
-                              focusElevation: 0,
+                        if (widget.type != "true")
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                              child: MaterialButton(
+                                onPressed: () {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      PageTransition(
+                                        type: PageTransitionType.fade,
+                                        child: const MainScreen(
+                                          page: HomePage(),
+                                          index: 0,
+                                        ),
+                                      ));
+                                },
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                color: kPrimaryColor,
+                                child: Text(
+                                    userDetailInfo['work_experiences'].length >=
+                                            1
+                                        ? "Next"
+                                        : "Skip",
+                                    style: TextStyle(color: kSecondaryColor)),
+                                elevation: 0,
+                                highlightElevation: 0,
+                                hoverElevation: 0,
+                                focusElevation: 0,
+                              ),
                             ),
                           ),
-                        ),
                         Expanded(
                           child: MaterialButton(
                             onPressed: () {
@@ -279,11 +292,20 @@ class _Register_seven_works_exState extends State<Register_seven_works_ex> {
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          Register_six_reward()));
+              widget.type != "true"
+                  ? Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              Register_six_reward()))
+                  : Navigator.pop(context);
+              // Navigator.pushReplacement(
+              //     context,
+              //     PageTransition(
+              //       type: PageTransitionType.fade,
+              //       child: const MainScreen(page: HomePage(), index: 0),
+              //     ),
+              //   );
             },
             icon: const Icon(Icons.keyboard_arrow_left, size: 30),
           ),
@@ -368,38 +390,40 @@ class _Register_seven_works_exState extends State<Register_seven_works_ex> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                            child: MaterialButton(
-                              onPressed: () {
-                                Navigator.pushReplacement(
-                                    context,
-                                    PageTransition(
-                                      type: PageTransitionType.fade,
-                                      child: const MainScreen(
-                                        page: HomePage(),
-                                        index: 0,
-                                      ),
-                                    ));
-                              },
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 30, vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              color: kPrimaryColor,
-                              child: Text(
-                                  userDetailInfo['work_experiences'].length >= 1
-                                      ? "Next"
-                                      : "Skip",
-                                  style: TextStyle(color: kSecondaryColor)),
-                              elevation: 0,
-                              highlightElevation: 0,
-                              hoverElevation: 0,
-                              focusElevation: 0,
+                        if (widget.type != "true")
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                              child: MaterialButton(
+                                onPressed: () {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      PageTransition(
+                                        type: PageTransitionType.fade,
+                                        child: const MainScreen(
+                                          page: HomePage(),
+                                          index: 0,
+                                        ),
+                                      ));
+                                },
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                color: kPrimaryColor,
+                                child: Text(
+                                    userDetailInfo['work_experiences'].length >=
+                                            1
+                                        ? "Next"
+                                        : "Skip",
+                                    style: TextStyle(color: kSecondaryColor)),
+                                elevation: 0,
+                                highlightElevation: 0,
+                                hoverElevation: 0,
+                                focusElevation: 0,
+                              ),
                             ),
                           ),
-                        ),
                         Expanded(
                           child: MaterialButton(
                             onPressed: () {

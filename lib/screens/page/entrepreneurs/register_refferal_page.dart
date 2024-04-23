@@ -335,169 +335,177 @@ class _RegisterRefferalPageState extends State<RegisterRefferalPage> {
                             initialValue: _formData['phone_number'],
                             validator: phoneNumberValidator,
                           ),
-                          TextFieldWidget(
-                            labelText: "Company Name",
-                            hintText: "Company Name",
-                            iconData: Icons.business,
-                            setValue: _setInputValue,
-                            field: 'company_name',
-                            initialValue: _formData['company_name'],
-                          ),
-                          TextFieldWidget(
-                            labelText: "Company Address",
-                            hintText: "Company Address",
-                            keyboardType: TextInputType.multiline,
-                            iconData: Icons.home,
-                            // keyboardType: TextInputType.phone,
-                            isFirst: true,
-                            isLast: false,
-                            setValue: _setInputValue,
-                            field: 'company_address',
-                            initialValue: _formData['company_address'],
-                          ),
-                          TextFieldWidget(
-                            labelText: "Postcode",
-                            hintText: "Postcode",
-                            keyboardType: TextInputType.number,
-                            iconData: Icons.home,
-                            // keyboardType: TextInputType.phone,
-                            setValue: _setInputValue,
-                            initialValue: _formData['company_postcode'],
-                            field: 'company_postcode',
-                            isFirst: false,
-                            isLast: false,
-                          ),
-                          TextFieldWidget(
-                            labelText: "City",
-                            hintText: "City",
-                            iconData: Icons.home,
-                            // keyboardType: TextInputType.phone,
-                            setValue: _setInputValue,
-                            initialValue: _formData['company_city'],
-                            field: 'company_city',
-                            isFirst: false,
-                            isLast: false,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(
-                                top: 20, bottom: 14, left: 20, right: 20),
-                            margin: const EdgeInsets.only(
-                                left: 20, right: 20, top: 0, bottom: 0),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(0)),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color:
-                                          Get.theme.focusColor.withOpacity(0.1),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 5)),
-                                ],
-                                border: Border.all(
-                                    color: Get.theme.focusColor
-                                        .withOpacity(0.05))),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Text(
-                                  "State",
-                                  style: Get.textTheme.bodyText1,
-                                  textAlign: TextAlign.start,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: DropdownSearch<String>(
-                                    mode: Mode.BOTTOM_SHEET,
-                                    showSelectedItems: true,
-                                    items: state_state,
-                                    //label: "State",
-                                    onChanged: (item) {
-                                      _formData['company_state_id'] = '';
-                                      final data = stateList
-                                          .firstWhere((e) => e['name'] == item);
-                                      _formData['company_state_id'] =
-                                          data['id'];
-                                    },
-                                    onSaved: (item) {
-                                      final data = stateList
-                                          .firstWhere((e) => e['name'] == item);
-                                      _formData['company_state_id'] =
-                                          data['id'];
-                                    },
-                                    selectedItem: selectedState,
-                                    validator: (item) {
-                                      if (item == null) {
-                                        return "Please select state";
-                                      } else {
-                                        return null;
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ],
+                          if (userData['is_company'] == 1)
+                            TextFieldWidget(
+                              labelText: "Company Name",
+                              hintText: "Company Name",
+                              iconData: Icons.business,
+                              setValue: _setInputValue,
+                              field: 'company_name',
+                              initialValue: _formData['company_name'],
                             ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(
-                                top: 20, bottom: 14, left: 20, right: 20),
-                            margin: const EdgeInsets.only(
-                                left: 20, right: 20, top: 0, bottom: 0),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: const BorderRadius.vertical(
-                                    bottom: Radius.circular(10)),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color:
-                                          Get.theme.focusColor.withOpacity(0.1),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 5)),
-                                ],
-                                border: Border.all(
-                                    color: Get.theme.focusColor
-                                        .withOpacity(0.05))),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Text(
-                                  "Country",
-                                  style: Get.textTheme.bodyText1,
-                                  textAlign: TextAlign.start,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: DropdownSearch<String>(
-                                    mode: Mode.BOTTOM_SHEET,
-                                    showSelectedItems: true,
-                                    items: nationality,
-                                    //label: "Country",
-                                    onChanged: (item) {
-                                      _formData['company_country_id'] = '';
-                                      final data = nationalityList
-                                          .firstWhere((e) => e['name'] == item);
-                                      _formData['company_country_id'] =
-                                          data['id'];
-                                    },
-                                    onSaved: (item) {
-                                      final data = nationalityList
-                                          .firstWhere((e) => e['name'] == item);
-                                      _formData['company_country_id'] =
-                                          data['id'];
-                                    },
-                                    selectedItem: selectedCountry,
-                                    validator: (item) {
-                                      if (item == null) {
-                                        return "Please select country";
-                                      } else {
-                                        return null;
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ],
+                          if (userData['is_company'] == 1)
+                            TextFieldWidget(
+                              labelText: "Company Address",
+                              hintText: "Company Address",
+                              keyboardType: TextInputType.multiline,
+                              iconData: Icons.home,
+                              // keyboardType: TextInputType.phone,
+                              isFirst: true,
+                              isLast: false,
+                              setValue: _setInputValue,
+                              field: 'company_address',
+                              initialValue: _formData['company_address'],
                             ),
-                          ),
+                          if (userData['is_company'] == 1)
+                            TextFieldWidget(
+                              labelText: "Postcode",
+                              hintText: "Postcode",
+                              keyboardType: TextInputType.number,
+                              iconData: Icons.home,
+                              // keyboardType: TextInputType.phone,
+                              setValue: _setInputValue,
+                              initialValue: _formData['company_postcode'],
+                              field: 'company_postcode',
+                              isFirst: false,
+                              isLast: false,
+                            ),
+                          if (userData['is_company'] == 1)
+                            TextFieldWidget(
+                              labelText: "City",
+                              hintText: "City",
+                              iconData: Icons.home,
+                              // keyboardType: TextInputType.phone,
+                              setValue: _setInputValue,
+                              initialValue: _formData['company_city'],
+                              field: 'company_city',
+                              isFirst: false,
+                              isLast: false,
+                            ),
+                          if (userData['is_company'] == 1)
+                            Container(
+                              padding: const EdgeInsets.only(
+                                  top: 20, bottom: 14, left: 20, right: 20),
+                              margin: const EdgeInsets.only(
+                                  left: 20, right: 20, top: 0, bottom: 0),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(0)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Get.theme.focusColor
+                                            .withOpacity(0.1),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 5)),
+                                  ],
+                                  border: Border.all(
+                                      color: Get.theme.focusColor
+                                          .withOpacity(0.05))),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(
+                                    "State",
+                                    style: Get.textTheme.bodyText1,
+                                    textAlign: TextAlign.start,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: DropdownSearch<String>(
+                                      mode: Mode.BOTTOM_SHEET,
+                                      showSelectedItems: true,
+                                      items: state_state,
+                                      //label: "State",
+                                      onChanged: (item) {
+                                        _formData['company_state_id'] = '';
+                                        final data = stateList.firstWhere(
+                                            (e) => e['name'] == item);
+                                        _formData['company_state_id'] =
+                                            data['id'];
+                                      },
+                                      onSaved: (item) {
+                                        final data = stateList.firstWhere(
+                                            (e) => e['name'] == item);
+                                        _formData['company_state_id'] =
+                                            data['id'];
+                                      },
+                                      selectedItem: selectedState,
+                                      validator: (item) {
+                                        return null;
+                                        // if (item == null || item == '') {
+                                        //   return "Please select state";
+                                        // } else {
+                                        //   return null;
+                                        // }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          if (userData['is_company'] == 1)
+                            Container(
+                              padding: const EdgeInsets.only(
+                                  top: 20, bottom: 14, left: 20, right: 20),
+                              margin: const EdgeInsets.only(
+                                  left: 20, right: 20, top: 0, bottom: 0),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: const BorderRadius.vertical(
+                                      bottom: Radius.circular(10)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Get.theme.focusColor
+                                            .withOpacity(0.1),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 5)),
+                                  ],
+                                  border: Border.all(
+                                      color: Get.theme.focusColor
+                                          .withOpacity(0.05))),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(
+                                    "Country",
+                                    style: Get.textTheme.bodyText1,
+                                    textAlign: TextAlign.start,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: DropdownSearch<String>(
+                                      mode: Mode.BOTTOM_SHEET,
+                                      showSelectedItems: true,
+                                      items: nationality,
+                                      //label: "Country",
+                                      onChanged: (item) {
+                                        _formData['company_country_id'] = '';
+                                        final data = nationalityList.firstWhere(
+                                            (e) => e['name'] == item);
+                                        _formData['company_country_id'] =
+                                            data['id'];
+                                      },
+                                      onSaved: (item) {
+                                        final data = nationalityList.firstWhere(
+                                            (e) => e['name'] == item);
+                                        _formData['company_country_id'] =
+                                            data['id'];
+                                      },
+                                      selectedItem: selectedCountry,
+                                      validator: (item) {
+                                        return null;
+                                        // if (item == null || item == '') {
+                                        //   return "Please select country";
+                                        // } else {
+                                        //   return null;
+                                        // }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           TextFieldWidget(
                             // labelText: "Remark / Reason",
                             // hintText: "Remark / Reason",
@@ -513,16 +521,19 @@ class _RegisterRefferalPageState extends State<RegisterRefferalPage> {
                                 errorText:
                                     'Referral Passing Details is required'),
                           ),
-                          BlockButtonWidget(
-                            onPressed: () async {
-                              _validateInputs();
-                            },
-                            color: kPrimaryColor,
-                            text: const Text(
-                              "Submit",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ).paddingOnly(top: 15, bottom: 5, right: 20, left: 20)
+                          loading == true
+                              ? Center(child: CircularProgressIndicator())
+                              : BlockButtonWidget(
+                                  onPressed: () async {
+                                    _validateInputs();
+                                  },
+                                  color: kPrimaryColor,
+                                  text: const Text(
+                                    "Submit",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ).paddingOnly(
+                                  top: 15, bottom: 5, right: 20, left: 20)
                         ],
                       ),
                     )
@@ -577,6 +588,7 @@ class _RegisterRefferalPageState extends State<RegisterRefferalPage> {
         errorText: 'Phone Number must follow the format'),
   ]);
 
+  var loading = false;
   void _validateInputs() {
     final form = _formKey.currentState;
     final formData = {};
@@ -596,25 +608,32 @@ class _RegisterRefferalPageState extends State<RegisterRefferalPage> {
     print("formData${formData}");
     if (form!.validate()) {
       form.save();
+      setState(() {
+        loading = true;
+      });
       var ressponse = "";
       Timer(const Duration(milliseconds: 600), () async {
-        // showProgress(context);
+        showProgress(context, "success");
 
-        // context
-        //     .read<EntrepreneursBloc>()
-        //     .add(UpdateToRequestRefferal(formData));
+        context
+            .read<EntrepreneursBloc>()
+            .add(UpdateToRequestRefferal(formData));
+
+        setState(() {
+          loading = false;
+        });
         // print(ressponse);
 
-        var enterpreneursListDataReturn = await httpProvider.postHttp2(
-            "entrepreneur/referral/request", formData);
+        // var enterpreneursListDataReturn = await httpProvider.postHttp2(
+        //     "entrepreneur/referral/request", formData);
 
-        if (enterpreneursListDataReturn == 'duplicate') {
-          showProgress(context, 'duplicate');
-        } else {
-          showProgress(context, 'success');
-        }
+        // if (enterpreneursListDataReturn == 'duplicate') {
+        //   showProgress(context, 'duplicate');
+        // } else {
+        //   showProgress(context, 'success');
+        // }
 
-        print("enterpreneursListDataReturn${enterpreneursListDataReturn}");
+        // print("enterpreneursListDataReturn${enterpreneursListDataReturn}");
       });
     }
   }

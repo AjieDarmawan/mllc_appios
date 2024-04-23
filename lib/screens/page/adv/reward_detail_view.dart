@@ -28,7 +28,8 @@ import 'package:mlcc_app_ios/widget/item_widget.dart';
 class RewardDetailsViewPage extends StatefulWidget {
   final dynamic data;
   final String? type;
-  const RewardDetailsViewPage({Key? key, this.data, this.type})
+  final int? id;
+  const RewardDetailsViewPage({Key? key, this.data, this.type, this.id})
       : super(key: key);
 
   @override
@@ -60,9 +61,11 @@ class _RewardDetailsViewPageState extends State<RewardDetailsViewPage> {
     if (widget.type != null) {
       context.read<AdvBloc>().add(GetAdvDetails(widget.data, widget.data));
     } else {
-      context
-          .read<AdvBloc>()
-          .add(GetAdvDetails(widget.data, widget.data['id']));
+      // context.read<AdvBloc>().add(GetAdvDetails(widget.data,
+      //     widget.data['id'] == null ? widget.id : widget.data['id']));
+
+      context.read<AdvBloc>().add(GetAdvDetails(
+          widget.data, widget.id == null ? widget.data['id'] : widget.id));
     }
 
     // });
@@ -290,7 +293,10 @@ class _RewardDetailsViewPageState extends State<RewardDetailsViewPage> {
                                         };
 
                                         context.read<AdvBloc>().add(RedeemAdv(
-                                            formData, widget.data['id']));
+                                            formData,
+                                            widget.data['id'] == null
+                                                ? widget.id
+                                                : widget.data['id']));
                                         showProgressJoin(context);
                                       },
                                       child: const Text('Redeem'),

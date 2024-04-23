@@ -222,6 +222,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       'liaison': event.formData['⁠group_id_name'],
       'group_id': event.formData['⁠group_id'],
       'establish_year': event.formData['establish_year'],
+      'gender': event.formData['gender'],
+      'is_company': event.formData['is_company'],
+      'company_city': event.formData['company_city'],
+      'company_address': event.formData['company_address'],
+      'company_country_id': event.formData['company_country_id'],
+      'company_state_id': event.formData['company_state_id'],
     });
 
     var registerDataReturn = await httpProvider.postHttp("register", data);
@@ -527,6 +533,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         'identity_card': event.formData['identity_card'],
         'phone_number': event.formData['phone_number'],
         'gender': event.formData['gender'],
+        'is_company': event.formData['is_company'],
         'introduction': event.formData['introduction'],
         'passport_number': event.formData['passport_number'],
         'others_nationality': event.formData['others_nationality'],
@@ -548,6 +555,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         'identity_card': event.formData['identity_card'],
         'phone_number': event.formData['phone_number'],
         'gender': event.formData['gender'],
+        'is_company': event.formData['is_company'],
         'introduction': event.formData['introduction'],
         'passport_number': event.formData['passport_number'],
         'others_nationality': event.formData['others_nationality'],

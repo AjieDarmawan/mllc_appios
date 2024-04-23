@@ -16,6 +16,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_utils/src/extensions/widget_extensions.dart';
 import 'package:html/parser.dart';
 import 'package:mlcc_app_ios/screens/main_view.dart';
+import 'package:mlcc_app_ios/screens/page/auth/login_page.dart';
 import 'package:mlcc_app_ios/screens/page/home/home_page.dart';
 import 'package:mlcc_app_ios/widget/disable_screenshots.dart';
 import 'package:page_transition/page_transition.dart';
@@ -43,7 +44,8 @@ import '../../../main.dart';
 class VoucherDetailsViewPage extends StatefulWidget {
   final dynamic data;
   final String? type;
-  const VoucherDetailsViewPage({Key? key, this.data, this.type})
+  final int? id;
+  const VoucherDetailsViewPage({Key? key, this.data, this.type, this.id})
       : super(key: key);
 
   @override
@@ -225,7 +227,7 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
                       ),
                       TextFieldWidget(
                           labelText: "Email Address",
-                          hintText: "johndoe@gmail.com",
+                          hintText: "your.email@gmail.com",
                           iconData: Icons.alternate_email,
                           keyboardType: TextInputType.emailAddress,
                           isFirst: true,
@@ -235,7 +237,7 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
                           validator: emailValidator),
                       TextFieldWidget(
                         labelText: "Name",
-                        hintText: "Lee Wei Wei",
+                        hintText: "your name",
                         iconData: Icons.person_outline,
                         isFirst: false,
                         isLast: false,
@@ -246,7 +248,7 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
                       ),
                       TextFieldWidget(
                         labelText: "Phone Number",
-                        hintText: "0123456789",
+                        hintText: "Eg: 0123456789",
                         iconData: Icons.phone_iphone,
                         keyboardType: TextInputType.phone,
                         isFirst: false,
@@ -296,7 +298,7 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
                                     context: context,
                                     builder: (BuildContext context) =>
                                         AlertDialog(
-                                          title: const Text('Redeem Vouher'),
+                                          title: const Text('Redeem voucher'),
                                           content: const Text(
                                               'You already used this voucher!'),
                                           actions: <Widget>[
@@ -548,9 +550,8 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
     if (widget.type != null) {
       context.read<AdvBloc>().add(GetAdvDetails(widget.data, widget.data));
     } else {
-      context
-          .read<AdvBloc>()
-          .add(GetAdvDetails(widget.data, widget.data['id']));
+      context.read<AdvBloc>().add(GetAdvDetails(
+          widget.data, widget.id == null ? widget.data['id'] : widget.id));
     }
     initPlatformState();
     super.initState();
@@ -639,31 +640,35 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
               appBar: AppBar(
                 leading: IconButton(
                   onPressed: () {
-                    // context.read<AdvBloc>().add(const GetAdvList());
-                    // Navigator.pop(context);
-                    if (widget.type != null) {
-                      Navigator.pop(context);
-                    } else {
-                      // Navigator.pushReplacement(
-                      //   context,
-                      //   PageTransition(
-                      //       type: PageTransitionType.fade,
-                      //       child: AdvPage()),
-                      // );
+                    print('Back 12');
+                    //Navigator.pop(context);
 
-                      //Navigator.pop(context);
-
-                      Navigator.pushReplacement(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.fade,
-                          child: MainScreen(
-                            page: AdvPage(),
-                            index: 3,
-                          ),
+                    Navigator.pushReplacement(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.fade,
+                        child: MainScreen(
+                          page: AdvPage(),
+                          index: 3,
                         ),
-                      );
-                    }
+                      ),
+                    );
+
+                    // if (widget.type != null) {
+                    //   Navigator.pop(context);
+                    // } else {
+
+                    //   Navigator.pushReplacement(
+                    //     context,
+                    //     PageTransition(
+                    //       type: PageTransitionType.fade,
+                    //       child: MainScreen(
+                    //         page: AdvPage(),
+                    //         index: 3,
+                    //       ),
+                    //     ),
+                    //   );
+                    // }
                   },
                   icon: const Icon(Icons.keyboard_arrow_left, size: 30),
                 ),
@@ -700,8 +705,10 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
 
   backtoPrevious() {
     if (widget.type != null) {
+      print("Back a");
       Navigator.pop(context);
     } else {
+      print("Back B");
       Navigator.pushReplacement(
         context,
         PageTransition(type: PageTransitionType.fade, child: AdvPage()),
@@ -718,27 +725,32 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
-              if (widget.type != null) {
-                Navigator.pop(context);
-              } else {
-                Navigator.pushReplacement(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.fade,
-                    child: MainScreen(
-                      page: AdvPage(),
-                      index: 3,
-                    ),
+              print("Back 2");
+              Navigator.pushReplacement(
+                context,
+                PageTransition(
+                  type: PageTransitionType.fade,
+                  child: MainScreen(
+                    page: AdvPage(),
+                    index: 3,
                   ),
-                );
+                ),
+              );
+              // if (widget.type != null) {
+              //   Navigator.pop(context);
+              // } else {
+              //   Navigator.pushReplacement(
+              //     context,
+              //     PageTransition(
+              //       type: PageTransitionType.fade,
+              //       child: MainScreen(
+              //         page: AdvPage(),
+              //         index: 3,
+              //       ),
+              //     ),
+              //   );
 
-                //Navigator.pop(context);
-                // Navigator.pushReplacement(
-                //   context,
-                //   PageTransition(
-                //       type: PageTransitionType.fade, child: AdvPage()),
-                // );
-              }
+              // }
             },
             icon: const Icon(Icons.keyboard_arrow_left, size: 30),
           ),
@@ -1083,8 +1095,8 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
                                                   AlertDialog(
                                                     title: const Text(
                                                         'Redeem Voucher'),
-                                                    content: const Text(
-                                                        'Are you sure want to redeem this voucher.'),
+                                                    content: Text(
+                                                        'Are you sure want to redeem this voucher. '),
                                                     actions: <Widget>[
                                                       TextButton(
                                                         onPressed: () {
@@ -1121,8 +1133,12 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
                                                                 .read<AdvBloc>()
                                                                 .add(RedeemAdv(
                                                                     formData,
-                                                                    widget.data[
+                                                                    voucherData[
                                                                         'id']));
+                                                            // .add(RedeemAdv(
+                                                            //     formData,
+                                                            //     widget.data[
+                                                            //         'id']));
                                                           }
 
                                                           showProgressJoin(
@@ -1168,9 +1184,17 @@ class _VoucherDetailsViewPageState extends State<VoucherDetailsViewPage> {
                                                               Navigator.pop(
                                                                   context,
                                                                   'As a Member');
-                                                              Navigator.pushNamed(
+                                                              // Navigator.pushNamed(
+                                                              //     context,
+                                                              //     '/login_page');
+                                                              Navigator.pushReplacement(
                                                                   context,
-                                                                  '/login_page');
+                                                                  MaterialPageRoute(
+                                                                      builder: (context) => LoginPage(
+                                                                            id: voucherData['id'],
+                                                                            type:
+                                                                                "voucher",
+                                                                          )));
                                                             },
                                                             child: const Text(
                                                               'As a Member ?',

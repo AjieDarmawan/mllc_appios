@@ -60,6 +60,8 @@ class _RegisterOneState extends State<RegisterOne> {
   var image;
   var email = "";
   String first = '';
+  bool isNoCompanySelected = false;
+  bool isYesCompanySelected = false;
 
   final Map<String, dynamic> _formData = {
     'new_password': null,
@@ -67,6 +69,7 @@ class _RegisterOneState extends State<RegisterOne> {
     'identity_card': null,
     'phone_number': null,
     'gender': null,
+    'is_company': null,
     'introduction': null,
     'thumbnail': null,
     'title_id': null,
@@ -150,25 +153,45 @@ class _RegisterOneState extends State<RegisterOne> {
         _formData['passport_number'] = userData['passport_number'];
         _formData['others_nationality'] = userData['others_nationality'];
         _formData['others_state'] = userData['others_state'];
-        _formData['gender'] = userData['gender'];
+
         _formData['introduction'] = userData['introduction'];
-        if (listy == 1) {
-          _formData['password'] = '';
-          _formData['new_password'] = '';
+        if (listy <= 5) {
+          _formData['gender'] = userData['gender'];
+          _formData['is_company'] = userData['is_company'];
         }
 
-        if (userData['gender'] == 'Male') {
-          isMaleSelected = true;
-          isFemaleSelected = false;
-          isOthersSelected = false;
-        } else if (userData['gender'] == 'Female') {
-          isMaleSelected = false;
-          isFemaleSelected = true;
-          isOthersSelected = false;
-        } else {
-          isMaleSelected = false;
-          isFemaleSelected = false;
-          isOthersSelected = true;
+        if (listy == 1) {
+          // _formData['gender'] = userData['gender'];
+          // _formData['is_company'] = userData['is_company'];
+
+          _formData['password'] = '';
+          _formData['new_password'] = '';
+
+          print("userData-is_company${userData['is_company']}");
+
+          if (userData['gender'] == 'Male') {
+            isMaleSelected = true;
+            isFemaleSelected = false;
+            isOthersSelected = false;
+          } else if (userData['gender'] == 'Female') {
+            isMaleSelected = false;
+            isFemaleSelected = true;
+            isOthersSelected = false;
+          } else {
+            isMaleSelected = false;
+            isFemaleSelected = false;
+            isOthersSelected = true;
+          }
+
+          if (userData['is_company'] == '1') {
+            print("userData-is_companysatu${userData['is_company']}");
+            isNoCompanySelected = false;
+            isYesCompanySelected = true;
+          } else {
+            print("userData-is_companynol${userData['is_company']}");
+            isNoCompanySelected = true;
+            isYesCompanySelected = false;
+          }
         }
         if (userData['thumbnail'] != null) {
           thumbnail = userData['thumbnail'];
@@ -465,88 +488,157 @@ class _RegisterOneState extends State<RegisterOne> {
               validator: phoneNumberValidator,
               readOnly: disableEdit,
             ),
-            // Container(
-            //   padding: const EdgeInsets.only(
-            //       top: 20, bottom: 14, left: 20, right: 20),
-            //   margin:
-            //       const EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 0),
-            //   decoration: BoxDecoration(
-            //       color: Colors.white,
-            //       borderRadius: const BorderRadius.all(Radius.circular(10)),
-            //       boxShadow: [
-            //         BoxShadow(
-            //             color: Get.theme.focusColor.withOpacity(0.1),
-            //             blurRadius: 10,
-            //             offset: const Offset(0, 5)),
-            //       ],
-            //       border: Border.all(
-            //           color: Get.theme.focusColor.withOpacity(0.05))),
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.stretch,
-            //     children: [
-            //       Text(
-            //         "Gender",
-            //         style: Get.textTheme.bodyText1,
-            //         textAlign: TextAlign.start,
-            //       ),
-            //       Row(
-            //         children: [
+            Container(
+              padding: const EdgeInsets.only(
+                  top: 20, bottom: 14, left: 20, right: 20),
+              margin:
+                  const EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 0),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Get.theme.focusColor.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5)),
+                  ],
+                  border: Border.all(
+                      color: Get.theme.focusColor.withOpacity(0.05))),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    "Gender",
+                    style: Get.textTheme.bodyText1,
+                    textAlign: TextAlign.start,
+                  ),
+                  Row(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Radio(
+                              toggleable: isMaleSelected,
+                              activeColor: kThirdColor,
+                              value: "Male",
+                              groupValue: _formData['gender'],
+                              onChanged: (value) {
+                                setState(() {
+                                  _formData['gender'] = value;
+                                });
+                              }),
+                          const Text('Male')
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Radio(
+                            toggleable: isFemaleSelected,
+                            activeColor: kThirdColor,
+                            value: "Female",
+                            groupValue: _formData['gender'],
+                            onChanged: (value) {
+                              setState(() {
+                                _formData['gender'] = value;
+                              });
+                            },
+                          ),
+                          const Text('Female'),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Radio(
+                            toggleable: isOthersSelected,
+                            activeColor: kThirdColor,
+                            value: "Others",
+                            groupValue: _formData['gender'],
+                            onChanged: (value) {
+                              setState(() {
+                                _formData['gender'] = value;
+                              });
+                            },
+                          ),
+                          const Text('Others'),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
 
-            //           Row(
-            //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //             children: [
-            //               Radio(
-            //                   toggleable: isMaleSelected,
-            //                   activeColor: kThirdColor,
-            //                   value: "Male",
-            //                   groupValue: _formData['gender'],
-            //                   onChanged: (value) {
-            //                     setState(() {
-            //                       _formData['gender'] = value;
-            //                     });
-            //                   }),
-            //               const Text('Male')
-            //             ],
-            //           ),
-            //           Row(
-            //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //             children: [
-            //               Radio(
-            //                 toggleable: isFemaleSelected,
-            //                 activeColor: kThirdColor,
-            //                 value: "Female",
-            //                 groupValue: _formData['gender'],
-            //                 onChanged: (value) {
-            //                   setState(() {
-            //                     _formData['gender'] = value;
-            //                   });
-            //                 },
-            //               ),
-            //               const Text('Female'),
-            //             ],
-            //           ),
-            //           Row(
-            //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //             children: [
-            //               Radio(
-            //                 toggleable: isOthersSelected,
-            //                 activeColor: kThirdColor,
-            //                 value: "Others",
-            //                 groupValue: _formData['gender'],
-            //                 onChanged: (value) {
-            //                   setState(() {
-            //                     _formData['gender'] = value;
-            //                   });
-            //                 },
-            //               ),
-            //               const Text('Others'),
-            //             ],
-            //           ),
-            //         ],
-            //       ),
-            //     ],
-            //   ),
-            // ),
+            Container(
+              padding: const EdgeInsets.only(
+                  top: 20, bottom: 14, left: 20, right: 20),
+              margin: const EdgeInsets.only(
+                  left: 20, right: 20, top: 10, bottom: 0),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Get.theme.focusColor.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5)),
+                  ],
+                  border: Border.all(
+                      color: Get.theme.focusColor.withOpacity(0.05))),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "Have a Company ?",
+                        style: Get.textTheme.bodyText1,
+                        textAlign: TextAlign.start,
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Radio(
+                              toggleable: isYesCompanySelected,
+                              activeColor: kThirdColor,
+                              value: 1,
+                              groupValue: _formData['is_company'],
+                              onChanged: (value) {
+                                setState(() {
+                                  _formData['is_company'] = value;
+                                });
+                              }),
+                          const Text('Yes')
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Radio(
+                            toggleable: true,
+                            activeColor: kThirdColor,
+                            value: 0,
+                            groupValue: _formData['is_company'],
+                            onChanged: (value) {
+                              setState(() {
+                                _formData['is_company'] = value;
+                              });
+                            },
+                          ),
+                          const Text('No'),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
             TextFieldWidget(
               labelText: "Introduction",
               hintText: "your Introduction",
@@ -748,12 +840,22 @@ class _RegisterOneState extends State<RegisterOne> {
                                         if (updateAccessDataReturn ==
                                             "Success") {
                                           print("berhasil masuk1");
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (BuildContext
-                                                          context) =>
-                                                      Register_two_company()));
+
+                                          if (_formData['is_company'] == 1) {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        Register_two_company()));
+                                          } else {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        RegisterviewSocialMedia()));
+                                          }
 
                                           // Navigator.of(context)
                                           //     .popUntil((route) => route.isFirst);

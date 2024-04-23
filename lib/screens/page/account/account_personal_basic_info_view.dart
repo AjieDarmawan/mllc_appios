@@ -44,12 +44,17 @@ class _AccountPersonalBasicInfoViewPageState
   bool isMaleSelected = false;
   bool isFemaleSelected = false;
   bool isOthersSelected = false;
+
+  bool isNoCompanySelected = false;
+  bool isYesCompanySelected = false;
+
   // bool widget.disableEdit = false;
   var membershipExpiryDate;
   var membershipRenewalDate;
   var thumbnail = "";
   String fileName = "";
   var image;
+  var loading = false;
   var email = "";
 
   final Map<String, dynamic> _formData = {
@@ -111,6 +116,8 @@ class _AccountPersonalBasicInfoViewPageState
     _formData['others_nationality'] = widget.data['others_nationality'];
     _formData['others_state'] = widget.data['others_state'];
     _formData['gender'] = widget.data['gender'];
+    _formData['is_company'] = widget.data['is_company'];
+
     _formData['introduction'] = widget.data['introduction'];
 
     _formData['password'] = '';
@@ -136,6 +143,15 @@ class _AccountPersonalBasicInfoViewPageState
         isOthersSelected = true;
       });
     }
+
+    if (widget.data['is_company'] == 1) {
+      isNoCompanySelected = false;
+      isYesCompanySelected = true;
+    } else {
+      isNoCompanySelected = true;
+      isYesCompanySelected = false;
+    }
+
     if (widget.data['thumbnail'] != null) {
       thumbnail = widget.data['thumbnail'];
     }
@@ -367,7 +383,7 @@ class _AccountPersonalBasicInfoViewPageState
               TextFieldWidget(
                 labelText: "Chinese Name",
                 hintText: "姓名",
-                mandatory: "*",
+                // mandatory: "*",
                 iconData: Icons.person_outline,
                 isFirst: false,
                 isLast: true,
@@ -514,10 +530,80 @@ class _AccountPersonalBasicInfoViewPageState
                   ],
                 ),
               ),
+
+              Container(
+                padding: const EdgeInsets.only(
+                    top: 20, bottom: 14, left: 20, right: 20),
+                margin: const EdgeInsets.only(
+                    left: 20, right: 20, top: 20, bottom: 0),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Get.theme.focusColor.withOpacity(0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5)),
+                    ],
+                    border: Border.all(
+                        color: Get.theme.focusColor.withOpacity(0.05))),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "Have a Company ?",
+                          style: Get.textTheme.bodyText1,
+                          textAlign: TextAlign.start,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Radio(
+                                toggleable: isYesCompanySelected,
+                                activeColor: kThirdColor,
+                                value: 1,
+                                groupValue: _formData['is_company'],
+                                onChanged: (value) {
+                                  setState(() {
+                                    _formData['is_company'] = value;
+                                  });
+                                }),
+                            const Text('Yes')
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Radio(
+                              toggleable: isNoCompanySelected,
+                              activeColor: kThirdColor,
+                              value: 0,
+                              groupValue: _formData['is_company'],
+                              onChanged: (value) {
+                                setState(() {
+                                  _formData['is_company'] = value;
+                                });
+                              },
+                            ),
+                            const Text('No'),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
               TextFieldWidget(
                 labelText: "Introduction",
                 hintText: "Introduction",
-                mandatory: "*",
+                // mandatory: "*",
                 iconData: FontAwesomeIcons.solidStickyNote,
                 keyboardType: TextInputType.multiline,
                 isFirst: true,
@@ -526,8 +612,8 @@ class _AccountPersonalBasicInfoViewPageState
                 field: 'introduction',
                 readOnly: widget.disableEdit,
                 initialValue: _formData['introduction'],
-                validator:
-                    RequiredValidator(errorText: 'introduction is required'),
+                // validator:
+                //     RequiredValidator(errorText: 'introduction is required'),
               ),
               // TextFieldWidget(
               //   labelText: "Introduction",
@@ -593,7 +679,7 @@ class _AccountPersonalBasicInfoViewPageState
               if (widget.first == null)
                 TextFieldWidget(
                   obscureText: hidePassword,
-                  //  mandatory: "*",
+                  // mandatory: "*",
                   labelText: "Confirm New Password",
                   hintText: "••••••••••••",
                   iconData: Icons.lock_outline,
@@ -668,82 +754,150 @@ class _AccountPersonalBasicInfoViewPageState
                         child: Row(
                           children: [
                             Expanded(
-                              child: MaterialButton(
-                                onPressed: () {
-                                  if ((_formData['new_password'] != null &&
-                                          _formData['new_password'] != "") &&
-                                      (_formData['password'] != null &&
-                                          _formData['password'] != "") &&
-                                      (_formData['new_password'] !=
-                                          _formData['password'])) {
-                                    _showErrorMessage(context,
-                                        'Please confirm your new password!');
-                                  } else {
-                                    _formData['phone_number'] =
-                                        "+6${_formData['phone_number']}";
-                                    final form = _formKey.currentState;
-                                    if (form!.validate()) {
-                                      form.save();
-                                      context
-                                          .read<AuthBloc>()
-                                          .add(UpdateUserDetail(_formData));
-                                      Timer(const Duration(milliseconds: 500),
-                                          () async {
-                                        if (widget.first != null) {
-                                          SharedPreferences prefs =
-                                              await SharedPreferences
-                                                  .getInstance();
-                                          prefs.setBool("isLoggedIn", true);
-                                          // prefs.setString("email", _formData['email']);
-                                          prefs.setString(
-                                              "username", _formData['name']);
-                                          prefs.setInt(
-                                              "userId", _formData['user_id']);
-                                          prefs.setBool("isExpired", false);
-                                          var updateAccessDataReturn =
-                                              await httpProvider
-                                                  .postHttp("last_access", {
-                                            'user_id': _formData['user_id'],
-                                            'push_token': prefs
-                                                .getString("OneSignalPlayerID"),
-                                            'push_token_status': '1'
-                                          });
-                                          _showSuccessMessage(context,
-                                              'Update Personal Basic Info Successful');
-                                          if (updateAccessDataReturn ==
-                                              "Success") {
-                                            Navigator.of(context).popUntil(
-                                                (route) => route.isFirst);
-                                            Navigator.pushReplacement(
-                                              context,
-                                              PageTransition(
-                                                type: PageTransitionType.fade,
-                                                child: const MainScreen(
-                                                  page: HomePage(),
-                                                  index: 0,
-                                                ),
-                                              ),
-                                            );
-                                          }
+                              child: loading == true
+                                  ? Center(child: CircularProgressIndicator())
+                                  : MaterialButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          loading = true;
+                                        });
+
+                                        if ((_formData['new_password'] !=
+                                                    null &&
+                                                _formData['new_password'] !=
+                                                    "") &&
+                                            (_formData['password'] != null &&
+                                                _formData['password'] != "") &&
+                                            (_formData['new_password'] !=
+                                                _formData['password'])) {
+                                          _showErrorMessage(context,
+                                              'Please confirm your new password!');
                                         } else {
-                                          Navigator.pop(context);
+                                          _formData['phone_number'] =
+                                              "+6${_formData['phone_number']}";
+                                          final form = _formKey.currentState;
+
+                                          print(
+                                              "gender--${_formData['gender']}");
+                                          print(
+                                              "gender--tessave--${_formData}");
+
+                                          if (_formData['gender'] == '-') {
+                                            setState(() {
+                                              loading = false;
+                                            });
+
+                                            showDialog<String>(
+                                                context: context,
+                                                builder: (BuildContext
+                                                        context) =>
+                                                    AlertDialog(
+                                                      title:
+                                                          const Text('Error'),
+                                                      content: Text(
+                                                          "Gender Not Found"),
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                  context,
+                                                                  'OK'),
+                                                          child:
+                                                              const Text('OK'),
+                                                          style: TextButton
+                                                              .styleFrom(
+                                                                  primary: Colors
+                                                                      .black),
+                                                        ),
+                                                      ],
+                                                    ));
+                                          } else {
+                                            setState(() {
+                                              loading = false;
+                                            });
+
+                                            if (form!.validate()) {
+                                              form.save();
+                                              setState(() {
+                                                loading = true;
+                                              });
+
+                                              context.read<AuthBloc>().add(
+                                                  UpdateUserDetail(_formData));
+
+                                              Timer(
+                                                  const Duration(
+                                                      milliseconds: 500),
+                                                  () async {
+                                                if (widget.first != null) {
+                                                  SharedPreferences prefs =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  prefs.setBool(
+                                                      "isLoggedIn", true);
+                                                  // prefs.setString("email", _formData['email']);
+                                                  prefs.setString("username",
+                                                      _formData['name']);
+                                                  prefs.setInt("userId",
+                                                      _formData['user_id']);
+                                                  prefs.setBool(
+                                                      "isExpired", false);
+                                                  var updateAccessDataReturn =
+                                                      await httpProvider
+                                                          .postHttp(
+                                                              "last_access", {
+                                                    'user_id':
+                                                        _formData['user_id'],
+                                                    'push_token':
+                                                        prefs.getString(
+                                                            "OneSignalPlayerID"),
+                                                    'push_token_status': '1'
+                                                  });
+                                                  _showSuccessMessage(context,
+                                                      'Update Personal Basic Info Successful');
+                                                  if (updateAccessDataReturn ==
+                                                      "Success") {
+                                                    setState(() {
+                                                      loading = false;
+                                                    });
+
+                                                    Navigator.of(context)
+                                                        .popUntil((route) =>
+                                                            route.isFirst);
+                                                    Navigator.pushReplacement(
+                                                      context,
+                                                      PageTransition(
+                                                        type: PageTransitionType
+                                                            .fade,
+                                                        child: const MainScreen(
+                                                          page: HomePage(),
+                                                          index: 0,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                                } else {
+                                                  Navigator.pop(context);
+                                                }
+                                              });
+                                            }
+                                          }
                                         }
-                                      });
-                                    }
-                                  }
-                                },
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 30, vertical: 12),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                                color: kPrimaryColor,
-                                child: const Text("Save",
-                                    style: TextStyle(color: kSecondaryColor)),
-                                elevation: 0,
-                                highlightElevation: 0,
-                                hoverElevation: 0,
-                                focusElevation: 0,
-                              ),
+                                      },
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 30, vertical: 12),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      color: kPrimaryColor,
+                                      child: const Text("Save ",
+                                          style: TextStyle(
+                                              color: kSecondaryColor)),
+                                      elevation: 0,
+                                      highlightElevation: 0,
+                                      hoverElevation: 0,
+                                      focusElevation: 0,
+                                    ),
                             ),
                           ],
                         ).paddingSymmetric(vertical: 10, horizontal: 20),

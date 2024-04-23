@@ -9,17 +9,20 @@ import 'package:mlcc_app_ios/constant.dart';
 class AccountLinkWidget extends StatelessWidget {
   final Icon icon;
   final Widget text;
+  final String? percent;
   final ValueChanged<void> onTap;
 
   const AccountLinkWidget({
     Key? key,
     required this.icon,
     required this.text,
+    this.percent,
     required this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // double? d = percent != null ? double.parse(percent.toString()) : 0;
     return InkWell(
       onTap: () {
         onTap('');
@@ -38,10 +41,17 @@ class AccountLinkWidget extends StatelessWidget {
             Expanded(
               child: text,
             ),
-            const Icon(
-              Icons.arrow_forward_ios,
-              size: 12,
-              color: kThirdColor,
+            Row(
+              children: [
+                if (percent != null)
+                  Text(
+                      "${double.parse(percent.toString()).toStringAsFixed(2)}%"),
+                const Icon(
+                  Icons.arrow_forward_ios,
+                  size: 12,
+                  color: kThirdColor,
+                ),
+              ],
             ),
           ],
         ),

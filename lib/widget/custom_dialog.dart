@@ -28,7 +28,7 @@ class CustomDialogBox extends StatefulWidget {
       color_caption,
       gradient_background_color,
       type;
-  final int? no, total_no, total_no_;
+  final int? no, total_no, total_no_, id;
 
   bool? slider, slide_close;
   final String? img;
@@ -40,6 +40,7 @@ class CustomDialogBox extends StatefulWidget {
   CustomDialogBox(
       {Key? key,
       this.title,
+      this.id,
       this.sub_title,
       this.sub_background_color,
       this.background_color,
@@ -112,14 +113,15 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
       PageTransition(
         type: PageTransitionType.fade,
         child: Popup_detail(
-          title: widget.title,
-          descriptions: widget.descriptions,
-          img: widget.img,
-          caption: widget.caption,
-          type: widget.type,
-          url_link: widget.url_link,
-          tel_number: widget.tel_number,
-          email_address: widget.email_address,
+          // title: widget.title,
+          // descriptions: widget.descriptions,
+          // img: widget.img,
+          // caption: widget.caption,
+          // type: widget.type,
+          // url_link: widget.url_link,
+          // tel_number: widget.tel_number,
+          // email_address: widget.email_address,
+          id: widget.id,
         ),
       ),
     );

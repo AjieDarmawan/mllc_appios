@@ -10,12 +10,14 @@ const link = "https://lcpsolution.com/mlcc/img/banners/";
 // const api = "https://mlcc.lcpsolution.com/mlcc/api/";
 // const api2 = "https://mlcc.lcpsolution.com/mlcc_memberAPI/api/";
 // const api3 = "https://mlcc.lcpsolution.com/mlcc_adsAPI/api/";
+//const apireal = "https://mlcc.lcpsolution.com/";
 
 //Staging
 
 const api = "https://staging-mlcc.lcpsolution.com/mlcc/api/";
 const api2 = "https://staging-mlcc.lcpsolution.com/mlcc_memberAPI/api/";
 const api3 = "https://staging-mlcc.lcpsolution.com/mlcc_adsAPI/api/";
+const apireal = "https://staging-mlcc.lcpsolution.com/";
 
 //X Project Live
 const apiTest = "https://adsAPI.xclubmy.com/api/";
@@ -125,6 +127,42 @@ class EduButtonSecond extends StatelessWidget {
           maxLines: 1,
           style: TextStyle(
               color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: 14),
+        ),
+      ),
+      onPressed: onPressed,
+    );
+  }
+}
+
+class EduButtonHome extends StatelessWidget {
+  final GestureTapCallback onPressed;
+  final String? buttonText;
+  final int? textSize;
+
+  final Color? buttonColor, textColor;
+  EduButtonHome(
+      {required this.onPressed,
+      this.buttonText,
+      this.textSize,
+      this.buttonColor,
+      this.textColor});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        primary: buttonColor ?? kPrimaryColor,
+        // side: BorderSide(width: 20.0, color: kPrimaryColor),
+        shape: StadiumBorder(),
+      ),
+      child: Center(
+        child: Text(
+          buttonText ?? 'Click',
+          maxLines: 1,
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+              color: textColor ?? kSecondaryColor),
         ),
       ),
       onPressed: onPressed,

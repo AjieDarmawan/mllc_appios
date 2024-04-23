@@ -14,19 +14,18 @@ import 'package:mlcc_app_ios/constant.dart';
 import 'package:mlcc_app_ios/screens/main_view.dart';
 import 'package:mlcc_app_ios/screens/page/home/home_page.dart';
 
-class NewsLetterViewPage extends StatefulWidget {
+class AdvViewPage extends StatefulWidget {
   final dynamic data;
   final int? news_id;
   final String? type;
-  const NewsLetterViewPage({Key? key, this.data, this.news_id, this.type})
+  const AdvViewPage({Key? key, this.data, this.news_id, this.type})
       : super(key: key);
   @override
-  _NewsLetterViewPageState createState() => _NewsLetterViewPageState();
+  _AdvViewPageState createState() => _AdvViewPageState();
 }
 
-class _NewsLetterViewPageState extends State<NewsLetterViewPage> {
-  final SwiperController _swiperControllernews = SwiperController();
-  var newsdetail = [];
+class _AdvViewPageState extends State<AdvViewPage> {
+  var advdetail = [];
   var loading = true;
   String _parseHtmlString(String htmlString) {
     final document = parse(htmlString);
@@ -36,37 +35,36 @@ class _NewsLetterViewPageState extends State<NewsLetterViewPage> {
     return parsedString;
   }
 
-  void detail(news_id) async {
-    final _formData = {};
-    _formData['news_id'] = news_id;
-    var newsdetailapi =
-        await httpProvider.postHttp("newsletter/info", _formData);
-    setState(() {
-      newsdetail.add(newsdetailapi);
-      loading = false;
-    });
-  }
-
+  final SwiperController _swiperControllernews = SwiperController();
   Future<void> share(id) async {
     await FlutterShare.share(
-        title: newsdetail[0]['title'].toString(),
+        title: advdetail[0]['title'].toString(),
         text: '',
-        linkUrl: apireal + 'shared/news/' + id.toString(),
+        linkUrl: apireal + 'shared/ads/' + id.toString(),
         chooserTitle: 'Share');
+  }
+
+  void detail(id) async {
+    final _formData = {};
+    _formData['ads_id'] = id;
+    var advdetailapi =
+        await httpProvider.postHttp("advertisement/detail", _formData);
+    setState(() {
+      advdetail.add(advdetailapi);
+      loading = false;
+    });
   }
 
   @override
   void initState() {
     detail(widget.news_id == null ? widget.data!['id'] : widget.news_id);
-
-    // detail(53);
     //print(widget.data!['description']);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    //print("newsdetail${newsdetail[0]['id']}");
+    //print("advdetail${advdetail[0]['id']}");
 
     Size size = MediaQuery.of(context).size;
     return MediaQuery(
@@ -76,23 +74,18 @@ class _NewsLetterViewPageState extends State<NewsLetterViewPage> {
           // bottomOpacity: 4.0,
           leading: IconButton(
             onPressed: () {
-              if (widget.news_id.toString() != null) {
-                // Navigator.pushReplacement(
-                //   context,
-                //   PageTransition(
-                //     type: PageTransitionType.fade,
-                //     child: const MainScreen(
-                //       page: HomePage(),
-                //       index: 0,
-                //     ),
-                //   ),
-                // );
-                Future.delayed(Duration.zero, () {
-                  Navigator.pushReplacementNamed(context, '/home_main');
-                });
-              } else {
-                Navigator.pop(context);
-              }
+              // Navigator.of(context).popUntil((route) => route.isFirst);
+              // Navigator.pushReplacement(
+              //   context,
+              //   PageTransition(
+              //     type: PageTransitionType.fade,
+              //     child: const MainScreen(
+              //       page: HomePage(),
+              //       index: 0,
+              //     ),
+              //   ),
+              // );
+              Navigator.pop(context);
             },
             icon: const Icon(Icons.keyboard_arrow_left, size: 30),
           ),
@@ -108,9 +101,8 @@ class _NewsLetterViewPageState extends State<NewsLetterViewPage> {
                       : widget.news_id);
                 })
           ],
-
           elevation: 0.0,
-          title: Text(loading == true ? "" : newsdetail[0]['title'],
+          title: Text(loading == true ? "" : "Advertisement",
               style: const TextStyle(
                 color: kSecondaryColor,
               )),
@@ -143,36 +135,36 @@ class _NewsLetterViewPageState extends State<NewsLetterViewPage> {
                           //   onTap: () {
                           //     Navigator.pushNamed(
                           //         context, '/photo_webview_page', arguments: {
-                          //       'url': newsdetail[0]!['thumbnail'],
-                          //       'title': newsdetail[0]!['title']
+                          //       'url': advdetail[0]!['thumbnail'],
+                          //       'title': advdetail[0]!['title']
                           //     });
                           //   },
                           //   child: Image.network(
-                          //     newsdetail[0]!['thumbnail'],
+                          //     advdetail[0]!['thumbnail'],
                           //     height: MediaQuery.of(context).size.height * 0.80,
                           //     width: MediaQuery.of(context).size.width,
                           //     fit: BoxFit.cover,
                           //     // size.width * 0.18 means it use 18% of total width
                           //   ),
                           // ),
-                          (newsdetail[0]['multi_images'].length > 0 &&
-                                  newsdetail[0]['multi_images'].length > 0)
+                          (advdetail[0]['multi_images'].length > 0 &&
+                                  advdetail[0]['multi_images'].length > 0)
                               ? HomeSwipeEvent(
-                                  images: newsdetail[0]['multi_images'],
-                                  title: newsdetail[0]['title'],
+                                  images: advdetail[0]['multi_images'],
+                                  title: advdetail[0]['title'],
                                   swiperControllerbanner_:
                                       _swiperControllernews,
                                   height:
                                       MediaQuery.of(context).size.height * 0.30,
                                 )
-                              : (newsdetail[0]['thumbnail'] != null &&
-                                      newsdetail[0]['thumbnail'] != "")
+                              : (advdetail[0]['thumbnail'] != null &&
+                                      advdetail[0]['thumbnail'] != "")
                                   ? GestureDetector(
                                       child: CachedNetworkImage(
                                         height: 350,
                                         width: double.infinity,
                                         fit: BoxFit.cover,
-                                        imageUrl: newsdetail[0]['thumbnail'],
+                                        imageUrl: advdetail[0]['thumbnail'],
                                         placeholder: (context, url) =>
                                             Image.asset(
                                           'assets/loading.gif',
@@ -187,8 +179,8 @@ class _NewsLetterViewPageState extends State<NewsLetterViewPage> {
                                         Navigator.pushNamed(
                                             context, '/photo_webview_page',
                                             arguments: {
-                                              'url': newsdetail[0]['thumbnail'],
-                                              'title': newsdetail[0]['title']
+                                              'url': advdetail[0]['thumbnail'],
+                                              'title': advdetail[0]['title']
                                             });
                                       },
                                     )
@@ -210,7 +202,7 @@ class _NewsLetterViewPageState extends State<NewsLetterViewPage> {
                           padding: const EdgeInsets.only(
                               top: 10.0, left: 10.0, right: 10.0, bottom: 5.0),
                           child: Text(
-                            newsdetail[0]!['title'],
+                            advdetail[0]!['title'],
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 18),
                           ),
@@ -227,7 +219,7 @@ class _NewsLetterViewPageState extends State<NewsLetterViewPage> {
                               ),
                             ),
                             Text(
-                              newsdetail[0]!['publish_at'],
+                              advdetail[0]!['publish_at'],
                               style: const TextStyle(
                                   fontSize: 11, fontWeight: FontWeight.w300),
                             ),
@@ -240,7 +232,7 @@ class _NewsLetterViewPageState extends State<NewsLetterViewPage> {
                               ),
                             ),
                             Text(
-                              "By ${newsdetail[0]!['created_by']}",
+                              "By ${advdetail[0]!['created_by']}",
                               style: const TextStyle(
                                   fontSize: 11, fontWeight: FontWeight.w300),
                             )
@@ -248,7 +240,7 @@ class _NewsLetterViewPageState extends State<NewsLetterViewPage> {
                         ),
                         Container(
                           padding: const EdgeInsets.all(10.0),
-                          child: Text(newsdetail[0]!['caption'],
+                          child: Text(advdetail[0]!['caption'],
                               style:
                                   const TextStyle(fontWeight: FontWeight.w500)),
                         ),
@@ -262,11 +254,11 @@ class _NewsLetterViewPageState extends State<NewsLetterViewPage> {
                         //Text("tes"),
                         Container(
                           padding: const EdgeInsets.all(10.0),
-                          // child: Text(_parseHtmlString(newsdetail[0]!['description']),
+                          // child: Text(_parseHtmlString(advdetail[0]!['description']),
                           //     style: const TextStyle(
                           //         fontSize: 11, fontWeight: FontWeight.w700)),
                           child: Html(
-                            data: newsdetail[0]!['description'],
+                            data: advdetail[0]!['description'],
                             onLinkTap: (url, _, __, ___) {
                               launch(url!);
                             },

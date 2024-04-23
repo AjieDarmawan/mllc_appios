@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:html/parser.dart';
+import 'package:mlcc_app_ios/screens/page/home/adv_view.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/src/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,8 +14,9 @@ import 'package:mlcc_app_ios/screens/page/home/newsletter_view.dart';
 
 class AllNewsLetterListPage extends StatefulWidget {
   final dynamic data;
-
-  const AllNewsLetterListPage({Key? key, this.data}) : super(key: key);
+  final String? type;
+  const AllNewsLetterListPage({Key? key, this.data, this.type})
+      : super(key: key);
 
   @override
   _AllNewsLetterListPageState createState() => _AllNewsLetterListPageState();
@@ -139,13 +141,23 @@ class _AllNewsLetterListPageState extends State<AllNewsLetterListPage> {
       ),
       onTap: () {
         // Navigator.of(context).popUntil((route) => route.isFirst);
-        Navigator.push(
-          context,
-          PageTransition(
-            type: PageTransitionType.fade,
-            child: NewsLetterViewPage(data: newsletter),
-          ),
-        );
+        if (widget.type == 'adv') {
+          Navigator.push(
+            context,
+            PageTransition(
+              type: PageTransitionType.fade,
+              child: AdvViewPage(data: newsletter),
+            ),
+          );
+        } else {
+          Navigator.push(
+            context,
+            PageTransition(
+              type: PageTransitionType.fade,
+              child: NewsLetterViewPage(data: newsletter),
+            ),
+          );
+        }
       },
     );
   }

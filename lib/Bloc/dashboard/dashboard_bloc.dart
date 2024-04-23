@@ -40,6 +40,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
     var entrepreneurDetailDataReturn = await httpProvider
         .postHttp2("entrepreneur/connect/listing", {'user_id': event.arg});
+
+    print("entrepreneurDetailDataReturnuser-id${event.arg}");
+    print("entrepreneurDetailDataReturn${entrepreneurDetailDataReturn}");
     if (entrepreneurDetailDataReturn != null) {
       emit(GetReqestListSuccessful(
           "Get Request List Successful", entrepreneurDetailDataReturn));

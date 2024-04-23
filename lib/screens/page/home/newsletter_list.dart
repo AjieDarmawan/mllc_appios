@@ -20,6 +20,8 @@ class _NewsLetterListPageState extends State<NewsLetterListPage> {
   dynamic alllNewsLetterList = [];
   dynamic announcementList = [];
   dynamic newsLetterList = [];
+
+  var advList = [];
   int userId = 0;
   dynamic log = [];
 
@@ -31,11 +33,21 @@ class _NewsLetterListPageState extends State<NewsLetterListPage> {
     return parsedString;
   }
 
+  void adv() async {
+    var adv = await httpProvider.getHttp("popup");
+    setState(() {
+      advList = adv;
+    });
+    // print("advList-$advList}");
+    // print("advListadv-$adv}");
+  }
+
   final List<Tab> myTabs = <Tab>[
     // const Tab(text: 'Trainings'),
     const Tab(text: 'All'),
     const Tab(text: 'Announcements'),
     const Tab(text: 'News'),
+    const Tab(text: 'Adv'),
   ];
 
   void getUser() async {
@@ -60,6 +72,7 @@ class _NewsLetterListPageState extends State<NewsLetterListPage> {
 
   @override
   void initState() {
+    adv();
     getUser();
     alllNewsLetterList = widget.data;
     for (int i = 0; i < widget.data.length; i++) {
@@ -71,11 +84,13 @@ class _NewsLetterListPageState extends State<NewsLetterListPage> {
         newsLetterList.add(widget.data[i]);
       }
     }
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    print("advList${advList}");
     Size size = MediaQuery.of(context).size;
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
@@ -106,6 +121,7 @@ class _NewsLetterListPageState extends State<NewsLetterListPage> {
               AllNewsLetterListPage(data: alllNewsLetterList),
               AllNewsLetterListPage(data: announcementList),
               AllNewsLetterListPage(data: newsLetterList),
+              AllNewsLetterListPage(data: advList, type: 'adv'),
             ],
           ),
         ),

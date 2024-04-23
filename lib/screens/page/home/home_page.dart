@@ -15,6 +15,7 @@ import 'package:get/get_utils/src/extensions/widget_extensions.dart';
 import 'package:intl/intl.dart';
 import 'package:mlcc_app_ios/Bloc/timer/timer_bloc.dart';
 import 'package:mlcc_app_ios/screens/page/account/account_personal_basic_info_view.dart';
+import 'package:mlcc_app_ios/screens/page/auth/register_seven_works_ex.dart';
 import 'package:mlcc_app_ios/screens/page/home/popup_detail.dart';
 import 'package:mlcc_app_ios/widget/account_list_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -46,6 +47,7 @@ import 'package:mlcc_app_ios/screens/page/notification/notification_list.dart';
 import 'package:mlcc_app_ios/screens/page/zoom_meeting.dart';
 import 'package:mlcc_app_ios/widget/custom_dialog.dart';
 import 'package:mlcc_app_ios/widget/loading_widget.dart';
+import 'package:upgrader/upgrader.dart';
 
 import 'home_category_item.dart';
 import 'home_silver_app_bar.dart';
@@ -181,6 +183,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         print("userID${userId}");
         print(userId);
         getRequestConnect(userId);
+        popupindicator(userId);
         context.read<DashboardBloc>().add(GetBannerNewsletter(userId));
       } else {}
       isLoggedIn = prefs.getBool("isLoggedIn")!;
@@ -267,6 +270,334 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   //         .getHttp2('https://memberAPI.xclubmy.com/api/entrepreneur/listing');
   //   });
   // }
+
+  void popupindicator(userId) async {
+    final _formData = {};
+    _formData['user_id'] = userId;
+    _formData['log_user_id'] = userId;
+    var userdatadetail =
+        await httpProvider.postHttp2("entrepreneur/info", _formData);
+    print("cehckuseruserData${userdatadetail[0]['company_details']}");
+    print("cehckuseruserData-profile${userdatadetail[0]['is_login']}");
+
+    if (userdatadetail[0]['is_login'] == 1)
+      setState(() {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Center(
+              child: Material(
+                type: MaterialType.transparency,
+                child: Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.all(25),
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.white,
+                        // gradient: boxGradient,
+                      ),
+                      //padding: const EdgeInsets.only(top: 5, bottom: 5),
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height / 2,
+                      child: Center(
+                        child: ListView(
+                          shrinkWrap: true, // <-- Set this to true
+                          children: [
+                            Text('Update Your Profile'),
+                            SizedBox(height: 12),
+                            Text(
+                                'Hi there! We ve noticed some important details are missing from your profile:',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 11.0)),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                      "Profile Completion  ${userdatadetail[0]['profileCompletionPercentage']}%",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 11.0)),
+                                ),
+                                EduButtonHome(
+                                  // color: Color(0xFF801E48),
+                                  // child: const Text(
+                                  //   'Completed',
+                                  //   style: TextStyle(
+                                  //       fontWeight: FontWeight.bold, fontSize: 11.0),
+                                  // ),
+                                  buttonText: userdatadetail[0]
+                                              ['profileCompletionPercentage'] ==
+                                          "100.00"
+                                      ? "Completed"
+                                      : "Add",
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.pushNamed(context,
+                                        '/account_personal_basic_info_view_page',
+                                        arguments: {
+                                          'data': userdatadetail[0],
+                                          'disableEdit': false
+                                        });
+                                  },
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                      "Social Media Completion  ${userdatadetail[0]['socialMediaCompletionPercentage']}%",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 11.0)),
+                                ),
+                                EduButtonHome(
+                                  // color: Color(0xFF801E48),
+                                  // child: const Text(
+                                  //   'Completed',
+                                  //   style: TextStyle(
+                                  //       fontWeight: FontWeight.bold, fontSize: 11.0),
+                                  // ),
+                                  buttonText: userdatadetail[0][
+                                              'socialMediaCompletionPercentage'] ==
+                                          "100.00"
+                                      ? "Completed"
+                                      : "Add",
+                                  onPressed: () {
+                                    // Navigator.pushNamed(
+                                    //     context, '/account_social_media_view_page',
+                                    //     arguments: {
+                                    //       'data': userdatadetail[0],
+                                    //       'disableEdit': false
+                                    //     });
+                                    Navigator.pop(context);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AccountListWidgetPage(
+                                                    disableEdit: false,
+                                                    navigateToEditPageRoute:
+                                                        "/account_social_media_view_page",
+                                                    label: "Social Media")));
+                                  },
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                      "Education Completion  ${userdatadetail[0]['educationCompletionPercentage']}%",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 11.0)),
+                                ),
+                                EduButtonHome(
+                                  buttonText: userdatadetail[0][
+                                              'educationCompletionPercentage'] ==
+                                          "100.00"
+                                      ? "Completed"
+                                      : "Add",
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AccountListWidgetPage(
+                                                    disableEdit: false,
+                                                    navigateToEditPageRoute:
+                                                        "/account_education_view_page",
+                                                    label: "Education")));
+                                  },
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                      "Society Completion  ${userdatadetail[0]['societiesCompletionPercentage']}%",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 11.0)),
+                                ),
+                                EduButtonHome(
+                                  // color: Color(0xFF801E48),
+                                  // child: const Text(
+                                  //   'Completed',
+                                  //   style: TextStyle(
+                                  //       fontWeight: FontWeight.bold, fontSize: 11.0),
+                                  // ),
+                                  buttonText: userdatadetail[0][
+                                              'societiesCompletionPercentage'] ==
+                                          "100.00"
+                                      ? "Completed"
+                                      : "Add",
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AccountListWidgetPage(
+                                                    disableEdit: false,
+                                                    navigateToEditPageRoute:
+                                                        "/account_societies_view_page",
+                                                    label: "Societies")));
+                                  },
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                      "Certificate  Completion  ${userdatadetail[0]['certCompletionPercentage']}%",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 11.0)),
+                                ),
+                                EduButtonHome(
+                                  // color: Color(0xFF801E48),
+                                  // child: const Text(
+                                  //   'Completed',
+                                  //   style: TextStyle(
+                                  //       fontWeight: FontWeight.bold, fontSize: 11.0),
+                                  // ),
+                                  buttonText: userdatadetail[0]
+                                              ['certCompletionPercentage'] ==
+                                          "100.00"
+                                      ? "Completed"
+                                      : "Add",
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => AccountListWidgetPage(
+                                                disableEdit: false,
+                                                navigateToEditPageRoute:
+                                                    "/account_professional_cert_view_page",
+                                                label:
+                                                    "Professional Cert & Rewards")));
+                                  },
+                                ),
+                              ],
+                            ),
+                            if (userdatadetail[0]['is_company'] == 1)
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                        "Company Completion  ${userdatadetail[0]['companyCompletionPercentage']}%",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 11.0)),
+                                  ),
+                                  EduButtonHome(
+                                    buttonText: userdatadetail[0][
+                                                'companyCompletionPercentage'] ==
+                                            "100.00"
+                                        ? "Completed"
+                                        : "Add",
+                                    // color: Color(0xFF801E48),
+                                    // child: const Text(
+                                    //   'Completed',
+                                    //   style: TextStyle(
+                                    //       fontWeight: FontWeight.bold, fontSize: 11.0),
+                                    // ),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.pushNamed(context,
+                                          '/account_company_info_view_page',
+                                          arguments: {
+                                            'data': userdatadetail[0]
+                                                ['company_details'],
+                                            'disable': false
+                                          });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                      "Work Experienced   ${userdatadetail[0]['workExperienceCompletionPercentage']}%",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 11.0)),
+                                ),
+                                EduButtonHome(
+                                  textSize: 9,
+                                  buttonText: userdatadetail[0][
+                                              'workExperienceCompletionPercentage'] ==
+                                          "100.00"
+                                      ? "Completed"
+                                      : "Add",
+                                  // color: Color(0xFF801E48),
+                                  // child: const Text(
+                                  //   'Completed',
+                                  //   style: TextStyle(
+                                  //       fontWeight: FontWeight.bold, fontSize: 11.0),
+                                  // ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    // Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //         builder: (context) => AccountListWidgetPage(
+                                    //             disableEdit: false,
+                                    //             navigateToEditPageRoute:
+                                    //                 "/account_work_experienced_view_page",
+                                    //             label: "Work Experienced")));
+
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                Register_seven_works_ex(
+                                                    type: "true")));
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                        onTap: () {
+                          //perform action here.
+                          Navigator.pop(context);
+                        },
+                        child: Icon(
+                          Icons.cancel,
+                          color: Colors.white,
+                          size: 40,
+                        ))
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      });
+  }
 
   void getRequestConnect(id) async {
     final _formData = {};
@@ -815,16 +1146,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   PageTransition(
                     type: PageTransitionType.fade,
                     child: Popup_detail(
-                      img: getPopUpAnnouncementReturn[i]['thumbnail'],
-                      title: getPopUpAnnouncementReturn[i]['title'],
-                      caption: getPopUpAnnouncementReturn[i]['caption'],
-                      descriptions: getPopUpAnnouncementReturn[i]
-                          ['description'],
-                      type: getPopUpAnnouncementReturn[i]['type'],
-                      url_link: getPopUpAnnouncementReturn[i]['url_link'],
-                      tel_number: getPopUpAnnouncementReturn[i]['tel_number'],
-                      email_address: getPopUpAnnouncementReturn[i]
-                          ['email_address'],
+                      id: getPopUpAnnouncementReturn[i]['id'],
+                      // img: getPopUpAnnouncementReturn[i]['thumbnail'],
+                      // title: getPopUpAnnouncementReturn[i]['title'],
+                      // caption: getPopUpAnnouncementReturn[i]['caption'],
+                      // descriptions: getPopUpAnnouncementReturn[i]
+                      //     ['description'],
+                      // type: getPopUpAnnouncementReturn[i]['type'],
+                      // url_link: getPopUpAnnouncementReturn[i]['url_link'],
+                      // tel_number: getPopUpAnnouncementReturn[i]['tel_number'],
+                      // email_address: getPopUpAnnouncementReturn[i]
+                      //     ['email_address'],
                     ),
                   ),
                 );
@@ -953,14 +1285,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ),
       ),
-      body: BlocBuilder<DashboardBloc, DashboardState>(
-          builder: (BuildContext context, DashboardState state) {
-        if (state is GetBannerNewsletterSuccessful) {
-          return _buildContent(state.bannerNewsletters);
-        } else {
-          return const LoadingWidget();
-        }
-      }),
+      body: UpgradeAlert(
+        debugLogging: true,
+        child: BlocBuilder<DashboardBloc, DashboardState>(
+            builder: (BuildContext context, DashboardState state) {
+          if (state is GetBannerNewsletterSuccessful) {
+            return _buildContent(state.bannerNewsletters);
+          } else {
+            return const LoadingWidget();
+          }
+        }),
+      ),
     );
   }
 

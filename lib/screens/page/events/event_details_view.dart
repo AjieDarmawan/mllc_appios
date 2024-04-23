@@ -10,12 +10,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:get/get_utils/src/extensions/widget_extensions.dart';
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
+import 'package:mlcc_app_ios/screens/page/auth/login_page.dart';
 import 'package:mlcc_app_ios/screens/page/home/home_swiper_event.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/src/provider.dart';
@@ -77,6 +79,14 @@ class _EventDetailsViewPageState extends State<EventDetailsViewPage> {
       userId = prefs.getInt("userId")!;
       showExpired = prefs.getBool("isExpired")!;
     });
+  }
+
+  Future<void> share(id, name) async {
+    await FlutterShare.share(
+        title: name.toString(),
+        text: '',
+        linkUrl: apireal + 'shared/events/' + id.toString(),
+        chooserTitle: 'Share');
   }
 
   @override
@@ -462,6 +472,17 @@ class _EventDetailsViewPageState extends State<EventDetailsViewPage> {
               color: kSecondaryColor,
             ),
           ),
+          actions: [
+            IconButton(
+                icon: Icon(
+                  Icons.share,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  share(widget.id == null ? widget.data['id'] : widget.id,
+                      eventData['title']);
+                })
+          ],
           centerTitle: true,
           backgroundColor: kPrimaryColor,
           elevation: 0,
@@ -711,14 +732,26 @@ class _EventDetailsViewPageState extends State<EventDetailsViewPage> {
                                     builder: (BuildContext context) =>
                                         AlertDialog(
                                           title: const Text('Join Events'),
-                                          content: const Text(
-                                              'Need to login first only can join this event.'),
+                                          content: Text(
+                                              "Need to  login first only can join this event."),
                                           actions: <Widget>[
                                             TextButton(
-                                              onPressed: () {
+                                              onPressed: () async {
                                                 Navigator.pop(context, 'OK');
-                                                Navigator.pushNamed(
-                                                    context, '/login_page');
+                                                Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            LoginPage(
+                                                              id: eventData[
+                                                                  'id'],
+                                                              type: "events",
+                                                            )));
+                                                // Navigator.pushNamed(
+                                                //     context, '/login_page',
+                                                //     arguments: {
+                                                //       id: eventData['id']
+                                                //     });
                                               },
                                               child: const Text('OK'),
                                               style: TextButton.styleFrom(

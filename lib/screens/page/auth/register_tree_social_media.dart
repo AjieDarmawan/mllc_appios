@@ -156,6 +156,7 @@ class _Register_tree_social_mediaState
             //     .paddingSymmetric(horizontal: 22, vertical: 5),
             TextFieldWidget(
               labelText: "Social Media Platform",
+              mandatory: "*",
               // iconData: Icons.ac_unit,
               iconData: FontAwesomeIcons.hashtag,
               setValue: _setInputValue,
@@ -165,6 +166,7 @@ class _Register_tree_social_mediaState
               initialValue: _formData['platform'],
             ),
             TextFieldWidget(
+              mandatory: "*",
               labelText: "Social Media URL",
               //iconData: Icons.ac_unit,
               iconData: FontAwesomeIcons.link,

@@ -22,6 +22,8 @@ class _AccountSocialMediaViewPageState
     extends State<AccountSocialMediaViewPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  var loading = false;
+
   final Map<String, dynamic> _formData = {
     'social_media_id': null,
     'platform': null,
@@ -105,29 +107,38 @@ class _AccountSocialMediaViewPageState
                     if (state is AuthLoading) {
                       return const LoadingWidget();
                     } else {
-                      return MaterialButton(
-                        onPressed: () {
-                          final form = _formKey.currentState;
-                          if (form!.validate()) {
-                            form.save();
-                            context
-                                .read<AuthBloc>()
-                                .add(CreateUpdateSocialMedia(_formData));
-                            Navigator.pop(context);
-                          }
-                        },
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        color: kPrimaryColor,
-                        child: const Text("Save",
-                            style: TextStyle(color: kSecondaryColor)),
-                        elevation: 0,
-                        highlightElevation: 0,
-                        hoverElevation: 0,
-                        focusElevation: 0,
-                      );
+                      return loading == true
+                          ? Center(child: CircularProgressIndicator())
+                          : MaterialButton(
+                              onPressed: () {
+                                final form = _formKey.currentState;
+                                if (form!.validate()) {
+                                  form.save();
+                                  setState(() {
+                                    loading = true;
+                                  });
+
+                                  context
+                                      .read<AuthBloc>()
+                                      .add(CreateUpdateSocialMedia(_formData));
+                                  setState(() {
+                                    loading = false;
+                                  });
+                                  Navigator.pop(context);
+                                }
+                              },
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              color: kPrimaryColor,
+                              child: const Text("Save",
+                                  style: TextStyle(color: kSecondaryColor)),
+                              elevation: 0,
+                              highlightElevation: 0,
+                              hoverElevation: 0,
+                              focusElevation: 0,
+                            );
                     }
                   })),
                 ],

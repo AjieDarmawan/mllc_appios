@@ -11,6 +11,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:get/get_utils/src/extensions/widget_extensions.dart';
 import 'package:marquee_widget/marquee_widget.dart';
+import 'package:mlcc_app_ios/screens/main_view.dart';
 import 'package:mlcc_app_ios/widget/disable_screenshots.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/src/provider.dart';
@@ -131,6 +132,8 @@ class _EntrepreneurDetailsViewPageState
 
     _formData_detail['log_user_id'] = userId;
 
+    print("_formData_detail${_formData_detail}");
+
     context
         .read<EntrepreneursBloc>()
         .add(GetEntrepreneurDetails(_formData_detail));
@@ -249,22 +252,25 @@ class _EntrepreneurDetailsViewPageState
       } else {
         return WillPopScope(
           onWillPop: () async {
-            return backtoPrevious();
+            return backtoPrevious(widget.type);
           },
           child: Scaffold(
               resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 leading: IconButton(
                   onPressed: () {
-                    Navigator.pop(context);
-                    // Navigator.pushReplacement(
-                    //   context,
-                    //   PageTransition(
-                    //       type: PageTransitionType.fade,
-                    //       child: EntrepreneursViewPage(data: widget.allUsers)),
-                    // );
-                    // Navigator.pushReplacementNamed(
-                    //     context, '/entrepreneurs_view_page');
+                    if (widget.type == 'profile') {
+                      Navigator.pop(context);
+                    } else {
+                      Navigator.pushReplacement(
+                        context,
+                        PageTransition(
+                          type: PageTransitionType.fade,
+                          child: const MainScreen(
+                              page: EntrepreneursViewPage(), index: 1),
+                        ),
+                      );
+                    }
                   },
                   icon: const Icon(Icons.keyboard_arrow_left, size: 30),
                 ),
@@ -285,15 +291,18 @@ class _EntrepreneurDetailsViewPageState
     });
   }
 
-  backtoPrevious() {
-    // Navigator.pushReplacement(
-    //   context,
-    //   PageTransition(
-    //       type: PageTransitionType.fade,
-    //       child: EntrepreneursViewPage(data: widget.allUsers)),
-    // );
-    Navigator.pop(context);
-    // Navigator.pushReplacementNamed(context, '/entrepreneurs_view_page');
+  backtoPrevious(type) {
+    if (type == 'profile') {
+      Navigator.pop(context);
+    } else {
+      Navigator.pushReplacement(
+        context,
+        PageTransition(
+          type: PageTransitionType.fade,
+          child: const MainScreen(page: EntrepreneursViewPage(), index: 1),
+        ),
+      );
+    }
   }
 
   void _toogleExpand(int index) {
@@ -500,10 +509,22 @@ class _EntrepreneurDetailsViewPageState
             //       type: PageTransitionType.fade,
             //       child: EntrepreneursViewPage(data: widget.allUsers)),
             // );
-            Navigator.pop(context);
+            //Navigator.pop(context);
 
-            // Navigator.pushReplacementNamed(
-            //     context, '/entrepreneurs_view_page');
+            //Navigator.pushReplacementNamed(context, '/entrepreneurs_view_page');
+
+            if (widget.type == 'profile') {
+              Navigator.pop(context);
+            } else {
+              Navigator.pushReplacement(
+                context,
+                PageTransition(
+                  type: PageTransitionType.fade,
+                  child:
+                      const MainScreen(page: EntrepreneursViewPage(), index: 1),
+                ),
+              );
+            }
           },
           icon: const Icon(Icons.keyboard_arrow_left, size: 30),
         ),
@@ -586,7 +607,17 @@ class _EntrepreneurDetailsViewPageState
                                             MainAxisAlignment.spaceAround,
                                         children: [
                                           status_['referral_status'] ==
-                                                  'not referral'
+                                                      'not referral' ||
+                                                  status_['referral_status'] ==
+                                                      'Deal On' ||
+                                                  status_['referral_status'] ==
+                                                      'deal On' ||
+                                                  status_['referral_status'] ==
+                                                      'deal off' ||
+                                                  status_['referral_status'] ==
+                                                      'Deal Off' ||
+                                                  status_['referral_status'] ==
+                                                      'not referral'
                                               ? Image.asset("assets/left.gif",
                                                   height: 60,
                                                   width: 60,
@@ -596,9 +627,20 @@ class _EntrepreneurDetailsViewPageState
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 10),
                                             child: Column(children: [
-                                              status_['referral_status'] ==
-                                                      'not referral'
-                                                  ? Text('Swipe Left ',
+                                              status_[
+                                                              'referral_status'] ==
+                                                          'not referral' ||
+                                                      status_['referral_status'] ==
+                                                          'Deal On' ||
+                                                      status_['referral_status'] ==
+                                                          'deal On' ||
+                                                      status_['referral_status'] ==
+                                                          'deal off' ||
+                                                      status_['referral_status'] ==
+                                                          'Deal Off' ||
+                                                      status_['referral_status'] ==
+                                                          'not referral'
+                                                  ? Text('Swipe Left',
                                                       style: const TextStyle(
                                                         fontSize: 14,
                                                         color: kTextColor,
@@ -612,18 +654,28 @@ class _EntrepreneurDetailsViewPageState
                                                         fontWeight:
                                                             FontWeight.w400,
                                                       )),
-                                              status_['referral_status'] !=
-                                                      'not referral'
-                                                  ? Text(
+                                              status_[
+                                                              'referral_status'] ==
+                                                          'not referral' ||
+                                                      status_['referral_status'] ==
+                                                          'Deal On' ||
+                                                      status_['referral_status'] ==
+                                                          'deal On' ||
+                                                      status_['referral_status'] ==
+                                                          'deal off' ||
+                                                      status_['referral_status'] ==
+                                                          'Deal Off' ||
+                                                      status_['referral_status'] ==
+                                                          'not referral'
+                                                  ? Text('Referral',
+                                                      style: const TextStyle(
+                                                          fontSize: 12,
+                                                          color: kPrimaryColor))
+                                                  : Text(
                                                       'Status: ${status_['referral_status']} ',
                                                       style: const TextStyle(
                                                           fontSize: 12,
                                                           color: kPrimaryColor))
-                                                  : Text('Referral',
-                                                      style: const TextStyle(
-                                                          fontSize: 12,
-                                                          color:
-                                                              kPrimaryColor)),
                                             ]),
                                           )
                                         ]),
@@ -1715,7 +1767,7 @@ class _EntrepreneurDetailsViewPageState
     );
     return WillPopScope(
       onWillPop: () async {
-        return backtoPrevious();
+        return backtoPrevious(widget.type);
       },
       child: scaffold,
     );
@@ -1933,7 +1985,11 @@ class _EntrepreneurDetailsViewPageState
   }
 
   functionreferral(status_refferal, entrepreneurData) {
-    if (status_refferal == 'not referral') {
+    if (status_refferal == 'not referral' ||
+        status_refferal == 'Deal On' ||
+        status_refferal == 'deal On' ||
+        status_refferal == 'deal off' ||
+        status_refferal == 'Deal Off') {
       Navigator.push(
         context,
         PageTransition(

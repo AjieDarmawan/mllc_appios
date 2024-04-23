@@ -72,7 +72,8 @@ class _ConnectDetailsViewPageState extends State<ConnectDetailsViewPage> {
     final _formData_detail = {};
 
     if (widget.status == 'Reject') {
-      _formData_detail['user_id'] = widget.data['connector_id'];
+      // _formData_detail['user_id'] = widget.data['connector_id'];
+      _formData_detail['user_id'] = widget.data['requestor_id'];
       _formData_detail['log_user_id'] = userId;
 
       context

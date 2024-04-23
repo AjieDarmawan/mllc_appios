@@ -50,6 +50,9 @@ class _RegisterPersonalBasicInfoPageState
   bool isFemaleSelected = false;
   bool isOthersSelected = false;
 
+  bool isNoCompanySelected = false;
+  bool isYesCompanySelected = false;
+
   bool currentlyWorking = false;
   int selectedBusinessNatureID = 0;
   String selectedBusinessNature = "";
@@ -62,6 +65,11 @@ class _RegisterPersonalBasicInfoPageState
   int selectedCountryID = 0;
   String selectedCountry = "";
   bool showExpandingAreasOther = false;
+
+  var showcompany = true;
+
+  var loading = false;
+  var validateinteraction = false;
 
   dynamic initArea = [];
   String uriCert = '';
@@ -297,6 +305,9 @@ class _RegisterPersonalBasicInfoPageState
               Form(
                 key: _formKey,
                 // autovalidateMode: _autoValidate,
+                autovalidateMode: validateinteraction == false
+                    ? AutovalidateMode.disabled
+                    : AutovalidateMode.onUserInteraction,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -484,7 +495,7 @@ class _RegisterPersonalBasicInfoPageState
                               mode: Mode.BOTTOM_SHEET,
                               showSelectedItems: true,
                               items: title,
-                              label: "Title",
+                              // label: "Title",
                               onChanged: (item) {
                                 final data = titleList
                                     .firstWhere((e) => e['title'] == item);
@@ -553,6 +564,184 @@ class _RegisterPersonalBasicInfoPageState
                       setValue: _setInputValue,
                       field: 'phone_number',
                       validator: phoneNumberValidator,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(
+                          top: 20, bottom: 14, left: 20, right: 20),
+                      margin: const EdgeInsets.only(
+                          left: 20, right: 20, top: 0, bottom: 0),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Get.theme.focusColor.withOpacity(0.1),
+                                blurRadius: 10,
+                                offset: const Offset(0, 5)),
+                          ],
+                          border: Border.all(
+                              color: Get.theme.focusColor.withOpacity(0.05))),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                "Gender",
+                                style: Get.textTheme.bodyText1,
+                                textAlign: TextAlign.start,
+                              ),
+                              Text(
+                                "*",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                ),
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              //   children: [
+                              //     const Icon(FontAwesomeIcons.venusMars,
+                              //             color: kPrimaryColor)
+                              //         .marginOnly(right: 14)
+                              //   ],
+                              // ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Radio(
+                                      toggleable: isMaleSelected,
+                                      activeColor: kThirdColor,
+                                      value: "Male",
+                                      groupValue: _formData['gender'],
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _formData['gender'] = value;
+                                        });
+                                      }),
+                                  const Text('Male')
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Radio(
+                                    toggleable: isFemaleSelected,
+                                    activeColor: kThirdColor,
+                                    value: "Female",
+                                    groupValue: _formData['gender'],
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _formData['gender'] = value;
+                                      });
+                                    },
+                                  ),
+                                  const Text('Female'),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Radio(
+                                    toggleable: isOthersSelected,
+                                    activeColor: kThirdColor,
+                                    value: "Others",
+                                    groupValue: _formData['gender'],
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _formData['gender'] = value;
+                                      });
+                                    },
+                                  ),
+                                  const Text('Others'),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    Container(
+                      padding: const EdgeInsets.only(
+                          top: 20, bottom: 14, left: 20, right: 20),
+                      margin: const EdgeInsets.only(
+                          left: 20, right: 20, top: 0, bottom: 0),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Get.theme.focusColor.withOpacity(0.1),
+                                blurRadius: 10,
+                                offset: const Offset(0, 5)),
+                          ],
+                          border: Border.all(
+                              color: Get.theme.focusColor.withOpacity(0.05))),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                "Have a Company ?",
+                                style: Get.textTheme.bodyText1,
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Radio(
+                                      toggleable: isYesCompanySelected,
+                                      activeColor: kThirdColor,
+                                      value: 1,
+                                      groupValue: _formData['is_company'],
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _formData['is_company'] = value;
+                                          showcompany = true;
+                                        });
+                                      }),
+                                  const Text('Yes')
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Radio(
+                                    toggleable: isNoCompanySelected,
+                                    activeColor: kThirdColor,
+                                    value: 0,
+                                    groupValue: _formData['is_company'],
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _formData['is_company'] = value;
+                                        showcompany = false;
+                                      });
+                                    },
+                                  ),
+                                  const Text('No'),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
 
                     Container(
@@ -711,7 +900,8 @@ class _RegisterPersonalBasicInfoPageState
                     showExpandingNationalityOther == true
                         ? TextFieldWidget(
                             labelText: "Others",
-                            // hintText: "Others",
+                            mandatory: "*",
+                            hintText: "Type your nationality",
                             keyboardType: TextInputType.multiline,
                             iconData: Icons.expand,
                             isFirst: false,
@@ -825,129 +1015,149 @@ class _RegisterPersonalBasicInfoPageState
                         //   )
                         : Container(),
 
-                    TextFieldWidget(
-                      labelText: "Company Name",
-                      hintText: "Company Name",
-                      isFirst: false,
-                      isLast: false,
-                      iconData: FontAwesomeIcons.building,
-                      //iconData: Icons.ac_unit,
-                      setValue: _setInputValue,
-                      field: 'company_name',
-                      // validator: RequiredValidator(
-                      //     errorText: 'Company Name is required'),
-                      initialValue: _formData['company_name'],
-                    ),
-                    TextFieldWidget(
-                      labelText: "Designation",
-                      hintText: "Designation",
-                      iconData: Icons.business_center_rounded,
-                      setValue: _setInputValue,
-                      isFirst: false,
-                      isLast: false,
-                      field: 'designation',
-                      // validator:
-                      //     RequiredValidator(errorText: 'Designation is required'),
-                      initialValue: _formData['designation'],
-                    ),
+                    if (showcompany == true)
+                      TextFieldWidget(
+                        labelText: "Company Name",
+                        hintText: "Company Name",
+                        isFirst: false,
+                        isLast: false,
+                        iconData: FontAwesomeIcons.building,
+                        //iconData: Icons.ac_unit,
+                        setValue: _setInputValue,
+                        field: 'company_name',
+                        // validator: RequiredValidator(
+                        //     errorText: 'Company Name is required'),
+                        initialValue: _formData['company_name'],
+                      ),
+                    if (showcompany == true)
+                      TextFieldWidget(
+                        labelText: "Designation",
+                        hintText: "Designation",
+                        iconData: Icons.business_center_rounded,
+                        setValue: _setInputValue,
+                        isFirst: false,
+                        isLast: false,
+                        field: 'designation',
+                        // validator:
+                        //     RequiredValidator(errorText: 'Designation is required'),
+                        initialValue: _formData['designation'],
+                      ),
+                    if (showcompany == true)
+                      TextFieldWidget(
+                        labelText: "Company Address",
+                        hintText: "Company Address",
+                        keyboardType: TextInputType.multiline,
+                        iconData: Icons.home,
+                        // keyboardType: TextInputType.phone,
+                        setValue: _setInputValue,
+                        initialValue: _formData['company_address'],
+                        field: 'company_address',
+                        isFirst: false,
+                        isLast: false,
+                      ),
 
-                    TextFieldWidget(
-                      labelText: "Company Address",
-                      hintText: "Company Address",
-                      keyboardType: TextInputType.multiline,
-                      iconData: Icons.home,
-                      // keyboardType: TextInputType.phone,
-                      setValue: _setInputValue,
-                      initialValue: _formData['company_address'],
-                      field: 'company_address',
-                      isFirst: false,
-                      isLast: false,
-                    ),
+                    if (showcompany == true)
+                      TextFieldWidget(
+                        labelText: "Postcode",
+                        // mandatory: "*",
+                        hintText: "Postcode",
+                        keyboardType: TextInputType.number,
+                        iconData: Icons.home,
+                        // keyboardType: TextInputType.phone,
+                        setValue: _setInputValue,
+                        initialValue: _formData['company_postcode'],
+                        field: 'company_postcode',
+                        isFirst: false,
+                        isLast: false,
+                        validator: RequiredValidator(
+                            errorText: 'Company Postcode is required'),
+                      ),
 
-                    TextFieldWidget(
-                      labelText: "City",
-                      hintText: "Company City",
-                      iconData: Icons.home,
-                      // keyboardType: TextInputType.phone,
-                      setValue: _setInputValue,
-                      initialValue: _formData['company_city'],
-                      field: 'company_city',
-                      isFirst: false,
-                      isLast: false,
-                    ),
+                    if (showcompany == true)
+                      TextFieldWidget(
+                        labelText: "City",
+                        hintText: "Company City",
+                        iconData: Icons.home,
+                        // keyboardType: TextInputType.phone,
+                        setValue: _setInputValue,
+                        initialValue: _formData['company_city'],
+                        field: 'company_city',
+                        isFirst: false,
+                        isLast: false,
+                      ),
+                    if (showcompany == true)
+                      Container(
+                        padding: const EdgeInsets.only(
+                            top: 20, bottom: 14, left: 20, right: 20),
+                        margin: const EdgeInsets.only(
+                            left: 20, right: 20, top: 0, bottom: 0),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Get.theme.focusColor.withOpacity(0.1),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 5)),
+                            ],
+                            border: Border.all(
+                                color: Get.theme.focusColor.withOpacity(0.05))),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              "Business Category",
+                              style: Get.textTheme.bodyText1,
+                              textAlign: TextAlign.start,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: DropdownSearch<String>(
+                                mode: Mode.BOTTOM_SHEET,
+                                showSelectedItems: true,
 
-                    Container(
-                      padding: const EdgeInsets.only(
-                          top: 20, bottom: 14, left: 20, right: 20),
-                      margin: const EdgeInsets.only(
-                          left: 20, right: 20, top: 0, bottom: 0),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Get.theme.focusColor.withOpacity(0.1),
-                                blurRadius: 10,
-                                offset: const Offset(0, 5)),
-                          ],
-                          border: Border.all(
-                              color: Get.theme.focusColor.withOpacity(0.05))),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            "Business Category",
-                            style: Get.textTheme.bodyText1,
-                            textAlign: TextAlign.start,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: DropdownSearch<String>(
-                              mode: Mode.BOTTOM_SHEET,
-                              showSelectedItems: true,
-
-                              items: businessCategory,
-                              //label: "Business Category",
-                              onChanged: (item) {
-                                final data = businessCategoryList
-                                    .firstWhere((e) => e['name'] == item);
-                                _formData['business_category_main_id'] =
-                                    data['id'];
-                                getSubCategory(data['id']);
-                                setState(() {
-                                  selectedBusinessNature = data['name'];
-                                  selectedSubBusinessNature = "";
-                                });
-                              },
-                              onSaved: (item) {
-                                print("item${item}");
-                                if (item != '') {
-                                  print("itemmasuk");
-
+                                items: businessCategory,
+                                //label: "Business Category",
+                                onChanged: (item) {
                                   final data = businessCategoryList
                                       .firstWhere((e) => e['name'] == item);
-
                                   _formData['business_category_main_id'] =
                                       data['id'];
-                                } else {
-                                  print("itemkeluar");
-                                  _formData['business_category_main_id'] = "";
-                                }
-                              },
-                              selectedItem: selectedBusinessNature,
-                              // validator: (item) {
-                              //   if (item == null) {
-                              //     return "Please select a Business Category";
-                              //   } else {
-                              //     return null;
-                              //   }
-                              // },
+                                  getSubCategory(data['id']);
+                                  setState(() {
+                                    selectedBusinessNature = data['name'];
+                                    selectedSubBusinessNature = "";
+                                  });
+                                },
+                                onSaved: (item) {
+                                  print("item${item}");
+                                  if (item != '') {
+                                    print("itemmasuk");
+
+                                    final data = businessCategoryList
+                                        .firstWhere((e) => e['name'] == item);
+
+                                    _formData['business_category_main_id'] =
+                                        data['id'];
+                                  } else {
+                                    print("itemkeluar");
+                                    _formData['business_category_main_id'] = "";
+                                  }
+                                },
+                                selectedItem: selectedBusinessNature,
+                                // validator: (item) {
+                                //   if (item == null) {
+                                //     return "Please select a Business Category";
+                                //   } else {
+                                //     return null;
+                                //   }
+                                // },
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
 
                     showExpandingSubCategory == true
                         ? Container(
@@ -1010,95 +1220,96 @@ class _RegisterPersonalBasicInfoPageState
                             ),
                           )
                         : Container(),
-                    TextFieldWidget(
-                      labelText: "Nature of Business",
-                      hintText: "Ex : Software Development",
-                      iconData: Icons.business_center_rounded,
-                      setValue: _setInputValue,
-                      field: 'business_nature',
-                      isFirst: false,
-                      isLast: false,
-                      initialValue: _formData['business_nature'],
-                      // validator: RequiredValidator(
-                      //     errorText: 'Business Nature is required'),
-                    ),
-
-                    Container(
-                      padding: const EdgeInsets.only(
-                          top: 20, bottom: 14, left: 8, right: 20),
-                      margin: const EdgeInsets.only(
-                          left: 20, right: 20, top: 0, bottom: 0),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(0)),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Get.theme.focusColor.withOpacity(0.1),
-                                blurRadius: 10,
-                                offset: const Offset(0, 5)),
-                          ],
-                          border: Border.all(
-                              color: Get.theme.focusColor.withOpacity(0.05))),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            "   Expanding Areas",
-                            style: Get.textTheme.bodyText1,
-                            textAlign: TextAlign.start,
-                          ),
-                          CustomSearchableDropDown(
-                              items: listToSearch,
-                              label: '    Expanding Areas',
-                              multiSelectTag: '    Expanding Areas',
-                              multiSelectValuesAsWidget: true,
-                              multiSelect: true,
-                              prefixIcon: const Icon(
-                                Icons.expand,
-                                color: kPrimaryColor,
-                              ),
-                              initialValue: initArea,
-                              onChanged: (value) {
-                                initArea = [];
-                                _formData['expanding_areas'] = '';
-                                if (value != null) {
-                                  dynamic data = jsonDecode(value);
-                                  String dataListSelected = '';
-                                  for (int i = 0; i < data.length; i++) {
-                                    dataListSelected =
-                                        dataListSelected.toString() +
-                                            ',' +
-                                            '"' +
-                                            data[i]['area'].toString() +
-                                            '"';
-                                    if (data[i]['area'].contains("Others") ==
-                                        true) {
-                                      setState(() {
-                                        showExpandingAreasOther = true;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        showExpandingAreasOther = false;
-                                      });
-                                    }
-                                  }
-                                  _formData['expanding_areas'] = '"[' +
-                                      dataListSelected.substring(1) +
-                                      ']"';
-                                  print(
-                                      "expanding_area${_formData['expanding_areas']}");
-                                } else {
-                                  selectedExpandingAreas.clear();
-                                }
-                              },
-                              dropDownMenuItems: listToSearch.map((item) {
-                                return item['area'];
-                              }).toList(),
-                              primaryColor: kPrimaryColor),
-                        ],
+                    if (showcompany == true)
+                      TextFieldWidget(
+                        labelText: "Nature of Business",
+                        hintText: "Ex : Software Development",
+                        iconData: Icons.business_center_rounded,
+                        setValue: _setInputValue,
+                        field: 'business_nature',
+                        isFirst: false,
+                        isLast: false,
+                        initialValue: _formData['business_nature'],
+                        // validator: RequiredValidator(
+                        //     errorText: 'Business Nature is required'),
                       ),
-                    ),
+                    if (showcompany == true)
+                      Container(
+                        padding: const EdgeInsets.only(
+                            top: 20, bottom: 14, left: 8, right: 20),
+                        margin: const EdgeInsets.only(
+                            left: 20, right: 20, top: 0, bottom: 0),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(0)),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Get.theme.focusColor.withOpacity(0.1),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 5)),
+                            ],
+                            border: Border.all(
+                                color: Get.theme.focusColor.withOpacity(0.05))),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              "   Expanding Areas",
+                              style: Get.textTheme.bodyText1,
+                              textAlign: TextAlign.start,
+                            ),
+                            CustomSearchableDropDown(
+                                items: listToSearch,
+                                label: '    Expanding Areas',
+                                multiSelectTag: '    Expanding Areas',
+                                multiSelectValuesAsWidget: true,
+                                multiSelect: true,
+                                prefixIcon: const Icon(
+                                  Icons.expand,
+                                  color: kPrimaryColor,
+                                ),
+                                initialValue: initArea,
+                                onChanged: (value) {
+                                  initArea = [];
+                                  _formData['expanding_areas'] = '';
+                                  if (value != null) {
+                                    dynamic data = jsonDecode(value);
+                                    String dataListSelected = '';
+                                    for (int i = 0; i < data.length; i++) {
+                                      dataListSelected =
+                                          dataListSelected.toString() +
+                                              ',' +
+                                              '"' +
+                                              data[i]['area'].toString() +
+                                              '"';
+                                      if (data[i]['area'].contains("Others") ==
+                                          true) {
+                                        setState(() {
+                                          showExpandingAreasOther = true;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          showExpandingAreasOther = false;
+                                        });
+                                      }
+                                    }
+                                    _formData['expanding_areas'] = '"[' +
+                                        dataListSelected.substring(1) +
+                                        ']"';
+                                    print(
+                                        "expanding_area${_formData['expanding_areas']}");
+                                  } else {
+                                    selectedExpandingAreas.clear();
+                                  }
+                                },
+                                dropDownMenuItems: listToSearch.map((item) {
+                                  return item['area'];
+                                }).toList(),
+                                primaryColor: kPrimaryColor),
+                          ],
+                        ),
+                      ),
                     showExpandingAreasOther == true
                         ? TextFieldWidget(
                             labelText: "Others",
@@ -1156,28 +1367,42 @@ class _RegisterPersonalBasicInfoPageState
                       if (state is AuthLoading) {
                         return const LoadingWidget();
                       } else {
-                        return BlockButtonWidget(
-                          onPressed: () async {
-                            print("tes_save${_formData}");
-                            // _formData['phone_number'] =
-                            //     "+6${_formData['phone_number']}";
-                            final form = _formKey.currentState;
-                            //  if (form!.validate()) {
-                            print("tes_save${_formData}");
-                            // form.save();
-                            context.read<AuthBloc>().add(Register(_formData));
+                        return loading == true
+                            ? Center(child: CircularProgressIndicator())
+                            : BlockButtonWidget(
+                                onPressed: () async {
+                                  setState(() {
+                                    loading = true;
+                                    validateinteraction = true;
+                                  });
 
-                            if (form!.validate()) {
-                              print("tes_save_after_click${_formData}");
-                              form.save();
-                            }
-                          },
-                          color: kPrimaryColor,
-                          text: const Text(
-                            "Done",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ).paddingOnly(top: 15, bottom: 5, right: 20, left: 20);
+                                  print("tes_save${_formData}");
+                                  // _formData['phone_number'] =
+                                  //     "+6${_formData['phone_number']}";
+                                  final form = _formKey.currentState;
+                                  //  if (form!.validate()) {
+                                  print("tes_save${_formData}");
+                                  // form.save();
+                                  context
+                                      .read<AuthBloc>()
+                                      .add(Register(_formData));
+
+                                  setState(() {
+                                    loading = false;
+                                  });
+
+                                  if (form!.validate()) {
+                                    print("tes_save_after_click${_formData}");
+                                    form.save();
+                                  }
+                                },
+                                color: kPrimaryColor,
+                                text: const Text(
+                                  "Done",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ).paddingOnly(
+                                top: 15, bottom: 5, right: 20, left: 20);
                       }
                     })),
                     // BlockButtonWidget(

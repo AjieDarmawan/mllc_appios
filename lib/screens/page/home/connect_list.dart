@@ -117,12 +117,14 @@ class _RequestListPageState extends State<RequestListPage> {
                 if (state is GetReqestListSuccessful) {
                   var allRequestList1 = state.requestList;
 
+                  print("connect-listi${allRequestList1}");
+
                   dynamic reject = [];
                   dynamic approve = [];
                   if (allRequestList1.length > 0) {
                     for (int i = 0; i < allRequestList1.length; i++) {
                       if (allRequestList1[i]['status'] == 'Reject') {
-                        if (allRequestList1[i]['requestor_id'] ==
+                        if (allRequestList1[i]['connector_id'] ==
                             widget.userId) {
                           reject.add(allRequestList1[i]);
                         }
@@ -138,7 +140,7 @@ class _RequestListPageState extends State<RequestListPage> {
                       if (widget.resquestID != 0) {
                         if (allRequestList1[i]['id'] == widget.resquestID) {
                           if (allRequestList1[i]['status'] == 'Reject') {
-                            if (allRequestList1[i]['requestor_id'] ==
+                            if (allRequestList1[i]['connector_id'] ==
                                 widget.userId) {
                               Timer(const Duration(milliseconds: 1000), () {
                                 Navigator.pushReplacement(
@@ -480,7 +482,7 @@ class _RequestListPageState extends State<RequestListPage> {
                       children: [
                         Expanded(
                           child: Text(
-                            requestList['connector_name'].toString(),
+                            requestList['name'].toString(),
                             overflow: TextOverflow.ellipsis,
                             softWrap: false,
                             style: Theme.of(context).textTheme.bodyText1!.merge(
@@ -496,7 +498,7 @@ class _RequestListPageState extends State<RequestListPage> {
                       children: <Widget>[
                         Expanded(
                           child: Text(
-                            requestList['connector_company'].toString(),
+                            requestList['company_name'].toString(),
                             overflow: TextOverflow.ellipsis,
                             softWrap: false,
                             style: Theme.of(context).textTheme.bodyText1!.merge(
@@ -538,6 +540,8 @@ class _RequestListPageState extends State<RequestListPage> {
     _formData['user_id'] = widget.userId;
     _formData['connect_id'] = connectid;
     _formData['status'] = status;
+
+    print("requestconnect${_formData}");
 
     Timer(const Duration(milliseconds: 600), () {
       showProgress(context);

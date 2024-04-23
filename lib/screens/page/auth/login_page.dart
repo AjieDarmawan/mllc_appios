@@ -4,7 +4,10 @@ import 'dart:async';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:mlcc_app_ios/screens/page/adv/reward_detail_view.dart';
+import 'package:mlcc_app_ios/screens/page/adv/voucher_detail_view.dart';
 import 'package:mlcc_app_ios/screens/page/auth/register_one.dart';
+import 'package:mlcc_app_ios/screens/page/events/event_details_view.dart';
 import 'package:mlcc_app_ios/widget/text_fieldLogin_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +28,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  final int? id;
+  final String? type;
+  const LoginPage({Key? key, this.id, this.type}) : super(key: key);
 
   // const LoginPage({Key key}) : super(key: key);
   @override
@@ -40,6 +45,7 @@ class _LoginPageState extends State<LoginPage> {
     'password': null
   };
   var InSignIn = false;
+  var loading = false;
   bool hidePassword = true;
   var email = "email";
   var maskFormatter = MaskTextInputFormatter(mask: 'A######');
@@ -68,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                 },
                 icon: const Icon(Icons.keyboard_arrow_left),
               ),
-              title: const Text(
+              title: Text(
                 "Login",
                 style: TextStyle(
                   color: Colors.white,
@@ -232,6 +238,7 @@ class _LoginPageState extends State<LoginPage> {
                       hintText: "your.email@gmail.com",
                       // exampleText: " (youremail@xxx.com)",
                       iconData: Icons.alternate_email,
+                      mandatory: "*",
                       keyboardType: TextInputType.emailAddress,
                       field: 'email',
                       setValue: _setInputValue,
@@ -250,6 +257,7 @@ class _LoginPageState extends State<LoginPage> {
                 labelText: "Password",
                 //  exampleText: "(••••••••••••)",
                 hintText: "your password",
+                mandatory: "*",
                 iconData: Icons.lock_outline,
                 keyboardType: TextInputType.visiblePassword,
                 obscureText: hidePassword,
@@ -339,341 +347,398 @@ class _LoginPageState extends State<LoginPage> {
                 if (state is AuthLoading) {
                   return LoadingWidget();
                 } else {
-                  return
-                      // InSignIn == true
-                      // ? CircularProgressIndicator()
-                      // :
-                      BlockButtonWidget(
-                    onPressed: () async {
-                      final form = _formKey.currentState;
-                      if (form!.validate()) {
-                        form.save();
-                        // context.read<AuthBloc>().add(Login(_formData));
-                        if (email == "email") {
-                          _formData['member_number'] = "";
-                        } else {
-                          _formData['email'] = "";
-                          _formData['member_number'] =
-                              _formData['member_number'].toUpperCase();
-                        }
+                  return loading == true
+                      ? Center(
+                          child: CircularProgressIndicator(
+                          color: kPrimaryColor,
+                        ))
+                      : BlockButtonWidget(
+                          onPressed: () async {
+                            final form = _formKey.currentState;
+                            if (form!.validate()) {
+                              form.save();
+                              setState(() {
+                                loading = true;
+                                //_showLoading(context);
+                              });
 
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        var status = prefs.getBool('isLoggedIn') ?? false;
-                        var loginDataReturn =
-                            await httpProvider.postHttp("login", _formData);
+                              // context.read<AuthBloc>().add(Login(_formData));
+                              if (email == "email") {
+                                _formData['member_number'] = "";
+                              } else {
+                                _formData['email'] = "";
+                                _formData['member_number'] =
+                                    _formData['member_number'].toUpperCase();
+                              }
 
-                        if (loginDataReturn == "Password not match" ||
-                            loginDataReturn == "User not found") {
-                          setState(() {
-                            InSignIn = true;
-                          });
-                          _showLoading(context);
-                          _showErrorMessage(context, 'Invalid Email/Password.');
-                          setState(() {
-                            InSignIn = false;
-                          });
-                        } else if (loginDataReturn == "Account inactive") {
-                          showDialog<String>(
-                              context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                    title: const Text('Account Inactive'),
-                                    content: const Text(
-                                        'Your account is inactive! Please contact admin to verify.'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, 'OK'),
-                                        child: const Text('OK'),
-                                        style: TextButton.styleFrom(
-                                            primary: Colors.black),
-                                      ),
-                                    ],
-                                  ));
-                        } else {
-                          if (loginDataReturn['active'] == 0) {
-                            print('no active');
-                            showDialog<String>(
-                                context: context,
-                                builder: (BuildContext context) => AlertDialog(
-                                      title: const Text('Account Deactivated'),
-                                      content: const Text(
-                                          'Your account is deactivated! Please contact admin to verify.'),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context, 'OK'),
-                                          child: const Text('OK'),
-                                          style: TextButton.styleFrom(
-                                              primary: Colors.black),
-                                        ),
-                                      ],
-                                    ));
-                            // } else if (loginDataReturn['paid'] == 0) {
-                            //   SharedPreferences prefs =
-                            //       await SharedPreferences.getInstance();
-                            //   // prefs.setBool("isLoggedIn", true);
-                            //   prefs.setString("email", loginDataReturn['email']);
-                            //   prefs.setString(
-                            //       "username", loginDataReturn['username']);
-                            //   // prefs.setInt("userId", loginDataReturn['id']);
-                            //   Navigator.pushNamed(context, '/payment_webview_page',
-                            //       arguments: {
-                            //         'userId': loginDataReturn['id'],
-                            //         'training': 0,
-                            //         'event': 0,
-                            //         'product': 0,
-                            //       });
-                          } else if (loginDataReturn['last_access'] == "") {
-                            showDialog<String>(
-                                context: context,
-                                builder: (BuildContext context) => AlertDialog(
-                                      title: const Text('First Login'),
-                                      content: const Text(
-                                          'Please update your password. Thank You'),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () async {
-                                            // SharedPreferences prefs =
-                                            //     await SharedPreferences
-                                            //         .getInstance();
-                                            // // prefs.setBool("isLoggedIn", true);
-                                            // prefs.setString("email",
-                                            //     loginDataReturn['email']);
-                                            // prefs.setString("username",
-                                            //     loginDataReturn['username']);
-                                            // prefs.setInt("userId", loginDataReturn['id']);
-                                            showProgressTrainer(context);
-                                            var _formData = {
-                                              "user_id": loginDataReturn['id']
-                                            };
-                                            var getUserDetails =
-                                                await httpProvider.postHttp2(
-                                                    "entrepreneur/info",
-                                                    _formData);
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              var status = prefs.getBool('isLoggedIn') ?? false;
+                              var loginDataReturn = await httpProvider.postHttp(
+                                  "login", _formData);
 
-                                            if (getUserDetails != '') {
-                                              Navigator.pop(context);
-                                              // Navigator.of(context)
-                                              //     .popUntil((route) => route.isFirst);
-                                              // Navigator.pushReplacement(
-                                              //   context,
-                                              //   PageTransition(
-                                              //     type: PageTransitionType.fade,
-                                              //     child: const MainScreen(
-                                              //       page: AccountViewPage(),
-                                              //       index: 2,
-                                              //     ),
-                                              //   ),
-                                              // );
-                                              Navigator.pushNamed(context,
-                                                  '/account_personal_basic_info_view_page',
-                                                  arguments: {
-                                                    'data': getUserDetails[0],
-                                                    'first': "两个自己",
-                                                    'disableEdit': false,
-                                                  });
-                                            }
-                                          },
-                                          child: const Text('OK'),
-                                          style: TextButton.styleFrom(
-                                              primary: Colors.black),
-                                        ),
-                                      ],
-                                    ));
-                          } else if (loginDataReturn['device_token'] == '') {
-                            setState(() {
-                              InSignIn = true;
-                            });
-                            _showLoading(context);
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            prefs.setBool("isLoggedIn", true);
-                            prefs.setString("email", loginDataReturn['email']);
-                            prefs.setString(
-                                "username", loginDataReturn['username']);
-                            prefs.setInt("userId", loginDataReturn['id']);
-                            prefs.setBool("isExpired", false);
-                            var updateAccessDataReturn =
-                                await httpProvider.postHttp("last_access", {
-                              'user_id': loginDataReturn['id'],
-                              'push_token':
-                                  prefs.getString("OneSignalPlayerID"),
-                              'push_token_status': '1'
-                            });
+                              setState(() {
+                                loading = false;
+                              });
 
-                            if (updateAccessDataReturn == "Success") {
-                              Navigator.of(context)
-                                  .popUntil((route) => route.isFirst);
-                              // Navigator.pushReplacement(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (BuildContext context) =>
-                              //             RegisterOne()));
-
-                              // Navigator.pushReplacement(
-                              //   context,
-                              //   PageTransition(
-                              //     type: PageTransitionType.fade,
-                              //     child: const MainScreen(
-                              //       page: HomePage(),
-                              //       index: 0,
-                              //     ),
-                              //   ),
-                              // );
-                              //pertama login setelah daftar
-
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
+                              if (loginDataReturn == "Password not match" ||
+                                  loginDataReturn == "User not found") {
+                                setState(() {
+                                  InSignIn = true;
+                                });
+                                // _showLoading(context);
+                                _showErrorMessage(
+                                    context, 'Invalid Email/Password.');
+                                setState(() {
+                                  InSignIn = false;
+                                });
+                              } else if (loginDataReturn ==
+                                  "Account inactive") {
+                                showDialog<String>(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        AlertDialog(
+                                          title: const Text('Account Inactive'),
+                                          content: const Text(
+                                              'Your account is inactive! Please contact admin to verify.'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context, 'OK'),
+                                              child: const Text('OK'),
+                                              style: TextButton.styleFrom(
+                                                  primary: Colors.black),
+                                            ),
+                                          ],
+                                        ));
+                              } else {
+                                if (loginDataReturn['active'] == 0) {
+                                  print('no active');
+                                  showDialog<String>(
+                                      context: context,
                                       builder: (BuildContext context) =>
-                                          RegisterOne()));
-                            }
-                          } else if (loginDataReturn['device_token'] != null) {
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            String? deviceToken =
-                                prefs.getString("OneSignalPlayerID");
-                            if (loginDataReturn['device_token'] !=
-                                deviceToken) {
-                              showDialog<String>(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      AlertDialog(
-                                        title: const Text(
-                                            'Detected other device using this account'),
-                                        content: const Text(
-                                            'To continue to login, it will logout from another device. Click "OK" to proceed...'),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            onPressed: () async {
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text('Cancel'),
-                                            style: TextButton.styleFrom(
-                                                primary: Colors.grey),
-                                          ),
-                                          TextButton(
-                                            onPressed: () async {
-                                              SharedPreferences prefs =
-                                                  await SharedPreferences
-                                                      .getInstance();
-                                              prefs.setBool("isLoggedIn", true);
-                                              prefs.setString("email",
-                                                  loginDataReturn['email']);
-                                              prefs.setString("username",
-                                                  loginDataReturn['username']);
-                                              prefs.setInt("userId",
-                                                  loginDataReturn['id']);
-                                              prefs.setBool("isExpired", false);
-                                              var updateAccessDataReturn =
-                                                  await httpProvider
-                                                      .postHttp("last_access", {
-                                                'user_id':
-                                                    loginDataReturn['id'],
-                                                'push_token': prefs.getString(
-                                                    "OneSignalPlayerID"),
-                                                'push_token_status': '1'
-                                              });
-                                              if (updateAccessDataReturn ==
-                                                  "Success") {
-                                                Navigator.of(context).popUntil(
-                                                    (route) => route.isFirst);
-                                                // Navigator.pushReplacement(
-                                                //     context,
-                                                //     MaterialPageRoute(
-                                                //         builder: (BuildContext
-                                                //                 context) =>
-                                                //             RegisterOne()));
+                                          AlertDialog(
+                                            title: const Text(
+                                                'Account Deactivated'),
+                                            content: const Text(
+                                                'Your account is deactivated! Please contact admin to verify.'),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, 'OK'),
+                                                child: const Text('OK'),
+                                                style: TextButton.styleFrom(
+                                                    primary: Colors.black),
+                                              ),
+                                            ],
+                                          ));
+                                  // } else if (loginDataReturn['paid'] == 0) {
+                                  //   SharedPreferences prefs =
+                                  //       await SharedPreferences.getInstance();
+                                  //   // prefs.setBool("isLoggedIn", true);
+                                  //   prefs.setString("email", loginDataReturn['email']);
+                                  //   prefs.setString(
+                                  //       "username", loginDataReturn['username']);
+                                  //   // prefs.setInt("userId", loginDataReturn['id']);
+                                  //   Navigator.pushNamed(context, '/payment_webview_page',
+                                  //       arguments: {
+                                  //         'userId': loginDataReturn['id'],
+                                  //         'training': 0,
+                                  //         'event': 0,
+                                  //         'product': 0,
+                                  //       });
+                                } else if (loginDataReturn['last_access'] ==
+                                    "") {
+                                  showDialog<String>(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          AlertDialog(
+                                            title: const Text('First Login'),
+                                            content: const Text(
+                                                'Please update your password. Thank You'),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () async {
+                                                  // SharedPreferences prefs =
+                                                  //     await SharedPreferences
+                                                  //         .getInstance();
+                                                  // // prefs.setBool("isLoggedIn", true);
+                                                  // prefs.setString("email",
+                                                  //     loginDataReturn['email']);
+                                                  // prefs.setString("username",
+                                                  //     loginDataReturn['username']);
+                                                  // prefs.setInt("userId", loginDataReturn['id']);
+                                                  showProgressTrainer(context);
+                                                  var _formData = {
+                                                    "user_id":
+                                                        loginDataReturn['id']
+                                                  };
+                                                  var getUserDetails =
+                                                      await httpProvider
+                                                          .postHttp2(
+                                                              "entrepreneur/info",
+                                                              _formData);
 
-                                                Navigator.pushReplacement(
-                                                  context,
-                                                  PageTransition(
-                                                    type:
-                                                        PageTransitionType.fade,
-                                                    child: const MainScreen(
-                                                      page: HomePage(),
-                                                      index: 0,
-                                                    ),
-                                                  ),
-                                                );
-                                              }
-                                            },
-                                            child: const Text('OK'),
-                                            style: TextButton.styleFrom(
-                                                primary: Colors.blue),
+                                                  if (getUserDetails != '') {
+                                                    Navigator.pop(context);
+                                                    // Navigator.of(context)
+                                                    //     .popUntil((route) => route.isFirst);
+                                                    // Navigator.pushReplacement(
+                                                    //   context,
+                                                    //   PageTransition(
+                                                    //     type: PageTransitionType.fade,
+                                                    //     child: const MainScreen(
+                                                    //       page: AccountViewPage(),
+                                                    //       index: 2,
+                                                    //     ),
+                                                    //   ),
+                                                    // );
+                                                    Navigator.pushNamed(context,
+                                                        '/account_personal_basic_info_view_page',
+                                                        arguments: {
+                                                          'data':
+                                                              getUserDetails[0],
+                                                          'first': "两个自己",
+                                                          'disableEdit': false,
+                                                        });
+                                                  }
+                                                },
+                                                child: const Text('OK'),
+                                                style: TextButton.styleFrom(
+                                                    primary: Colors.black),
+                                              ),
+                                            ],
+                                          ));
+                                } else if (loginDataReturn['device_token'] ==
+                                    '') {
+                                  setState(() {
+                                    InSignIn = true;
+                                  });
+                                  // _showLoading(context);
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  prefs.setBool("isLoggedIn", true);
+                                  prefs.setString(
+                                      "email", loginDataReturn['email']);
+                                  prefs.setString(
+                                      "username", loginDataReturn['username']);
+                                  prefs.setInt("userId", loginDataReturn['id']);
+                                  prefs.setBool("isExpired", false);
+                                  var updateAccessDataReturn =
+                                      await httpProvider
+                                          .postHttp("last_access", {
+                                    'user_id': loginDataReturn['id'],
+                                    'push_token':
+                                        prefs.getString("OneSignalPlayerID"),
+                                    'push_token_status': '1'
+                                  });
+
+                                  if (updateAccessDataReturn == "Success") {
+                                    Navigator.of(context)
+                                        .popUntil((route) => route.isFirst);
+                                    // Navigator.pushReplacement(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //         builder: (BuildContext context) =>
+                                    //             RegisterOne()));
+
+                                    // Navigator.pushReplacement(
+                                    //   context,
+                                    //   PageTransition(
+                                    //     type: PageTransitionType.fade,
+                                    //     child: const MainScreen(
+                                    //       page: HomePage(),
+                                    //       index: 0,
+                                    //     ),
+                                    //   ),
+                                    // );
+                                    //pertama login setelah daftar
+
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                RegisterOne()));
+                                  }
+                                } else if (loginDataReturn['device_token'] !=
+                                    null) {
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  String? deviceToken =
+                                      prefs.getString("OneSignalPlayerID");
+                                  if (loginDataReturn['device_token'] !=
+                                      deviceToken) {
+                                    showDialog<String>(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            AlertDialog(
+                                              title: const Text(
+                                                  'Detected other device using this account'),
+                                              content: const Text(
+                                                  'To continue to login, it will logout from another device. Click "OK" to proceed...'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () async {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text('Cancel'),
+                                                  style: TextButton.styleFrom(
+                                                      primary: Colors.grey),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () async {
+                                                    SharedPreferences prefs =
+                                                        await SharedPreferences
+                                                            .getInstance();
+                                                    prefs.setBool(
+                                                        "isLoggedIn", true);
+                                                    prefs.setString(
+                                                        "email",
+                                                        loginDataReturn[
+                                                            'email']);
+                                                    prefs.setString(
+                                                        "username",
+                                                        loginDataReturn[
+                                                            'username']);
+                                                    prefs.setInt("userId",
+                                                        loginDataReturn['id']);
+                                                    prefs.setBool(
+                                                        "isExpired", false);
+                                                    var updateAccessDataReturn =
+                                                        await httpProvider
+                                                            .postHttp(
+                                                                "last_access", {
+                                                      'user_id':
+                                                          loginDataReturn['id'],
+                                                      'push_token':
+                                                          prefs.getString(
+                                                              "OneSignalPlayerID"),
+                                                      'push_token_status': '1'
+                                                    });
+                                                    if (updateAccessDataReturn ==
+                                                        "Success") {
+                                                      Navigator.of(context)
+                                                          .popUntil((route) =>
+                                                              route.isFirst);
+                                                      // Navigator.pushReplacement(
+                                                      //     context,
+                                                      //     MaterialPageRoute(
+                                                      //         builder: (BuildContext
+                                                      //                 context) =>
+                                                      //             RegisterOne()));
+
+                                                      Navigator.pushReplacement(
+                                                        context,
+                                                        PageTransition(
+                                                          type:
+                                                              PageTransitionType
+                                                                  .fade,
+                                                          child:
+                                                              const MainScreen(
+                                                            page: HomePage(),
+                                                            index: 0,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }
+                                                  },
+                                                  child: const Text('OK'),
+                                                  style: TextButton.styleFrom(
+                                                      primary: Colors.blue),
+                                                ),
+                                              ],
+                                            ));
+                                  }
+                                } else {
+                                  setState(() {
+                                    InSignIn = true;
+                                  });
+                                  // _showLoading(context);
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  prefs.setBool("isLoggedIn", true);
+                                  prefs.setString(
+                                      "email", loginDataReturn['email']);
+                                  prefs.setString(
+                                      "username", loginDataReturn['username']);
+                                  prefs.setInt("userId", loginDataReturn['id']);
+                                  prefs.setBool("isExpired", false);
+                                  var updateAccessDataReturn =
+                                      await httpProvider
+                                          .postHttp("last_access", {
+                                    'user_id': loginDataReturn['id'],
+                                    'push_token':
+                                        prefs.getString("OneSignalPlayerID"),
+                                    'push_token_status': '1'
+                                  });
+                                  if (updateAccessDataReturn == "Success") {
+                                    if (widget.id != null) {
+                                      if (widget.type == 'events') {
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EventDetailsViewPage(
+                                                        id: widget.id)));
+                                      } else if (widget.type == 'voucher') {
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    VoucherDetailsViewPage(
+                                                        id: widget.id)));
+                                      } else {
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    RewardDetailsViewPage(
+                                                        id: widget.id)));
+                                      }
+                                    } else {
+                                      Navigator.of(context)
+                                          .popUntil((route) => route.isFirst);
+                                      Navigator.pushReplacement(
+                                        context,
+                                        PageTransition(
+                                          type: PageTransitionType.fade,
+                                          child: const MainScreen(
+                                            page: HomePage(),
+                                            index: 0,
                                           ),
-                                        ],
-                                      ));
-                            }
-                          } else {
-                            setState(() {
-                              InSignIn = true;
-                            });
-                            _showLoading(context);
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            prefs.setBool("isLoggedIn", true);
-                            prefs.setString("email", loginDataReturn['email']);
-                            prefs.setString(
-                                "username", loginDataReturn['username']);
-                            prefs.setInt("userId", loginDataReturn['id']);
-                            prefs.setBool("isExpired", false);
-                            var updateAccessDataReturn =
-                                await httpProvider.postHttp("last_access", {
-                              'user_id': loginDataReturn['id'],
-                              'push_token':
-                                  prefs.getString("OneSignalPlayerID"),
-                              'push_token_status': '1'
-                            });
-                            if (updateAccessDataReturn == "Success") {
-                              Navigator.of(context)
-                                  .popUntil((route) => route.isFirst);
-                              Navigator.pushReplacement(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.fade,
-                                  child: const MainScreen(
-                                    page: HomePage(),
-                                    index: 0,
+                                        ),
+                                      );
+                                    }
+                                  }
+                                }
+                              }
+                              if (status) {
+                                Navigator.of(context)
+                                    .popUntil((route) => route.isFirst);
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.fade,
+                                    child: const MainScreen(
+                                      page: HomePage(),
+                                      index: 0,
+                                    ),
                                   ),
-                                ),
-                              );
-                              // Navigator.pushReplacement(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (BuildContext context) =>
-                              //             RegisterOne()));
+                                );
+                                // Navigator.pushReplacement(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (BuildContext context) =>
+                                //             RegisterOne()));
+                              }
                             }
-                          }
-                        }
-                        if (status) {
-                          Navigator.of(context)
-                              .popUntil((route) => route.isFirst);
-                          Navigator.pushReplacement(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.fade,
-                              child: const MainScreen(
-                                page: HomePage(),
-                                index: 0,
-                              ),
-                            ),
-                          );
-                          // Navigator.pushReplacement(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (BuildContext context) =>
-                          //             RegisterOne()));
-                        }
-                      }
-                    },
-                    color: kPrimaryColor,
-                    text: const Text(
-                      "Login",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ).paddingSymmetric(vertical: 10, horizontal: 20);
+                          },
+                          color: kPrimaryColor,
+                          text: const Text(
+                            "Login",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ).paddingSymmetric(vertical: 10, horizontal: 20);
                 }
               })),
               Row(

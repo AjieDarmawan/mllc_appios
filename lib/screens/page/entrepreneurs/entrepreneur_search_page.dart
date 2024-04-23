@@ -520,14 +520,17 @@ class _EntrepreneurSearchPageState extends State<EntrepreneurSearchPage> {
                 children: <Widget>[
                   Row(
                     children: [
-                      Text(
-                        data['name'],
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: false,
-                        style: Theme.of(context).textTheme.bodyText1!.merge(
-                            const TextStyle(
-                                fontWeight: FontWeight.w800,
-                                color: kPrimaryColor)),
+                      Flexible(
+                        child: Text(
+                          data['name'],
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          softWrap: false,
+                          style: Theme.of(context).textTheme.bodyText1!.merge(
+                              const TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  color: kPrimaryColor)),
+                        ),
                       ),
                     ],
                   ),

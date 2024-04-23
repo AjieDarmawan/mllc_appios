@@ -158,6 +158,8 @@ class _AccountViewPageState extends State<AccountViewPage> {
       });
     }
 
+    print("connect-listinguserid${id}");
+
     connectList = await httpProvider
         .postHttp2("entrepreneur/connect/listing", {'user_id': id});
     if (connectList.isNotEmpty) {
@@ -670,6 +672,7 @@ class _AccountViewPageState extends State<AccountViewPage> {
               child: Column(
                 children: [
                   AccountLinkWidget(
+                    percent: userData['profileCompletionPercentage'].toString(),
                     //icon: const Icon(Icons.ac_unit,
                     icon: const Icon(FontAwesomeIcons.userEdit,
                         color: kPrimaryColor),
@@ -684,6 +687,8 @@ class _AccountViewPageState extends State<AccountViewPage> {
                     },
                   ),
                   AccountLinkWidget(
+                    percent:
+                        userData['socialMediaCompletionPercentage'].toString(),
                     // icon: const Icon(Icons.ac_unit,
                     icon: const Icon(FontAwesomeIcons.hashtag,
                         color: kPrimaryColor),
@@ -702,6 +707,8 @@ class _AccountViewPageState extends State<AccountViewPage> {
                     },
                   ),
                   AccountLinkWidget(
+                    percent:
+                        userData['educationCompletionPercentage'].toString(),
                     // icon: const Icon(Icons.ac_unit,
                     icon: const Icon(FontAwesomeIcons.university,
                         color: kPrimaryColor),
@@ -720,6 +727,8 @@ class _AccountViewPageState extends State<AccountViewPage> {
                     },
                   ),
                   AccountLinkWidget(
+                    percent:
+                        userData['societiesCompletionPercentage'].toString(),
                     // icon: const Icon(Icons.ac_unit,
                     icon: const Icon(FontAwesomeIcons.users,
                         color: kPrimaryColor),
@@ -738,6 +747,7 @@ class _AccountViewPageState extends State<AccountViewPage> {
                     },
                   ),
                   AccountLinkWidget(
+                    percent: userData['certCompletionPercentage'].toString(),
                     icon: const Icon(FontAwesomeIcons.certificate,
                         //icon: const Icon(Icons.ac_unit,
                         color: kPrimaryColor),
@@ -756,6 +766,8 @@ class _AccountViewPageState extends State<AccountViewPage> {
                     },
                   ),
                   AccountLinkWidget(
+                    percent: userData['workExperienceCompletionPercentage']
+                        .toString(),
                     //icon: const Icon(Icons.ac_unit,
                     icon: const Icon(FontAwesomeIcons.briefcase,
                         color: kPrimaryColor),
@@ -773,20 +785,23 @@ class _AccountViewPageState extends State<AccountViewPage> {
                                   label: "Work Experienced")));
                     },
                   ),
-                  AccountLinkWidget(
-                    icon: const Icon(Icons.business, color: kPrimaryColor),
-                    text: const Text("Company Information"),
-                    onTap: (e) {
-                      // Navigator.pushNamed(
-                      //     context, '/account_work_experienced_view_page');
-                      Navigator.pushNamed(
-                          context, '/account_company_info_view_page',
-                          arguments: {
-                            'data': userData['company_details'],
-                            'disable': _disableEdit
-                          });
-                    },
-                  ),
+                  if (userData['is_company'] == 1)
+                    AccountLinkWidget(
+                      percent:
+                          userData['companyCompletionPercentage'].toString(),
+                      icon: const Icon(Icons.business, color: kPrimaryColor),
+                      text: const Text("Company Information"),
+                      onTap: (e) {
+                        // Navigator.pushNamed(
+                        //     context, '/account_work_experienced_view_page');
+                        Navigator.pushNamed(
+                            context, '/account_company_info_view_page',
+                            arguments: {
+                              'data': userData['company_details'],
+                              'disable': _disableEdit
+                            });
+                      },
+                    ),
                 ],
               ),
             ),
@@ -1068,7 +1083,7 @@ class _AccountViewPageState extends State<AccountViewPage> {
                       prefs.setString("username", '');
                       prefs.setBool("isExpired", false);
                       // context.read<AuthBloc>().add(const Logout());
-                      _showSuccessMessage(context, 'Logout Successful');
+                      _showSuccessMessageLogout(context, 'Success');
                       // Navigator.of(context).popUntil((route) => route.isFirst);
                       // Navigator.pushReplacement(
                       //   context,
@@ -1105,6 +1120,21 @@ class _AccountViewPageState extends State<AccountViewPage> {
         backgroundColor: Colors.green,
         textColor: Colors.white,
         fontSize: 16.0);
+  }
+
+  void _showSuccessMessageLogout(BuildContext context, String key) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content:
+            Text("Signed out successfully.  Thanks for hanging with us! \n"),
+        backgroundColor: Colors.green));
+    // Fluttertoast.showToast(
+    //     msg: "Signed out successfully.\n  Thanks for hanging with us! ",
+    //     toastLength: Toast.LENGTH_LONG,
+    //     gravity: ToastGravity.TOP,
+    //     timeInSecForIosWeb: 1,
+    //     backgroundColor: Colors.green,
+    //     textColor: Colors.white,
+    //     fontSize: 16.0);
   }
 
   Future getFuture() {

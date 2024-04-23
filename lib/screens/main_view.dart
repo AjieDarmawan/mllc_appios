@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mlcc_app_ios/screens/page/adv/adv_view.dart';
 import 'package:mlcc_app_ios/screens/page/auth/register_one.dart';
+import 'package:mlcc_app_ios/screens/page/auth/register_two_company.dart';
 import 'package:mlcc_app_ios/screens/page/entrepreneurs/entrepreneurs_view.dart';
 import 'package:mlcc_app_ios/screens/page/events/events_view.dart';
 import 'package:page_transition/page_transition.dart';
@@ -179,6 +180,8 @@ class _MainScreenState extends State<MainScreen> {
 
       case 3:
         return AdvPage();
+      // return RegisterOne();
+      //return Register_two_company();
 
       case 4:
         if (users_id == 0 || users_id == null) {
